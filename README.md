@@ -6,6 +6,9 @@ become more difficult to defeat, and the terrain becomes more difficult to navig
 
 The game will have a 'start' screen as well as a pause/options modal.
 
+### Tech
+To make Astro I should not need anything other than javascript, canvas, and perhaps a library to help me build sprites, like pixijs.
+
 ### Day 1
 My main goal for day one is to become comfortable with rendering simple objects with canvas. Additionally I will try to set 
 up the necessary logic to get auto-generated platforms extending to the right and left of my character. Whichever direction 
