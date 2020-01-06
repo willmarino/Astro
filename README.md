@@ -6,6 +6,8 @@ become more difficult to defeat, and the terrain becomes more difficult to navig
 
 The game will have a 'start' screen as well as a pause/options modal.
 
+![Basic Wireframe](https://drive.google.com/open?id=1iYcwMahcpXH5sAeCCiwqS5X4tWgxkK7s)
+
 ### Tech
 To make Astro I should not need anything other than javascript, canvas, and perhaps a library to help me build sprites, like pixijs.
 
