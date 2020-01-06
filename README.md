@@ -6,7 +6,7 @@ become more difficult to defeat, and the terrain becomes more difficult to navig
 
 The game will have a 'start' screen as well as a pause/options modal.
 
-![Basic Wireframe](https://drive.google.com/open?id=1iYcwMahcpXH5sAeCCiwqS5X4tWgxkK7s)
+![Basic Wireframe](https://flea-seeds-four.s3.amazonaws.com/thumbnails_v2/js_proj/Screen+Shot+2020-01-06+at+9.57.15+AM.png)
 
 ### Tech
 To make Astro I should not need anything other than javascript, canvas, and perhaps a library to help me build sprites, like pixijs.
