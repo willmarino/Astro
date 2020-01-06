@@ -36,3 +36,6 @@ at the start of each round, to help the player keep track. Additionally, round n
 ### Day 5
 By now the central game logic and progression should be functional, work at this point will focus on adding additional 
 player movement and better graphics, and cleaning up the environment.
+
+### Bonus
+Bonus features that I will be looking to implement will be based around implementing power-ups that change a player's ability to move or shoot, or different game modes.
