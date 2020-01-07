@@ -2,12 +2,16 @@ import "./styles/index.scss";
 
 import Game from './game';
 
+const canvas = document.getElementById('main-canvas');
+const game = new Game(canvas);
+
 document.addEventListener('DOMContentLoaded', () => {
-
-  const canvas = document.getElementById('main-canvas');
-  const game = new Game(canvas);
   game.restart();
-  game.draw();
-
 });
+
+// document.addEventListener('keypress', (e) => {
+//   if(e.keyCode === 120){
+
+//   }
+// })
 

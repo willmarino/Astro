@@ -6,16 +6,20 @@ export default class Environment{
       height: dimensions.height,
       width: dimensions.width
     };
-    this.context = context;
+    // this.context = context;
+
+    this.height = 300;
+
     this.platforms = [];
   }
 
-  draw(){
-    for(let i = 0; i < 3; i++){
-      let newPlat = new Platform(this.dimensions);
-      this.platforms.push(newPlat);
-      newPlat.draw(this.context);
-    }
+  animate(context){
+    this.draw(context);
+  }
+
+  draw(context){
+    context.fillStyle = 'black';
+    context.fillRect(0, 300, 800, 15);
   }
 
 }
