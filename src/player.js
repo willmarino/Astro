@@ -32,18 +32,19 @@ export default class Player{
 
   setClick(that) {
     window.addEventListener('click', (e) => {
+      // debugger;
       let pos = {};
       pos['x'] = e.clientX;
-      pos['y'] = e.clientY;
+      pos['y'] = e.clientY - 186;
 
-      debugger;
+
       that.projectiles.push(new Projectile(
         { xPos: that.xPos, yPos: that.yPos}, 
         that.context,
         ...that.configureProjectile(pos)
         )
       );
-      debugger;
+
 
     });
   }
@@ -57,7 +58,7 @@ export default class Player{
     let totalDeltasquared = squaredDeltaX + squaredDeltaY;
     let totalDelta = Math.sqrt(totalDeltasquared);
 
-    let proportion = 10 / totalDelta;
+    let proportion = 20 / totalDelta;
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
 
@@ -76,7 +77,6 @@ export default class Player{
   }
 
   moveLeft() {
-    debugger;
     this.xVel -= 2;
     if (this.xVel < -5) {
       this.xVel = -5;
@@ -122,7 +122,7 @@ export default class Player{
   }
 
   animate(context){
-    debugger;
+
     this.move();
     this.draw(context);
     if(this.projectiles.length > 0){
