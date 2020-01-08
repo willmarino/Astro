@@ -27,6 +27,10 @@ export default class Game{
   //   });
   // }
 
+  filterComputers(){
+    this.computers = this.computers.filter(c => c.yPos < 415);
+  }
+
   run(){
     this.context.canvas.addEventListener('mousedown', () => {
       console.log('akjsda');
@@ -55,6 +59,7 @@ export default class Game{
 
   play(){
     this.running = true;
+    this.filterComputers();
     this.animate();
   }
 
