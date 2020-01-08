@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"main.css","sourcesContent":[],"sourceRoot":""}
+{"version":3,"sources":["webpack:///./src/styles/index.scss"],"names":[],"mappings":"AAAA,gBAAgB,aAAa,sBAAsB,gBAAgB,cAAc,OAAO,kBAAkB,eAAe","file":"main.css","sourcesContent":["#game-and-title{display:flex;flex-direction:column;max-width:800px;margin:0 auto}#title{text-align:center;font-size:24px;font-family:'Fjalla One', sans-serif}\n"],"sourceRoot":""}

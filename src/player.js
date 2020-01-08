@@ -31,11 +31,13 @@ export default class Player{
   }
 
   setClick(that) {
-    window.addEventListener('click', (e) => {
+    this.context.canvas.addEventListener('click', (e) => {
       // debugger;
+      
+      let rect = this.context.canvas.getBoundingClientRect();
       let pos = {};
-      pos['x'] = e.clientX;
-      pos['y'] = e.clientY - 186;
+      pos['x'] = e.clientX - rect.left;
+      pos['y'] = e.clientY - rect.top;
 
 
       that.projectiles.push(new Projectile(
