@@ -1,5 +1,6 @@
 import Projectile from "./projectile";
 
+
 // q1 -- q2
 // |      |
 // q3 -- q4
@@ -17,22 +18,21 @@ export default class Player{
 
     this.projectiles = [];
 
-    // this.xPos = 100;
-    // this.yPos = 100;
-    // this.yVel = 0;
-    // this.xVel = 0;
-    // this.width = 10;
-    // this.height = 10;
+    this.xPos = 100;
+    this.yPos = 100;
+    this.yVel = 0;
+    this.xVel = 0;
+    this.width = 10;
+    this.height = 10;
 
-    // this.bindMovement();
-    // this.bindJump();
-    // this.setClick = this.setClick.bind(this);
-    // this.setClick(this);
+    this.bindMovement();
+    this.bindJump();
+    this.setClick = this.setClick.bind(this);
+    this.setClick(this);
   }
 
   setClick(that) {
     this.context.canvas.addEventListener('click', (e) => {
-      // debugger;
       
       let rect = this.context.canvas.getBoundingClientRect();
       let pos = {};

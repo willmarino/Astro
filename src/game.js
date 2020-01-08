@@ -1,5 +1,5 @@
 import Environment from "./environment";
-import Player from "./player";
+import Human from './human';
 import Background from "./background";
 import Computer from "./computer";
 
@@ -12,6 +12,18 @@ export default class Game{
       width: canvas.width
     };
     this.running = false;
+
+    this.humanProjectiles = [];
+    this.computerProjectiles = [];
+    this.computers = [];
+  }
+
+  collectProjectiles(){
+    this.humanProjectiles = this.human.projectiles;
+    this.computerProjectiles = [];
+    this.computers.forEach((comp) => {
+      this.computerProjectiles.push(comp.projectiles);
+    });
   }
 
   run(){
@@ -27,13 +39,14 @@ export default class Game{
     }
   }
 
-
-
   animate(){
     this.background.animate(this.context);
     this.environment.animate(this.context);
     this.human.animate(this.context);
-    this.computer.animate(this.context);
+    this.computers.forEach((c) => {
+      c.animate(this.context);
+    });
+    this.collectProjectiles();
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
     }
@@ -44,16 +57,18 @@ export default class Game{
     this.animate();
   }
 
-  // draw(){
-  //   this.environment.draw(this.context);
-  //   this.human.draw(this.context);
-  // }
-
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
-    this.human = new Player(this.environment, this.context);
-    this.computer = new Computer(this.environment, this.context);
+    this.human = new Human(this.environment, this.context);
+    // this.computer = new Computer(this.environment, this.context);
+    let i = 0;
+    let compStartX = 850;
+    while(i < 5){
+      this.computers.push(new Computer(this.environment, this.context, this.human, compStartX));
+      compStartX += 30;
+      i += 1;
+    }
     this.running = false;
     this.animate();
     this.run();

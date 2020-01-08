@@ -1,8 +1,7 @@
-import Player from './player';
+import Projectile from "./projectile";
 
-export default class Human extends Player{
+export default class Human{
 	constructor(environment, context){
-
 
 		this.CONSTANTS = {
       GRAVITY: 0.5
@@ -10,6 +9,8 @@ export default class Human extends Player{
 
 		this.environment = environment;
 		this.context = context;
+
+		this.projectiles = [];
 
     this.xPos = 100;
     this.yPos = 100;
@@ -23,16 +24,15 @@ export default class Human extends Player{
     this.setClick = this.setClick.bind(this);
     this.setClick(this);
   }
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 	setClick(that) {
 		this.context.canvas.addEventListener('click', (e) => {
-			
 			let rect = this.context.canvas.getBoundingClientRect();
 			let pos = {};
 			pos.x = e.clientX - rect.left;
 			pos.y = e.clientY - rect.top;
 	
-	
+			// debugger;
 			that.projectiles.push(new Projectile(
 				{ xPos: that.xPos, yPos: that.yPos}, 
 				that.context,
@@ -41,7 +41,7 @@ export default class Human extends Player{
 			);
 		});
 	}
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 	configureProjectile(pos){
 		let xDelta = pos.x - this.xPos;
 		let yDelta = pos.y - this.yPos;
@@ -57,7 +57,7 @@ export default class Human extends Player{
 
 		return [xVel, yVel];
 	}
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 	jump(){
 		this.yVel -= 5;
 	}
@@ -75,7 +75,7 @@ export default class Human extends Player{
 			this.xVel = -5;
 		}
 	}
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 	bindMovement(){
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'd'){
@@ -94,7 +94,7 @@ export default class Human extends Player{
 		});
 	}
 
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 	draw(context){
     context.fillStyle = 'gray';
     context.fillRect(
@@ -114,7 +114,7 @@ export default class Human extends Player{
       this.xVel += 0.1;
     }
   }
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
   animate(context){
     this.move();
     this.draw(context);
@@ -125,14 +125,14 @@ export default class Human extends Player{
     }
     this.projectiles = this.projectiles.filter(p => p.xPos < 810 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
   }
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
   collided(){
     if(this.yPos >= this.environment.height - 13){
       this.yVel = 0;
       return true;
     }
   }
-// ------------------------------------------------------------
+	// ------------------------------------------------------------
 
 
 }

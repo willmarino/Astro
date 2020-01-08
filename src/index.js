@@ -9,9 +9,4 @@ document.addEventListener('DOMContentLoaded', () => {
   game.restart();
 });
 
-// document.addEventListener('keypress', (e) => {
-//   if(e.keyCode === 120){
-
-//   }
-// })
 
