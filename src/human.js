@@ -1,14 +1,18 @@
 import Projectile from "./projectile";
 
 export default class Human{
-	constructor(environment, context){
+	constructor(environment, context, computerProjectiles){
 
 		this.CONSTANTS = {
       GRAVITY: 0.5
-    };
+		};
+
+		this.alive = true;
 
 		this.environment = environment;
 		this.context = context;
+
+		this.computerProjectiles = computerProjectiles;
 
 		this.projectiles = [];
 
@@ -105,7 +109,7 @@ export default class Human{
   move(){
     this.yPos += this.yVel;
     this.xPos += this.xVel;
-    if(this.collided() !== true){
+    if(this.collidedWithFloor() !== true){
       this.yVel += this.CONSTANTS.GRAVITY;
     }
     if(this.xVel > 0){
@@ -126,7 +130,7 @@ export default class Human{
     this.projectiles = this.projectiles.filter(p => p.xPos < 810 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
   }
 	// ------------------------------------------------------------
-  collided(){
+  collidedWithFloor(){
     if(this.yPos >= this.environment.height - 13){
       this.yVel = 0;
       return true;

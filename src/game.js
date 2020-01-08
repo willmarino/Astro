@@ -13,18 +13,19 @@ export default class Game{
     };
     this.running = false;
 
+    this.computers = [];
+
     this.humanProjectiles = [];
     this.computerProjectiles = [];
-    this.computers = [];
   }
 
-  collectProjectiles(){
-    this.humanProjectiles = this.human.projectiles;
-    this.computerProjectiles = [];
-    this.computers.forEach((comp) => {
-      this.computerProjectiles.push(comp.projectiles);
-    });
-  }
+  // collectProjectiles(){
+  //   this.humanProjectiles = this.human.projectiles;
+  //   this.computerProjectiles = [];
+  //   this.computers.forEach((comp) => {
+  //     this.computerProjectiles.push(comp.projectiles);
+  //   });
+  // }
 
   run(){
     this.context.canvas.addEventListener('mousedown', () => {
@@ -46,7 +47,7 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
-    this.collectProjectiles();
+    // this.collectProjectiles();
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
     }
@@ -60,8 +61,7 @@ export default class Game{
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
-    this.human = new Human(this.environment, this.context);
-    // this.computer = new Computer(this.environment, this.context);
+    this.human = new Human(this.environment, this.context, this.computerProjectiles);
     let i = 0;
     let compStartX = 850;
     while(i < 5){

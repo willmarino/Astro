@@ -1,4 +1,3 @@
-import Player from './player';
 import Projectile from "./projectile";
 
 export default class Computer{
@@ -9,23 +8,27 @@ export default class Computer{
       JETPACK: 0.5
     };
 
+    this.alive = true;
+
 		this.environment = environment;
     this.context = context;
 
     this.projectiles = [];
+    this.humanProjectiles = human.projectiles;
 
 		this.xPos = xPos;
 		this.yPos = 50;
 		this.yVel = 0;
 		this.xVel = -5;
-		this.width = 10;
-    this.height = 10;
+		this.width = 20;
+    this.height = 20;
     
     this.human = human;
 		
 	}
 
   // ------------------------------------------------------------
+
 
   switchDirection(){
     if(this.xPos <= 20){
@@ -71,6 +74,7 @@ export default class Computer{
     return [xVel, yVel];
   }
   // ------------------------------------------------------------
+
   jump(){
     this.yVel -= 5;
   }
@@ -100,21 +104,29 @@ export default class Computer{
   action(){
     this.move();
     this.fetchHumanPosition();
-    this.shoot();
-    this.switchDirection();
+    if(this.alive){
+      this.shoot();
+      this.switchDirection();
+      this.collidedWithProjectiles();
+    }
   }
 
   move(){
-    this.yPos += this.yVel;
-    this.xPos += this.xVel;
-    if(this.collided() !== true){
+    if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
-      this.yVel -= this.CONSTANTS.JETPACK;
-    }
-    if(this.xVel > 0 && this.collided()){
-      this.xVel -= 0.1;
-    } else if (this.xVel < 0 && this.collided()){
-      this.xVel += 0.1;
+      this.yPos += this.yVel;
+    }else{
+      this.yPos += this.yVel;
+      this.xPos += this.xVel;
+      if(this.collidedWithFloor() !== true){
+        this.yVel += this.CONSTANTS.GRAVITY;
+        this.yVel -= this.CONSTANTS.JETPACK;
+      }
+      if(this.xVel > 0 && this.collidedWithFloor()){
+        this.xVel -= 0.1;
+      } else if (this.xVel < 0 && this.collidedWithFloor()){
+        this.xVel += 0.1;
+      }
     }
   }
   // ------------------------------------------------------------
@@ -129,11 +141,55 @@ export default class Computer{
     this.projectiles = this.projectiles.filter(p => p.xPos < 810 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
   }
   // ------------------------------------------------------------
-  collided(){
+  collidedWithFloor(){
     if(this.yPos >= this.environment.height - 13){
       this.yVel = 0;
       return true;
     }
+  }
+
+  collide(obj1, obj2){
+    // debugger;
+    let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
+    let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
+    let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
+    let obj1BotRight = { x : obj1.xPos + obj1.width, y : obj1.yPos + obj1.height};
+
+    let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2)) / 2;
+
+    let obj2TopLeft = {x : obj2.xPos, y : obj2.yPos};
+    let obj2TopRight = { x: obj2.xPos + obj2.width, y: obj2.yPos };
+    let obj2BotLeft = { x: obj2.xPos, y: obj2.yPos + obj2.height };
+    let obj2BotRight = {x : obj2.xPos + obj2.width, y : obj2.yPos + obj2.height};
+
+    let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2)) / 2;
+
+    let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
+    
+    if((obj1TopLeft.x < obj2BotRight.x && obj1TopLeft.y < obj2BotRight.y) &&
+      (obj1Diag + obj2Diag > totalDelta)){
+      return true;
+    } else if (obj1TopRight.x > obj2BotLeft.x && obj1TopRight.y > obj2BotLeft.y && (obj1Diag + obj2Diag > totalDelta)){
+      return true;
+    } else if (obj1BotRight.x > obj2TopLeft.x && obj1BotRight.y > obj2TopLeft.y && (obj1Diag + obj2Diag > totalDelta)){
+      return true;
+    } else if (obj1BotLeft.x < obj2TopRight.x && obj1BotLeft.y > obj2TopRight.y && (obj1Diag + obj2Diag > totalDelta)){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+
+  collidedWithProjectiles(){
+    // debugger;
+    this.human.projectiles.forEach((hp) => {
+      if(this.collide(this, hp)){
+        console.log('hit!');
+        this.alive = false;
+        return true;
+      }
+    });
   }
 
 

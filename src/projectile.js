@@ -9,6 +9,9 @@ export default class Projectile{
     this.yVel = yVel;
     this.xVel = xVel;
 
+    this.width = 5;
+    this.height = 5;
+
   }
   
   animate(context){
@@ -24,7 +27,7 @@ export default class Projectile{
 
   draw(context){
     context.fillStyle = 'white';
-    context.fillRect(this.xPos, this.yPos, 5, 5);
+    context.fillRect(this.xPos, this.yPos, this.width, this.height);
   }
 
 }
