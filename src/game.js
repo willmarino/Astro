@@ -1,6 +1,7 @@
 import Environment from "./environment";
 import Player from "./player";
 import Background from "./background";
+import Computer from "./computer";
 
 
 export default class Game{
@@ -31,7 +32,8 @@ export default class Game{
   animate(){
     this.background.animate(this.context);
     this.environment.animate(this.context);
-    this.player.animate(this.context);
+    this.human.animate(this.context);
+    this.computer.animate(this.context);
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
     }
@@ -44,13 +46,14 @@ export default class Game{
 
   // draw(){
   //   this.environment.draw(this.context);
-  //   this.player.draw(this.context);
+  //   this.human.draw(this.context);
   // }
 
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
-    this.player = new Player(this.environment, this.context);
+    this.human = new Player(this.environment, this.context);
+    this.computer = new Computer(this.environment, this.context);
     this.running = false;
     this.animate();
     this.run();

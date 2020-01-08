@@ -1,0 +1,97 @@
+import Player from './player';
+
+export default class Computer extends Player{
+	constructor(environment, context){
+
+		this.CONSTANTS = {
+      GRAVITY: 0.5
+    };
+
+		this.environment = environment;
+		this.context = context;
+
+		this.xPos = 850;
+		this.yPos = 50;
+		this.yVel = 0;
+		this.xVel = 5;
+		this.width = 10;
+		this.height = 10;
+		
+	}
+
+// ------------------------------------------------------------
+	configureProjectile(pos){
+    let xDelta = pos.x - this.xPos;
+    let yDelta = pos.y - this.yPos;
+
+    let squaredDeltaX = Math.pow(xDelta, 2);
+    let squaredDeltaY = Math.pow(yDelta, 2);
+    let totalDeltasquared = squaredDeltaX + squaredDeltaY;
+    let totalDelta = Math.sqrt(totalDeltasquared);
+
+    let proportion = 20 / totalDelta;
+    let xVel = xDelta * proportion;
+    let yVel = yDelta * proportion;
+
+    return [xVel, yVel];
+  }
+// ------------------------------------------------------------
+  jump(){
+    this.yVel -= 5;
+  }
+
+  moveRight(){
+    this.xVel += 2;
+    if(this.xVel > 5){
+      this.xVel = 5;
+    }
+  }
+
+  moveLeft() {
+    this.xVel -= 2;
+    if (this.xVel < -5) {
+      this.xVel = -5;
+    }
+	}
+// ------------------------------------------------------------
+
+	draw(context){
+    context.fillStyle = 'gray';
+    context.fillRect(
+      this.xPos, this.yPos, this.width, this.height
+    );
+  }
+
+  move(){
+    this.yPos += this.yVel;
+    this.xPos += this.xVel;
+    if(this.collided() !== true){
+      this.yVel += this.CONSTANTS.GRAVITY;
+    }
+    if(this.xVel > 0){
+      this.xVel -= 0.1;
+    }else if(this.xVel < 0){
+      this.xVel += 0.1;
+    }
+  }
+// ------------------------------------------------------------
+  animate(context){
+    this.move();
+    this.draw(context);
+    if(this.projectiles.length > 0){
+      this.projectiles.forEach((p) => {
+        p.animate(context);
+      });
+    }
+    this.projectiles = this.projectiles.filter(p => p.xPos < 810 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
+  }
+// ------------------------------------------------------------
+  collided(){
+    if(this.yPos >= this.environment.height - 13){
+      this.yVel = 0;
+      return true;
+    }
+  }
+
+
+}
