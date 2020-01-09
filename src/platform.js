@@ -1,13 +1,15 @@
 
 
 export default class Platform{
-  constructor(xStart, yStart){
+  constructor(xStart, yStart, width, height){
     // this.dimensions = dimensions;
 
-    this.height = 20;
-    this.width = 300;
+    // this.height = 20;
+    // this.width = 300;
     this.xStart = xStart;
     this.yStart = yStart;
+    this.width = width;
+    this.height = height;
   }
 
   draw(context) {
@@ -16,7 +18,6 @@ export default class Platform{
   }
 
   move(x, y){
-    // debugger;
     this.xStart += x;
     this.yStart += y;
   }

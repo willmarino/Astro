@@ -10,22 +10,57 @@ export default class Environment{
 
     this.height = 300;
 
-    this.platforms = [
-      new Platform(-360, 300),
-      new Platform(-50, 300),
-      new Platform(260, 300),
-      new Platform(570, 300),
-      new Platform(880, 300),
-      new Platform(1190, 300),
-      new Platform(1500, 300),
-      new Platform(1810, 300),
-      new Platform(2120, 300)
-    ];
+    this.platforms = [];
+    this.generatePlatforms();
 
     this.human = human;
   }
 
+  generatePlatforms(){
+    this.platforms.push(
+      new Platform(-360, 300, 300, 10)
+    );
+    while(
+      this.platforms[this.platforms.length - 1].xStart +
+      this.platforms[this.platforms.length - 1].width < 2000){
+        let prevPlat = this.platforms[this.platforms.length - 1];
+        this.platforms.push(
+          new Platform(
+            prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
+            this.generatePlatformYStart(),
+            this.generatePlatformWidth(),
+            10
+          ));
+      }
+  }
 
+  generatePlatformYStart(){
+    if(this.platforms.length === 0){
+      return 300;
+    }else{
+      let prevPlatHeight = this.platforms[this.platforms.length - 1].yStart;
+      let randomPosOffset = Math.round(Math.random() * 50);
+      let randomNegOffset = Math.round(Math.random() * (50 * (-1)));
+      return prevPlatHeight + randomPosOffset + randomNegOffset;
+    }
+  }
+
+  generatePlatformWidth(){
+    let randomPosOffset = Math.round(Math.random() * 200);
+    let randomNegOffset = Math.round(Math.random() * (200 * (-1)));
+    return 300 + randomNegOffset + randomPosOffset;
+  }
+
+  generatePlatformGap(){
+    return Math.round(Math.random() * 30) + 15;
+  }
+
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
   animate(context){
     this.draw(context);
@@ -40,7 +75,6 @@ export default class Environment{
     let that = this;
     if(this.human.xPos >= 900 && this.human.xVel > 0){
       this.platforms.forEach((plat) => {
-        // debugger;
         plat.move(that.human.xVel * (-1) - .1, 0);
       });
     }else if(this.human.xPos <= 200 && this.human.xVel < 0){
@@ -50,14 +84,25 @@ export default class Environment{
     }
     if(this.platforms[0].xStart < -450){
       this.platforms.shift();
+      let prevPlat = this.platforms[this.platforms.length - 1];
       this.platforms.push(
-        new Platform(this.platforms[this.platforms.length - 1].xStart + 310, 300)
-      );
+        new Platform(
+          prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
+          this.generatePlatformYStart(),
+          this.generatePlatformWidth(),
+          10
+        ));
     }else if(this.platforms[this.platforms.length - 1].xStart > 1300){
       this.platforms.pop();
+      let newPlatWidth = this.generatePlatformWidth();
+      let nextPlat = this.platforms[0];
       this.platforms.unshift(
-        new Platform(this.platforms[0].xStart - 310, 300)
-      );
+        new Platform(
+          nextPlat.xStart - this.generatePlatformGap() - newPlatWidth,
+          this.generatePlatformYStart(),
+          newPlatWidth,
+          10
+        ));
     }
   }
 

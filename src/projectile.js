@@ -1,7 +1,7 @@
 
 
 export default class Projectile{
-  constructor(playerPos, context, xVel, yVel){
+  constructor(id, playerPos, context, xVel, yVel){
     this.context = context;
 
     this.xPos = playerPos.xPos;
@@ -12,6 +12,7 @@ export default class Projectile{
     this.width = 5;
     this.height = 5;
 
+    this.id = id;
   }
   
   animate(context){

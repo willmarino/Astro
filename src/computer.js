@@ -9,12 +9,13 @@ export default class Computer{
     };
 
     this.alive = true;
-
 		this.environment = environment;
     this.context = context;
-
-    this.projectiles = [];
+    this.projectiles = {};
     this.humanProjectiles = human.projectiles;
+
+    this.projectileCount = 10000;
+    this.projectilesToDelete = [];
 
 		this.xPos = xPos;
 		this.yPos = 50;
@@ -24,11 +25,19 @@ export default class Computer{
     this.height = 20;
     
     this.human = human;
-		
+
+    this.canShoot = false;
+    this.initiateShot();
+
 	}
 
   // ------------------------------------------------------------
 
+  initiateShot(){
+    window.setInterval(() => {
+      this.canShoot = true;
+    }, 3000);
+  }
 
   switchDirection(){
     if(this.xPos <= 20){
@@ -44,18 +53,27 @@ export default class Computer{
   }
 
   shoot(){
+    debugger;
     // let rect = this.context.canvas.getBoundingClientRect();
     let pos = {};
     pos.x = this.playerPosX;
     pos.y = this.playerPosY;
-
-
-    this.projectiles.push(new Projectile(
-      { xPos: this.xPos, yPos: this.yPos },
-      this.context,
-      ...this.configureProjectile(pos)
-    )
+    
+    
+    let newProj = (
+      new Projectile(
+        this.projectileCount,
+        { xPos: this.xPos, yPos: this.yPos },
+        this.context,
+        ...this.configureProjectile(pos)
+      )
     );
+        
+    this.projectiles[newProj.id] = newProj;
+
+    this.projectileCount += 1;
+
+    this.canShoot = false;
   }
 
 	configureProjectile(pos){
@@ -73,6 +91,12 @@ export default class Computer{
 
     return [xVel, yVel];
   }
+
+  deleteProjectiles(projectiles){
+
+  }
+
+
   // ------------------------------------------------------------
 
   jump(){
@@ -102,10 +126,15 @@ export default class Computer{
   }
 
   action(){
+    debugger;
     this.move();
     this.fetchHumanPosition();
     if(this.alive){
-      this.shoot();
+      if(this.canShoot){
+        debugger;
+        this.shoot();
+        this.canShoot = false;
+      }
       this.switchDirection();
       this.collidedWithProjectiles();
     }
@@ -133,12 +162,17 @@ export default class Computer{
   animate(context){
     this.action();
     this.draw(context);
-    if(this.projectiles.length > 0){
-      this.projectiles.forEach((p) => {
+    if(Object.values(this.projectiles).length > 0){
+      Object.values(this.projectiles).forEach((p) => {
         p.animate(context);
       });
     }
-    this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
+    // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
+    Object.values(this.projectiles).forEach((p) => {
+      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410)){
+        delete this.projectiles[p.id];
+      }
+    });
   }
   // ------------------------------------------------------------
   collidedWithFloor(){
@@ -188,8 +222,10 @@ export default class Computer{
   collidedWithProjectiles(){
     this.human.projectiles.forEach((hp) => {
       if(this.collide(this, hp)){
+        this.projectilesToDelete.push(hp);
         console.log('hit!');
         this.alive = false;
+        // this.shootingInterval.clearInterval();
         return true;
       }
     });
