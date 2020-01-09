@@ -77,7 +77,7 @@ export default class Human{
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
 			// 
-			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;
@@ -88,7 +88,7 @@ export default class Human{
 				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
 					this.onFloor = true;
 					// 
-					if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+					if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
 						null;
 					} else {
 						this.xPos += this.xVel;
@@ -100,7 +100,7 @@ export default class Human{
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;
 			// 
-			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;
@@ -109,7 +109,7 @@ export default class Human{
 		}else if(this.onFloor && this.jumping){ // on floor but jumping	
 			this.yPos += this.yVel;
 			// 
-			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;

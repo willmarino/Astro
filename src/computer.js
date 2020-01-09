@@ -33,7 +33,7 @@ export default class Computer{
   switchDirection(){
     if(this.xPos <= 20){
       this.xVel = 5;
-    }else if(this.xPos >= 780){
+    }else if(this.xPos >= 1080){
       this.xVel = -5;
     }
   }
@@ -138,7 +138,7 @@ export default class Computer{
         p.animate(context);
       });
     }
-    this.projectiles = this.projectiles.filter(p => p.xPos < 810 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
+    this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
   }
   // ------------------------------------------------------------
   collidedWithFloor(){

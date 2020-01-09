@@ -43,7 +43,6 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
-    // this.collectProjectiles();
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
     }
