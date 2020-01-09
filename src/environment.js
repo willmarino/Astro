@@ -34,13 +34,15 @@ export default class Environment{
   }
 
   move(){
-    if(this.human.xPos >= 500 && this.human.xVel > 0){
+    let that = this;
+    if(this.human.xPos >= 600 && this.human.xVel > 0){
       this.platforms.forEach((plat) => {
-        plat.move(this.human.xVel * (-1), 0);
+        // debugger;
+        plat.move(that.human.xVel * (-1) - .1, 0);
       });
-    }else if(this.human.xPos <= 300 && this.human.xVel < 0){
+    }else if(this.human.xPos <= 200 && this.human.xVel < 0){
       this.platforms.forEach((plat) => {
-        plat.move(this.human.xVel * (-1), 0);
+        plat.move(this.human.xVel * (-1) + .1, 0);
       });
     }
     if(this.platforms[0].xStart < -450){

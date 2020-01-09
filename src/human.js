@@ -18,7 +18,7 @@ export default class Human{
 
 		this.jumping = false;
 
-    this.xPos = 300;
+    this.xPos = 350;
     this.yPos = 100;
     this.yVel = 0;
     this.xVel = 0;
@@ -29,7 +29,8 @@ export default class Human{
 		this.curPlat = null;
 		this.lastPlat = this.environment.platforms[0];
 
-    this.bindMovement();
+		this.bindLeft();
+		this.bindRight();
     this.bindJump();
     this.setClick = this.setClick.bind(this);
     this.setClick(this);
@@ -60,41 +61,60 @@ export default class Human{
 	}
 
 	move(){
+		debugger;
 		// set jumping to false if velocity is positive(going down) and you are in air
 		this.getCurrentPlatform();
 		if(this.curPlat){
+			
 			if(this.yVel > 0 && this.yPos < (this.curPlat.yStart - 20 || this.lastPlat.yStart) ){ //if we have a downward velocity and were above platform
-				
 				this.jumping = false;
 			}
 		}else if(!this.curPlat){
-			
 			this.onFloor = false;
 		}
 		this.getCurrentPlatform();
-		
 		if(this.onFloor && !this.jumping){ // on floor and not jumping
-			
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
-			this.xPos += this.xVel;
+			// 
+			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+				null;
+			} else {
+				this.xPos += this.xVel;
+			}
+			// 
 		}else if(!this.onFloor){ //in mid air
 			if(this.curPlat){
-				
 				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
-					
 					this.onFloor = true;
-					this.xPos += this.xVel;
+					// 
+					if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+						null;
+					} else {
+						this.xPos += this.xVel;
+					}
+					// 
 					return;
 				}
 			}
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;
-			this.xPos += this.xVel;
-		}else if(this.onFloor && this.jumping){ // on floor but jumping
-			
+			// 
+			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+				null;
+			} else {
+				this.xPos += this.xVel;
+			}
+			// 
+		}else if(this.onFloor && this.jumping){ // on floor but jumping	
 			this.yPos += this.yVel;
-			this.xPos += this.xVel;
+			// 
+			if ((this.xPos >= 600 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+				null;
+			} else {
+				this.xPos += this.xVel;
+			}
+			// 
 		}
 		if(this.xVel > 0){
 			this.xVel -= .1;
@@ -146,12 +166,18 @@ export default class Human{
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 
-	bindMovement() {
+	bindRight() {
+		window.addEventListener('keypress', (e) => {
+			if (e.key === 'a') {
+				this.moveLeft();
+			}
+		});
+	}
+
+	bindLeft(){
 		window.addEventListener('keypress', (e) => {
 			if (e.key === 'd') {
 				this.moveRight();
-			} else if (e.key === 'a') {
-				this.moveLeft();
 			}
 		});
 	}
@@ -214,7 +240,7 @@ export default class Human{
 			this.xVel = 0;
 		}
 		this.xVel += 4;
-		if(this.xVel > 5){
+		if(this.xVel >= 5){
 			this.xVel = 5;
 		}
 	}
@@ -224,7 +250,7 @@ export default class Human{
 			this.xVel = 0;
 		}
 		this.xVel -= 4;
-		if (this.xVel < -5) {
+		if (this.xVel <= -5) {
 			this.xVel = -5;
 		}
 	}

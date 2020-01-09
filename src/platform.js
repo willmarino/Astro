@@ -16,6 +16,7 @@ export default class Platform{
   }
 
   move(x, y){
+    // debugger;
     this.xStart += x;
     this.yStart += y;
   }
