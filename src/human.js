@@ -24,9 +24,6 @@ export default class Human{
 		this.height = 10;
 		
 		this.onFloor = false;
-		this.lastFloorPos = null;
-		this.gravityToggle = null;
-
 		this.curPlat = null;
 
     this.bindMovement();
@@ -62,7 +59,7 @@ export default class Human{
 	// right now, I am setting yVel to 0 every move when I am on the ground.
 	// Instead, I want to set yVel to 0 once, and then once I am on the ground,
 	// just not apply gravity
-	move() {
+	move2() {
 		if (this.onFloor !== true) {
 			this.yVel += this.CONSTANTS.GRAVITY;
 		} else if(this.onFloor === true){
@@ -80,6 +77,28 @@ export default class Human{
 		this.collidedWithFloor();
 		this.getCurrentPlatform();
 		debugger;
+	}
+
+	move(){
+		this.getCurrentPlatform();
+		debugger;
+		if(this.onFloor){
+			debugger;
+			this.yPos = this.curPlat.yStart - this.height;
+			this.yVel = 0;
+			this.xPos += this.xVel;
+		}else{
+			if(this.curPlat){
+				debugger;
+				if(this.yPos >= this.curPlat.yStart - this.height){
+					this.onFloor = true;
+					this.xPos += this.xVel;
+					return;
+				}
+			}
+			this.yVel += this.CONSTANTS.GRAVITY;
+			this.yPos += this.yVel;
+		}
 	}
 
 	// ----------------------------------------------------------------------------------------------------
@@ -100,7 +119,7 @@ export default class Human{
 	}
 
 	getCurrentPlatform() {
-		debugger;
+		// debugger;
 		let that = this;
 		for (let i = 0; i < this.environment.platforms.length; i++) {
 			let plat = that.environment.platforms[i];

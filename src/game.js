@@ -19,14 +19,6 @@ export default class Game{
     this.computerProjectiles = [];
   }
 
-  // collectProjectiles(){
-  //   this.humanProjectiles = this.human.projectiles;
-  //   this.computerProjectiles = [];
-  //   this.computers.forEach((comp) => {
-  //     this.computerProjectiles.push(comp.projectiles);
-  //   });
-  // }
-
   filterComputers(){
     this.computers = this.computers.filter(c => c.yPos < 415);
   }
