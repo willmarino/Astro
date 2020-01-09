@@ -59,6 +59,7 @@ export default class Game{
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
+    this.environment.human = this.human;
     let i = 0;
     let compStartX = 850;
     while(i < 5){

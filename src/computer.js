@@ -149,7 +149,6 @@ export default class Computer{
   }
 
   collide(obj1, obj2){
-    // debugger;
     // let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
     // let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
     // let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
@@ -187,7 +186,6 @@ export default class Computer{
   }
 
   collidedWithProjectiles(){
-    // debugger;
     this.human.projectiles.forEach((hp) => {
       if(this.collide(this, hp)){
         console.log('hit!');

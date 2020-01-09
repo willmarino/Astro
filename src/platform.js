@@ -5,7 +5,7 @@ export default class Platform{
     // this.dimensions = dimensions;
 
     this.height = 20;
-    this.width = 200;
+    this.width = 300;
     this.xStart = xStart;
     this.yStart = yStart;
   }
@@ -14,4 +14,10 @@ export default class Platform{
     context.fillStyle = 'black';
     context.fillRect(this.xStart, this.yStart, this.width, this.height);
   }
+
+  move(x, y){
+    this.xStart += x;
+    this.yStart += y;
+  }
+
 }

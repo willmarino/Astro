@@ -1,7 +1,7 @@
 import Platform from "./platform";
 
 export default class Environment{
-  constructor(dimensions, context){
+  constructor(dimensions, context, human=null){
     this.dimensions = {
       height: dimensions.height,
       width: dimensions.width
@@ -11,31 +11,52 @@ export default class Environment{
     this.height = 300;
 
     this.platforms = [
+      new Platform(-360, 300),
       new Platform(-50, 300),
-      new Platform(160, 300),
-      new Platform(370, 300),
-      new Platform(580, 300),
+      new Platform(260, 300),
+      new Platform(570, 300),
+      new Platform(880, 300),
+      new Platform(1190, 300)
     ];
+
+    this.human = human;
   }
 
 
 
   animate(context){
     this.draw(context);
+    this.action();
   }
 
   action(){
     this.move();
-
   }
 
   move(){
-
+    if(this.human.xPos >= 500 && this.human.xVel > 0){
+      this.platforms.forEach((plat) => {
+        plat.move(this.human.xVel * (-1), 0);
+      });
+    }else if(this.human.xPos <= 300 && this.human.xVel < 0){
+      this.platforms.forEach((plat) => {
+        plat.move(this.human.xVel * (-1), 0);
+      });
+    }
+    if(this.platforms[0].xStart < -450){
+      this.platforms.shift();
+      this.platforms.push(
+        new Platform(this.platforms[this.platforms.length - 1].xStart + 310, 300)
+      );
+    }else if(this.platforms[this.platforms.length - 1].xStart > 1300){
+      this.platforms.pop();
+      this.platforms.unshift(
+        new Platform(this.platforms[0].xStart - 310, 300)
+      );
+    }
   }
 
   draw(context){
-    // context.fillStyle = 'black';
-    // context.fillRect(0, 300, 800, 15);
     this.platforms.forEach((p) => {
       p.draw(context);
     });
