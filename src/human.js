@@ -16,6 +16,8 @@ export default class Human{
 
 		this.projectiles = [];
 
+		this.jumping = false;
+
     this.xPos = 100;
     this.yPos = 100;
     this.yVel = 0;
@@ -25,6 +27,7 @@ export default class Human{
 		
 		this.onFloor = false;
 		this.curPlat = null;
+		this.lastPlat = this.environment.platforms[0];
 
     this.bindMovement();
     this.bindJump();
@@ -59,38 +62,47 @@ export default class Human{
 	// right now, I am setting yVel to 0 every move when I am on the ground.
 	// Instead, I want to set yVel to 0 once, and then once I am on the ground,
 	// just not apply gravity
-	move2() {
-		if (this.onFloor !== true) {
-			this.yVel += this.CONSTANTS.GRAVITY;
-		} else if(this.onFloor === true){
-			this.yVel = 0;
-			this.yPos = this.curPlat.yStart - 10;
-		}
-		this.yPos += this.yVel;
-		this.xPos += this.xVel;
-		if (this.xVel > 0) {
-			this.xVel -= 0.1;
-		} else if (this.xVel < 0) {
-			this.xVel += 0.1;
-		}
-		debugger;
-		this.collidedWithFloor();
-		this.getCurrentPlatform();
-		debugger;
-	}
+	// move2() {
+	// 	if (this.onFloor !== true) {
+	// 		this.yVel += this.CONSTANTS.GRAVITY;
+	// 	} else if(this.onFloor === true){
+	// 		this.yVel = 0;
+	// 		this.yPos = this.curPlat.yStart - 10;
+	// 	}
+	// 	this.yPos += this.yVel;
+	// 	this.xPos += this.xVel;
+	// 	if (this.xVel > 0) {
+	// 		this.xVel -= 0.1;
+	// 	} else if (this.xVel < 0) {
+	// 		this.xVel += 0.1;
+	// 	}
+	// 	debugger;
+	// 	this.collidedWithFloor();
+	// 	this.getCurrentPlatform();
+	// 	debugger;
+	// }
 
 	move(){
+		debugger;
+		// set jumping to false if velocity is positive(going down) and you are in air
+		if(this.curPlat){
+			if(this.yVel > 0 && this.yPos < (this.curPlat.yStart - 20 || this.lastPlat.yStart) ){ //if we have a downward velocity and were above platform
+				debugger;
+				this.jumping = false;
+			}
+		}
 		this.getCurrentPlatform();
 		debugger;
-		if(this.onFloor){
+		if(this.onFloor && !this.jumping){ // on floor and not jumping
 			debugger;
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
 			this.xPos += this.xVel;
-		}else{
+		}else if(!this.onFloor){ //in mid air
 			if(this.curPlat){
 				debugger;
-				if(this.yPos >= this.curPlat.yStart - this.height){
+				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
+					debugger;
 					this.onFloor = true;
 					this.xPos += this.xVel;
 					return;
@@ -98,6 +110,16 @@ export default class Human{
 			}
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;
+			this.xPos += this.xVel;
+		}else if(this.onFloor && this.jumping){ // on floor but jumping
+			debugger;
+			this.yPos += this.yVel;
+			this.xPos += this.xVel;
+		}
+		if(this.xVel > 0){
+			this.xVel -= .05;
+		}else if(this.xVel < 0){
+			this.xVel += .05;
 		}
 	}
 
@@ -126,11 +148,12 @@ export default class Human{
 			if (that.xPos > plat.xStart && that.xPos < plat.xStart + plat.width) {
 				debugger;
 				that.curPlat = plat;
+				that.lastPlat = that.curPlat;
 				break;
 			} else {
 				debugger;
 				that.curPlat = null;
-				that.onFloor = false;
+				// that.onFloor = false;
 			}
 		}
 	}
@@ -202,6 +225,7 @@ export default class Human{
 	// ----------------------------------------------------------------------------------------------------
 	jump(){
 		this.onFloor = false;
+		this.jumping = true;
 		this.yVel -= 10;
 	}
 
