@@ -2,10 +2,6 @@
 
 export default class Platform{
   constructor(xStart, yStart, width, height){
-    // this.dimensions = dimensions;
-
-    // this.height = 20;
-    // this.width = 300;
     this.xStart = xStart;
     this.yStart = yStart;
     this.width = width;

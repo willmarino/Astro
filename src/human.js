@@ -83,6 +83,9 @@ export default class Human{
 			// 
 		}else if(!this.onFloor){ //in mid air
 			if(this.curPlat){
+				
+
+
 				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
 					this.onFloor = true;
 					// 
@@ -94,6 +97,22 @@ export default class Human{
 					// 
 					return;
 				}
+				// }else if((this.yPos < this.curPlat.yStart + this.curPlat.height + 10) && (this.yPos > this.curPlat.ystart + 5 )){
+				// 	if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+				// 		null;
+				// 	} else {
+				// 		this.xPos += this.xVel;
+				// 	}
+				// 	this.yPos = this.curPlat.ystart + this.curPlat.height;
+				// 	this.yVel = 0;
+				// 	this.yVel += this.CONSTANTS.GRAVITY;
+				// 	this.yPos += this.yVel;
+				// 	return;
+
+
+
+
+				
 			}
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;

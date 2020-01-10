@@ -20,12 +20,10 @@ export default class Game{
     this.humanProjectiles = [];
     this.computerProjectiles = [];
 
-    debugger;
-
   }
 
   filterComputers(){
-    this.computers = this.computers.filter(c => c.yPos < 415);
+    this.computers = this.computers.filter(c => c.yPos < 515);
   }
 
   run(){
@@ -59,11 +57,11 @@ export default class Game{
         new Computer(this.environment, this.context, this.human, newCompStartX)
       )
       this.computersBeingAdded -= 1;
-    }, 5000);
+    }, 10000);
   }
 
   animate(){
-    debugger;
+
     this.filterComputers();
     this.background.animate(this.context);
     this.environment.animate(this.context);
@@ -73,7 +71,6 @@ export default class Game{
     });
     this.setNumComputers();
     if(this.numComputers < 5){
-      debugger;
       this.spawnComputer();
     }
     // this.computer.()

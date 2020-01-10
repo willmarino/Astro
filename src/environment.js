@@ -18,7 +18,7 @@ export default class Environment{
 
   generatePlatforms(){
     this.platforms.push(
-      new Platform(-360, 300, 300, 10)
+      new Platform(-360, 400, 300, 15)
     );
     while(
       this.platforms[this.platforms.length - 1].xStart +
@@ -29,26 +29,41 @@ export default class Environment{
             prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
             this.generatePlatformYStart(),
             this.generatePlatformWidth(),
-            10
+            15
           ));
       }
   }
 
   generatePlatformYStart(){
     if(this.platforms.length === 0){
-      return 300;
+      return 250;
     }else{
       let prevPlatHeight = this.platforms[this.platforms.length - 1].yStart;
-      let randomPosOffset = Math.round(Math.random() * 50);
-      let randomNegOffset = Math.round(Math.random() * (50 * (-1)));
-      return prevPlatHeight + randomPosOffset + randomNegOffset;
+      let randomOffset = Math.round(Math.random() * 200);
+      let randHeight;
+      if(Math.random() < .5){
+        randHeight = prevPlatHeight + randomOffset;
+      }else{
+        randHeight = prevPlatHeight - randomOffset;
+      }
+      if(randHeight < 250){
+        randHeight = 250;
+      }else if(randHeight > 475){
+        randHeight = 475;
+      }
+      return randHeight;
     }
   }
 
   generatePlatformWidth(){
-    let randomPosOffset = Math.round(Math.random() * 200);
-    let randomNegOffset = Math.round(Math.random() * (200 * (-1)));
-    return 300 + randomNegOffset + randomPosOffset;
+    let randomOffset = Math.round(Math.random() * 200);
+    // let randomNegOffset = Math.round(Math.random() * (200 * (-1)));
+    let randNum = Math.random();
+    if(randNum < .5){
+      return 300 + randomOffset;
+    }else{
+      return 300 - randomOffset;
+    }
   }
 
   generatePlatformGap(){
@@ -90,7 +105,7 @@ export default class Environment{
           prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
           this.generatePlatformYStart(),
           this.generatePlatformWidth(),
-          10
+          15
         ));
     }else if(this.platforms[this.platforms.length - 1].xStart > 1300){
       this.platforms.pop();
@@ -101,7 +116,7 @@ export default class Environment{
           nextPlat.xStart - this.generatePlatformGap() - newPlatWidth,
           this.generatePlatformYStart(),
           newPlatWidth,
-          10
+          15
         ));
     }
   }
