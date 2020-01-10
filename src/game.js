@@ -2,6 +2,7 @@ import Environment from "./environment";
 import Human from './human';
 import Background from "./background";
 import Computer from "./computer";
+import Score from "./score";
 
 
 export default class Game{
@@ -20,7 +21,6 @@ export default class Game{
     this.humanProjectiles = [];
     this.computerProjectiles = [];
 
-    this.score = 0;
 
   }
 
@@ -32,7 +32,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   filterComputers(){
-    this.computers = this.computers.filter(c => c.yPos < 515);
+    this.computers = this.computers.filter(c => c.yPos < 715);
   }
 
   run(){
@@ -73,7 +73,7 @@ export default class Game{
         new Computer(this.environment, this.context, this.human, newCompStartX)
       );
       this.computersBeingAdded -= 1;
-    }, 10000);
+    }, 5000);
   }
 
   setPlayerTracking(){
@@ -101,13 +101,31 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
+  addEnemyScore(){
+    let that = this;
+    this.computers.forEach((comp) => {
+      that.score.score += comp.additionalScore;
+      comp.additionalScore = 0;
+    });
+  }
+
+  step(){
+    this.animate();
+    this.addEnemyScore();
+
+
+  }
+
+
   animate(){
+
     this.filterComputers();
     this.sendEnemyProjectiles();
 
     this.background.animate(this.context);
     this.environment.animate(this.context);
     this.human.animate(this.context);
+    this.score.animate();
 
     this.setPlayerTracking();
 
@@ -117,12 +135,12 @@ export default class Game{
 
     this.setNumComputers();
 
-    if(this.numComputers < 5){
+    if(this.numComputers < 10){
       this.spawnComputer();
     }
 
     if(this.running){
-      window.requestAnimationFrame(this.animate.bind(this));
+      window.requestAnimationFrame(this.step.bind(this));
     }
   }
 
@@ -136,13 +154,15 @@ export default class Game{
   play(){
     this.running = true;
     this.filterComputers();
-    this.animate();
+    // this.animate();
+    this.step();
   }
 
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
+    this.score = new Score(this.context);
     this.environment.human = this.human;
     let i = 1;
     let compStartX;
@@ -156,7 +176,7 @@ export default class Game{
       i += 1;
     }
     this.running = false;
-    this.animate();
+    this.step();
     this.run();
   }
 

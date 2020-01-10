@@ -15,6 +15,8 @@ export default class Computer{
     this.projectiles = {};
     this.humanProjectiles = human.projectiles;
 
+    this.additionalScore = 0;
+
     this.projectileCount = 10000;
     this.projectilesToDelete = [];
 
@@ -22,8 +24,8 @@ export default class Computer{
     this.yPos = 50;
 		this.yVel = 0;
 		this.xVel = -5;
-		this.width = 20;
-    this.height = 20;
+		this.width = 30;
+    this.height = 30;
     
     this.human = human;
 
@@ -167,7 +169,7 @@ export default class Computer{
     }
     // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
     Object.values(this.projectiles).forEach((p) => {
-      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 510)){
+      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 710)){
         delete this.projectiles[p.id];
       }
     });
@@ -209,7 +211,9 @@ export default class Computer{
     // }else{
     //   return false;
     // }
-    if(obj1Diag + obj2Diag > totalDelta){
+    
+    
+    if(obj1Diag + obj2Diag + 10> totalDelta){
       return true;
     }else{
       return false;
@@ -224,7 +228,8 @@ export default class Computer{
         console.log('hit!');
         hp.didHit = true;
         this.alive = false;
-        // this.shootingInterval.clearInterval();
+        // debugger;
+        this.additionalScore += 1;
         return true;
       }
     });

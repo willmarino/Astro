@@ -18,7 +18,7 @@ export default class Environment{
 
   generatePlatforms(){
     this.platforms.push(
-      new Platform(-360, 400, 300, 15)
+      new Platform(-1360, 550, 600, 15)
     );
     while(
       this.platforms[this.platforms.length - 1].xStart +
@@ -36,7 +36,7 @@ export default class Environment{
 
   generatePlatformYStart(){
     if(this.platforms.length === 0){
-      return 250;
+      return 550;
     }else{
       let prevPlatHeight = this.platforms[this.platforms.length - 1].yStart;
       let randomOffset = Math.round(Math.random() * 200);
@@ -46,10 +46,10 @@ export default class Environment{
       }else{
         randHeight = prevPlatHeight - randomOffset;
       }
-      if(randHeight < 250){
-        randHeight = 250;
-      }else if(randHeight > 475){
-        randHeight = 475;
+      if(randHeight < 350){
+        randHeight = 350;
+      }else if(randHeight > 625){
+        randHeight = 625;
       }
       return randHeight;
     }
@@ -60,14 +60,14 @@ export default class Environment{
     // let randomNegOffset = Math.round(Math.random() * (200 * (-1)));
     let randNum = Math.random();
     if(randNum < .5){
-      return 300 + randomOffset;
+      return 400 + randomOffset;
     }else{
-      return 300 - randomOffset;
+      return 400 - randomOffset;
     }
   }
 
   generatePlatformGap(){
-    return Math.round(Math.random() * 30) + 15;
+    return Math.round(Math.random() * 100) + 15;
   }
 
   // --------------------------------------------------------------------------
@@ -88,16 +88,16 @@ export default class Environment{
 
   move(){
     let that = this;
-    if(this.human.xPos >= 900 && this.human.xVel > 0){
+    if(this.human.xPos >= 800 && this.human.xVel > 0){
       this.platforms.forEach((plat) => {
         plat.move(that.human.xVel * (-1) - .1, 0);
       });
-    }else if(this.human.xPos <= 200 && this.human.xVel < 0){
+    }else if(this.human.xPos <= 300 && this.human.xVel < 0){
       this.platforms.forEach((plat) => {
         plat.move(this.human.xVel * (-1) + .1, 0);
       });
     }
-    if(this.platforms[0].xStart < -450){
+    if(this.platforms[0].xStart < -1450){
       this.platforms.shift();
       let prevPlat = this.platforms[this.platforms.length - 1];
       this.platforms.push(

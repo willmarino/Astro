@@ -16,21 +16,29 @@ export default class Human{
 		this.jumping = false;
 		this.projectileCount = 0;
 
+		this.additionalScore = 0;
+
 		this.projectilesToDelete = [];
 
     this.xPos = 350;
     this.yPos = 100;
     this.yVel = 0;
     this.xVel = 0;
-    this.width = 10;
-		this.height = 10;
+    this.width = 15;
+		this.height = 15;
 		
 		this.onFloor = false;
 		this.curPlat = null;
 		this.lastPlat = this.environment.platforms[0];
 
+		this.movingLeft = true;
+		this.goingDown = false;
+
 		this.bindLeft();
 		this.bindRight();
+		this.bindUndoRight();
+		this.bindUndoLeft();
+
     this.bindJump();
     this.setClick = this.setClick.bind(this);
     this.setClick(this);
@@ -50,7 +58,7 @@ export default class Human{
 				p.animate(context);
 			});
 		}
-		this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos <510);
+		this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos <710);
 		this.collidedWithProjectiles();
 	}
 
@@ -82,7 +90,7 @@ export default class Human{
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
 			// 
-			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;
@@ -96,7 +104,7 @@ export default class Human{
 				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
 					this.onFloor = true;
 					// 
-					if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+					if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 						null;
 					} else {
 						this.xPos += this.xVel;
@@ -105,7 +113,7 @@ export default class Human{
 					return;
 				}
 				// }else if((this.yPos < this.curPlat.yStart + this.curPlat.height + 10) && (this.yPos > this.curPlat.ystart + 5 )){
-				// 	if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+				// 	if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 				// 		null;
 				// 	} else {
 				// 		this.xPos += this.xVel;
@@ -120,7 +128,7 @@ export default class Human{
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;
 			// 
-			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;
@@ -129,17 +137,20 @@ export default class Human{
 		}else if(this.onFloor && this.jumping){ // on floor but jumping	
 			this.yPos += this.yVel;
 			// 
-			if ((this.xPos >= 900 && this.xVel >= 0) || (this.xPos <= 200 && this.xVel <= 0)) {
+			if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 				null;
 			} else {
 				this.xPos += this.xVel;
 			}
 			// 
 		}
-		if(this.xVel > 0){
-			this.xVel -= .1;
-		}else if(this.xVel < 0){
-			this.xVel += .1;
+		if(!this.movingLeft && !this.movingRight){
+			debugger;
+			if(this.xVel > 0){
+				this.xVel -= .3;
+			}else if(this.xVel < 0){
+				this.xVel += .3;
+			}
 		}
 	}
 
@@ -186,18 +197,38 @@ export default class Human{
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 
-	bindRight() {
+	bindLeft() {
 		window.addEventListener('keypress', (e) => {
 			if (e.key === 'a') {
 				this.moveLeft();
+				this.movingLeft = true;
 			}
 		});
 	}
 
-	bindLeft(){
+	bindUndoLeft(){
+		window.addEventListener('keyup', (e) => {
+			if (e.key === 'a') {
+				// this.moveLeft();
+				this.movingLeft = false;
+			}
+		});
+	}
+
+	bindRight(){
 		window.addEventListener('keypress', (e) => {
 			if (e.key === 'd') {
 				this.moveRight();
+				this.movingRight = true;
+			}
+		});
+	}
+
+	bindUndoRight(){
+		window.addEventListener('keyup', (e) => {
+			if (e.key === 'd') {
+				// this.moveRight();
+				this.movingRight = false;
 			}
 		});
 	}
@@ -206,6 +237,24 @@ export default class Human{
 		window.addEventListener('keypress', (e) => {
 			if (e.key === 'w') {
 				this.jump();
+			}
+		});
+	}
+
+	bindDown(){
+		window.addEventListener('keypress', (e) => {
+			if(e.key === 's'){
+				this.goingDown = true;
+				this.down();
+			}
+		});
+	}
+
+	bindUndoDown(){
+		window.addEventListener('keyup', (e) => {
+			if (e.key === 's') {
+				// this.down();
+				this.goingDown = false;
 			}
 		});
 	}
@@ -259,26 +308,40 @@ export default class Human{
 	jump(){
 		this.onFloor = false;
 		this.jumping = true;
-		this.yVel -= 10;
+		this.yVel = -12;
 	}
 
 	moveRight(){
-		if(this.xVel < 0){
-			this.xVel = 0;
-		}
-		this.xVel += 4;
-		if(this.xVel >= 5){
-			this.xVel = 5;
-		}
+		// if(this.xVel < 0){
+		// 	this.xVel = 0;
+		// }
+		// this.xVel += 4;
+		// if(this.xVel >= 5){
+		// 	this.xVel = 5;
+		// }
+
+		// if(this.xVel < 2.5){
+		// 	this.xVel = 2.5;
+		// }else{
+		// 	this.xVel = 5;
+		// }
+		this.xVel = 5;
 	}
 
 	moveLeft() {
-		if (this.xVel > 0) {
-			this.xVel = 0;
-		}
-		this.xVel -= 4;
-		if (this.xVel <= -5) {
-			this.xVel = -5;
+		// if (this.xVel > 0) {
+		// 	this.xVel = 0;
+		// }
+		// this.xVel -= 4;
+		// if (this.xVel <= -5) {
+		// 	this.xVel = -5;
+		// }
+		this.xVel = -5;
+	}
+
+	down(){
+		if(this.goingDown === true){
+			this.yVel += 3;
 		}
 	}
 
@@ -319,7 +382,9 @@ export default class Human{
 		// }else{
 		//   return false;
 		// }
-		if (obj1Diag + obj2Diag > totalDelta) {
+
+		
+		if (obj1Diag + obj2Diag + 5> totalDelta) {
 			return true;
 		} else {
 			return false;
@@ -329,9 +394,7 @@ export default class Human{
 
 	collidedWithProjectiles() {
 		let that = this;
-		debugger;
 		Object.values(this.computerProjectiles).forEach((p) => {
-			debugger;
 			if (that.collide(that, p)) {
 				// that.projectilesToDelete.push(p);
 				p.didHit = true;
