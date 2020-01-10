@@ -20,7 +20,16 @@ export default class Game{
     this.humanProjectiles = [];
     this.computerProjectiles = [];
 
+    this.score = 0;
+
   }
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
   filterComputers(){
     this.computers = this.computers.filter(c => c.yPos < 515);
@@ -38,6 +47,13 @@ export default class Game{
       this.play();
     }
   }
+  
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
   setNumComputers(){
     this.numComputers = this.computers.length + this.computersBeingAdded;
@@ -47,37 +63,75 @@ export default class Game{
     this.computersBeingAdded += 1;
     let newCompStartX;
     let randNum = Math.random();
-    if(randNum <= .5){
-      newCompStartX = 1150
+    if(randNum <= 0.5){
+      newCompStartX = 1150;
     }else{
-      newCompStartX = -50
+      newCompStartX = -50;
     }
     window.setTimeout(() => {
       this.computers.push(
         new Computer(this.environment, this.context, this.human, newCompStartX)
-      )
+      );
       this.computersBeingAdded -= 1;
     }, 10000);
   }
 
-  animate(){
+  setPlayerTracking(){
+    this.computers.forEach((comp) => {
+      Object.values(comp.projectiles).forEach((proj) => {
+        proj.playerXVel = this.human.xVel;
+        proj.playerXPos = this.human.xPos;
+        proj.playerYPos = this.human.yPos;
+      });
+    });
+  }
 
+  sendEnemyProjectiles(){
+    this.computers.forEach((comp) => {
+      Object.values(comp.projectiles).forEach((projectile) => {
+        this.human.computerProjectiles[projectile.id] = projectile;
+      });
+    });
+  }
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+
+  animate(){
     this.filterComputers();
+    this.sendEnemyProjectiles();
+
     this.background.animate(this.context);
     this.environment.animate(this.context);
     this.human.animate(this.context);
+
+    this.setPlayerTracking();
+
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
+
     this.setNumComputers();
+
     if(this.numComputers < 5){
       this.spawnComputer();
     }
-    // this.computer.()
+
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
     }
   }
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
   play(){
     this.running = true;

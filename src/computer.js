@@ -2,6 +2,7 @@ import Projectile from "./projectile";
 
 export default class Computer{
   constructor(environment, context, human, xPos=850){
+    this.type = 'computer';
 
 		this.CONSTANTS = {
       GRAVITY: 0.5,
@@ -59,10 +60,15 @@ export default class Computer{
     
     
     let newProj = (
+      // new Projectile(
+      //   this.projectileCount,
+      //   this.xVel,
+      //   { xPos: this.xPos, yPos: this.yPos },
+      //   this.context,
+      //   ...this.configureProjectile(pos)
+      // )
       new Projectile(
-        this.projectileCount,
-        { xPos: this.xPos, yPos: this.yPos },
-        this.context,
+        this,
         ...this.configureProjectile(pos)
       )
     );
@@ -161,7 +167,7 @@ export default class Computer{
     }
     // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
     Object.values(this.projectiles).forEach((p) => {
-      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410)){
+      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 510)){
         delete this.projectiles[p.id];
       }
     });
@@ -216,6 +222,7 @@ export default class Computer{
       if(this.collide(this, hp)){
         this.projectilesToDelete.push(hp);
         console.log('hit!');
+        hp.didHit = true;
         this.alive = false;
         // this.shootingInterval.clearInterval();
         return true;

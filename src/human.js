@@ -2,6 +2,7 @@ import Projectile from "./projectile";
 
 export default class Human{
 	constructor(environment, context, computerProjectiles){
+		this.type = 'human';
 
 		this.CONSTANTS = {
       GRAVITY: 0.5
@@ -49,7 +50,8 @@ export default class Human{
 				p.animate(context);
 			});
 		}
-		this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
+		this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos <510);
+		this.collidedWithProjectiles();
 	}
 
 	draw(context) {
@@ -60,6 +62,11 @@ export default class Human{
 	}
 
 	move(){
+		if(!this.alive){
+			this.yVel += this.CONSTANTS.GRAVITY;
+			this.yPos += this.yVel;
+			return;
+		}
 		// set jumping to false if velocity is positive(going down) and you are in air
 		this.getCurrentPlatform();
 		if(this.curPlat){
@@ -108,10 +115,6 @@ export default class Human{
 				// 	this.yVel += this.CONSTANTS.GRAVITY;
 				// 	this.yPos += this.yVel;
 				// 	return;
-
-
-
-
 				
 			}
 			this.yVel += this.CONSTANTS.GRAVITY;
@@ -214,14 +217,19 @@ export default class Human{
 			pos.x = e.clientX - rect.left;
 			pos.y = e.clientY - rect.top;
 	
-			// 
+			// that.projectiles.push(new Projectile(
+			// 	this.projectileCount,
+			// 	that.xVel,
+			// 	{ xPos: that.xPos, yPos: that.yPos}, 
+			// 	that.context,
+			// 	...that.configureProjectile(pos)
+			// 	)
+			// );
 			that.projectiles.push(new Projectile(
-				this.projectileCount,
-				{ xPos: that.xPos, yPos: that.yPos}, 
-				that.context,
+				that,
 				...that.configureProjectile(pos)
-				)
-			);
+			));
+
 			this.projectileCount += 1;
 		});
 	}
@@ -320,12 +328,16 @@ export default class Human{
 	}
 
 	collidedWithProjectiles() {
-		this.computer.projectiles.forEach((p) => {
-			if (this.collide(this, p)) {
-				this.projectilesToDelete.push(p);
+		let that = this;
+		debugger;
+		Object.values(this.computerProjectiles).forEach((p) => {
+			debugger;
+			if (that.collide(that, p)) {
+				// that.projectilesToDelete.push(p);
+				p.didHit = true;
 				console.log('hit!');
-				this.alive = false;
-				return true;
+				that.alive = false;
+				// return true;
 			}
 		});
 	}

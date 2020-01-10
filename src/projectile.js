@@ -1,18 +1,27 @@
 
 
 export default class Projectile{
-  constructor(id, playerPos, context, xVel, yVel){
-    this.context = context;
+  // constructor(id, playerXVel, playerPos, context, xVel, yVel){
+  constructor(player, projectileXVel, projectileYVel){
 
-    this.xPos = playerPos.xPos;
-    this.yPos = playerPos.yPos;
-    this.yVel = yVel;
-    this.xVel = xVel;
+    this.owner = player.type;
+    this.context = player.context;
+
+    this.didHit = false;
+
+    this.playerXVel = player.xVel;
+    this.playerXPos = player.xPos;
+    this.playerYPos = player.yPos;
+
+    this.xPos = player.xPos;
+    this.yPos = player.yPos;
+    this.xVel = projectileXVel;
+    this.yVel = projectileYVel;
 
     this.width = 5;
     this.height = 5;
 
-    this.id = id;
+    this.id = player.projectileCount;
   }
   
   animate(context){
@@ -21,14 +30,28 @@ export default class Projectile{
   }
   
   move(){
-    this.xPos += this.xVel;
-    this.yPos += this.yVel;
+    if((this.playerXPos >= 900 && this.playerXVel >= 0)){
+      this.xPos += this.xVel;
+      this.xPos -= this.playerXVel;
+      this.yPos += this.yVel;
+    } else if ((this.playerXPos <= 200 && this.playerXVel <= 0)){
+      this.xPos += this.xVel;
+      this.xPos -= this.playerXVel;
+      this.yPos += this.yVel;
+    }else{
+      this.xPos += this.xVel;
+      this.yPos += this.yVel;
+    }
+    // this.xPos += this.xVel;
+    // this.yPos += this.yVel;
   }
 
 
   draw(context){
-    context.fillStyle = 'white';
-    context.fillRect(this.xPos, this.yPos, this.width, this.height);
+    if(!this.didHit){
+      context.fillStyle = 'white';
+      context.fillRect(this.xPos, this.yPos, this.width, this.height);
+    }
   }
 
 }
