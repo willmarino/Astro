@@ -39,7 +39,7 @@ export default class Computer{
   initiateShot(){
     window.setInterval(() => {
       this.shoot();
-    }, 3000);
+    }, 1500);
   }
 
   switchDirection(){
@@ -62,13 +62,6 @@ export default class Computer{
     
     
     let newProj = (
-      // new Projectile(
-      //   this.projectileCount,
-      //   this.xVel,
-      //   { xPos: this.xPos, yPos: this.yPos },
-      //   this.context,
-      //   ...this.configureProjectile(pos)
-      // )
       new Projectile(
         this,
         ...this.configureProjectile(pos)
@@ -78,28 +71,31 @@ export default class Computer{
     this.projectiles[newProj.id] = newProj;
 
     this.projectileCount += 1;
-
-    // this.canShoot = false;
   }
 
 	configureProjectile(pos){
+    let randNum = Math.random();
+    
     let xDelta = pos.x - this.xPos;
     let yDelta = pos.y - this.yPos;
+    let randOffset = Math.round(Math.random() * 200);
+    
+    if(randNum < 0.5){
+      xDelta += randOffset;
+    }else{
+      xDelta -= randOffset;
+    }
 
     let squaredDeltaX = Math.pow(xDelta, 2);
     let squaredDeltaY = Math.pow(yDelta, 2);
     let totalDeltasquared = squaredDeltaX + squaredDeltaY;
     let totalDelta = Math.sqrt(totalDeltasquared);
 
-    let proportion = 5 / totalDelta;
+    let proportion = 7.5 / totalDelta;
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
 
     return [xVel, yVel];
-  }
-
-  deleteProjectiles(projectiles){
-
   }
 
 
@@ -155,6 +151,15 @@ export default class Computer{
         this.xVel -= 0.1;
       } else if (this.xVel < 0 && this.collidedWithFloor()){
         this.xVel += 0.1;
+      }
+    }
+    if(this.human.xPos >= 800){
+      if(this.xVel <= 0){
+        this.xPos -= 1;
+      }
+    }else if(this.human.xPos <= 300){
+      if (this.human.xPos <= 300){
+        this.xPos += 1;
       }
     }
   }
@@ -213,7 +218,7 @@ export default class Computer{
     // }
     
     
-    if(obj1Diag + obj2Diag + 10> totalDelta){
+    if(obj1Diag + obj2Diag + 10 > totalDelta){
       return true;
     }else{
       return false;
@@ -228,7 +233,6 @@ export default class Computer{
         console.log('hit!');
         hp.didHit = true;
         this.alive = false;
-        // debugger;
         this.additionalScore += 1;
         return true;
       }

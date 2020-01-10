@@ -20,6 +20,8 @@ export default class Human{
 
 		this.projectilesToDelete = [];
 
+		this.curJumps = 0;
+
     this.xPos = 350;
     this.yPos = 100;
     this.yVel = 0;
@@ -87,6 +89,7 @@ export default class Human{
 		}
 		this.getCurrentPlatform();
 		if(this.onFloor && !this.jumping){ // on floor and not jumping
+			this.curJumps = 0;
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
 			// 
@@ -145,7 +148,6 @@ export default class Human{
 			// 
 		}
 		if(!this.movingLeft && !this.movingRight){
-			debugger;
 			if(this.xVel > 0){
 				this.xVel -= .3;
 			}else if(this.xVel < 0){
@@ -306,9 +308,12 @@ export default class Human{
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 	jump(){
-		this.onFloor = false;
-		this.jumping = true;
-		this.yVel = -12;
+		if(this.curJumps < 2){
+			this.onFloor = false;
+			this.jumping = true;
+			this.yVel = -12;
+			this.curJumps += 1;
+		}
 	}
 
 	moveRight(){
@@ -384,7 +389,7 @@ export default class Human{
 		// }
 
 		
-		if (obj1Diag + obj2Diag + 5> totalDelta) {
+		if (obj1Diag + obj2Diag + 10 > totalDelta) {
 			return true;
 		} else {
 			return false;

@@ -30,20 +30,21 @@ export default class Projectile{
   }
   
   move(){
-    // if((this.playerXPos >= 800 && this.playerXVel >= 0)){
-    //   this.xPos += this.xVel;
-    //   this.xPos -= this.playerXVel;
-    //   this.yPos += this.yVel;
-    // } else if ((this.playerXPos <= 300 && this.playerXVel <= 0)){
-    //   this.xPos += this.xVel;
-    //   this.xPos -= this.playerXVel;
-    //   this.yPos += this.yVel;
-    // }else{
-    //   this.xPos += this.xVel;
-    //   this.yPos += this.yVel;
-    // }
-    this.xPos += this.xVel;
-    this.yPos += this.yVel;
+    if((this.playerXPos >= 800 && this.playerXVel >= 0)){
+      this.xPos += this.xVel;
+      // this.xPos -= this.playerXVel;
+      this.xPos -= (this.playerXVel / 2);
+      this.yPos += this.yVel;
+    } else if ((this.playerXPos <= 300 && this.playerXVel <= 0)){
+      this.xPos += this.xVel;
+      this.xPos -= (this.playerXVel / 2);
+      this.yPos += this.yVel;
+    }else{
+      this.xPos += this.xVel;
+      this.yPos += this.yVel;
+    }
+    // this.xPos += this.xVel;
+    // this.yPos += this.yVel;
   }
 
 
