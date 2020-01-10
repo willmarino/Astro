@@ -37,7 +37,6 @@ export default class Game{
 
   run(){
     this.context.canvas.addEventListener('mousedown', () => {
-      console.log('akjsda');
       this.click();
     });
   }
@@ -112,8 +111,6 @@ export default class Game{
   step(){
     this.animate();
     this.addEnemyScore();
-
-
   }
 
 
@@ -135,7 +132,7 @@ export default class Game{
 
     this.setNumComputers();
 
-    if(this.numComputers < 10){
+    if(this.numComputers < 6){
       this.spawnComputer();
     }
 

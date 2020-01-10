@@ -59,31 +59,44 @@ export default class Computer{
     let pos = {};
     pos.x = this.playerPosX;
     pos.y = this.playerPosY;
+
+    let newProj;
     
-    
-    let newProj = (
-      new Projectile(
-        this,
-        ...this.configureProjectile(pos)
-      )
-    );
+    let randNum = Math.round(Math.random() * 10);
+    if(randNum >= 9){
+      newProj = (
+        new Projectile(
+          this,
+          ...this.configureProjectile(pos),
+          true
+        )
+      );
+    }else{
+      newProj = (
+        new Projectile(
+          this,
+          ...this.configureProjectile(pos)
+        )
+      );
+    }
         
     this.projectiles[newProj.id] = newProj;
-
     this.projectileCount += 1;
   }
 
-	configureProjectile(pos){
+	configureProjectile(pos, homing=false){
     let randNum = Math.random();
     
     let xDelta = pos.x - this.xPos;
     let yDelta = pos.y - this.yPos;
-    let randOffset = Math.round(Math.random() * 200);
-    
-    if(randNum < 0.5){
-      xDelta += randOffset;
-    }else{
-      xDelta -= randOffset;
+
+    if(homing === false){
+      let randOffset = Math.round(Math.random() * 200);
+      if(randNum < 0.5){
+        xDelta += randOffset;
+      }else{
+        xDelta -= randOffset;
+      }
     }
 
     let squaredDeltaX = Math.pow(xDelta, 2);
@@ -169,7 +182,12 @@ export default class Computer{
     this.draw(context);
     if(Object.values(this.projectiles).length > 0){
       Object.values(this.projectiles).forEach((p) => {
-        p.animate(context);
+        if(p.homing === true){
+          let pos = {x: this.human.xPos, y: this.human.yPos};
+          p.animate(context, ...this.configureProjectile(pos, true));
+        }else{
+          p.animate(context);
+        }
       });
     }
     // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);

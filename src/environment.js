@@ -24,10 +24,14 @@ export default class Environment{
       this.platforms[this.platforms.length - 1].xStart +
       this.platforms[this.platforms.length - 1].width < 2000){
         let prevPlat = this.platforms[this.platforms.length - 1];
+        let newYStart = this.generatePlatformYStart();
+        if(newYStart - prevPlat.yStart > 50){
+          newYStart = prevPlat.yStart + 50;
+        }
         this.platforms.push(
           new Platform(
             prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
-            this.generatePlatformYStart(),
+            newYStart,
             this.generatePlatformWidth(),
             15
           ));

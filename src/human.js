@@ -268,14 +268,6 @@ export default class Human{
 			pos.x = e.clientX - rect.left;
 			pos.y = e.clientY - rect.top;
 	
-			// that.projectiles.push(new Projectile(
-			// 	this.projectileCount,
-			// 	that.xVel,
-			// 	{ xPos: that.xPos, yPos: that.yPos}, 
-			// 	that.context,
-			// 	...that.configureProjectile(pos)
-			// 	)
-			// );
 			that.projectiles.push(new Projectile(
 				that,
 				...that.configureProjectile(pos)

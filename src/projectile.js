@@ -2,7 +2,9 @@
 
 export default class Projectile{
   // constructor(id, playerXVel, playerPos, context, xVel, yVel){
-  constructor(player, projectileXVel, projectileYVel){
+  constructor(player, projectileXVel, projectileYVel, homing=false){
+
+    this.homing = homing;
 
     this.owner = player.type;
     this.context = player.context;
@@ -17,16 +19,30 @@ export default class Projectile{
     this.yPos = player.yPos;
     this.xVel = projectileXVel;
     this.yVel = projectileYVel;
-
-    this.width = 5;
-    this.height = 5;
+    if(player.type === 'human'){
+      this.width = 5;
+      this.height = 5;
+    }else{
+      if(homing){
+        this.width = 20;
+        this.height = 20;  
+      }else{
+        this.width = 5;
+        this.height = 5;
+      }
+    }
 
     this.id = player.projectileCount;
   }
   
-  animate(context){
-    this.move();
-    this.draw(context);
+  animate(context, xVel=null, yVel=null){
+    if(this.homing === true){
+      this.homingMove(xVel, yVel);
+      this.homingDraw(context);
+    }else{
+      this.move();
+      this.draw(context);
+    }
   }
   
   move(){
@@ -47,10 +63,23 @@ export default class Projectile{
     // this.yPos += this.yVel;
   }
 
+  homingMove(playerXVel, playerYVel){
+    // ------------------------------------------------------------------------------------
+    this.xPos += playerXVel;
+    this.yPos += playerYVel;
+  }
+
 
   draw(context){
     if(!this.didHit){
       context.fillStyle = 'white';
+      context.fillRect(this.xPos, this.yPos, this.width, this.height);
+    }
+  }
+
+  homingDraw(context) {
+    if (!this.didHit) {
+      context.fillStyle = 'green';
       context.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
   }
