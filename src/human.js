@@ -356,6 +356,10 @@ export default class Human{
 		// let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
 		// let obj1BotRight = { x : obj1.xPos + obj1.width, y : obj1.yPos + obj1.height};
 
+		let obj1CenterX = obj1.xPos + (obj1.xPos.width / 2);
+		let obj1CenterY = obj1.yPos + (obj1.yPos.width / 2);
+
+
 		let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2)) / 2;
 
 		// let obj2TopLeft = {x : obj2.xPos, y : obj2.yPos};
@@ -364,8 +368,12 @@ export default class Human{
 		// let obj2BotRight = {x : obj2.xPos + obj2.width, y : obj2.yPos + obj2.height};
 
 		let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2)) / 2;
+		let obj2CenterX = obj2.xPos + (obj2.xPos.width / 2);
+		let obj2CenterY = obj2.yPos + (obj2.yPos.width / 2);
 
 		let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
+
+		// let totalDelta = Math.sqrt(Math.pow(obj1CenterX - obj2CenterX))
 
 		// if((obj1TopLeft.x < obj2BotRight.x && obj1TopLeft.y < obj2BotRight.y) &&
 		//   (obj1Diag + obj2Diag > totalDelta)){
