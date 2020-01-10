@@ -39,7 +39,7 @@ export default class Computer{
   initiateShot(){
     window.setInterval(() => {
       this.shoot();
-    }, 1500);
+    }, 2000);
   }
 
   switchDirection(){
@@ -67,8 +67,8 @@ export default class Computer{
       newProj = (
         new Projectile(
           this,
-          ...this.configureProjectile(pos),
-          true
+          ...this.configureProjectile(pos)
+          // true
         )
       );
     }else{
@@ -92,9 +92,9 @@ export default class Computer{
 
     if(homing === false){
       let randOffset = Math.round(Math.random() * 200);
-      if(randNum < 0.5){
+      if(randNum < 0.25){
         xDelta += randOffset;
-      }else{
+      }else if(randNum > 0.25 && randNum < 0.5){
         xDelta -= randOffset;
       }
     }
@@ -104,7 +104,7 @@ export default class Computer{
     let totalDeltasquared = squaredDeltaX + squaredDeltaY;
     let totalDelta = Math.sqrt(totalDeltasquared);
 
-    let proportion = 7.5 / totalDelta;
+    let proportion = 5 / totalDelta;
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
 

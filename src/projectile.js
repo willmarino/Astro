@@ -72,8 +72,13 @@ export default class Projectile{
 
   draw(context){
     if(!this.didHit){
-      context.fillStyle = 'white';
-      context.fillRect(this.xPos, this.yPos, this.width, this.height);
+      if(this.owner === 'human'){
+        context.fillStyle = 'black';
+        context.fillRect(this.xPos, this.yPos, this.width, this.height);  
+      }else{
+        context.fillStyle = 'white';
+        context.fillRect(this.xPos, this.yPos, this.width, this.height);
+      }
     }
   }
 
