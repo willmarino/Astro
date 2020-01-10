@@ -14,11 +14,13 @@ export default class Game{
     this.running = false;
 
     this.computers = [];
-    this.numComputers = this.computers.length + this.computersBeingAdded;
     this.computersBeingAdded = 0;
+    this.numComputers = this.computers.length + this.computersBeingAdded;
 
     this.humanProjectiles = [];
     this.computerProjectiles = [];
+
+    debugger;
 
   }
 
@@ -39,6 +41,10 @@ export default class Game{
     }
   }
 
+  setNumComputers(){
+    this.numComputers = this.computers.length + this.computersBeingAdded;
+  }
+
   spawnComputer(){
     this.computersBeingAdded += 1;
     let newCompStartX;
@@ -57,13 +63,16 @@ export default class Game{
   }
 
   animate(){
+    debugger;
+    this.filterComputers();
     this.background.animate(this.context);
     this.environment.animate(this.context);
     this.human.animate(this.context);
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
-    if(this.numComputers < 6){
+    this.setNumComputers();
+    if(this.numComputers < 5){
       debugger;
       this.spawnComputer();
     }
