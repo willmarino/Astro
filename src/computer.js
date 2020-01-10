@@ -18,7 +18,7 @@ export default class Computer{
     this.projectilesToDelete = [];
 
 		this.xPos = xPos;
-		this.yPos = 50;
+    this.yPos = 50;
 		this.yVel = 0;
 		this.xVel = -5;
 		this.width = 20;
@@ -35,7 +35,7 @@ export default class Computer{
 
   initiateShot(){
     window.setInterval(() => {
-      this.canShoot = true;
+      this.shoot();
     }, 3000);
   }
 
@@ -53,8 +53,6 @@ export default class Computer{
   }
 
   shoot(){
-    debugger;
-    // let rect = this.context.canvas.getBoundingClientRect();
     let pos = {};
     pos.x = this.playerPosX;
     pos.y = this.playerPosY;
@@ -73,7 +71,7 @@ export default class Computer{
 
     this.projectileCount += 1;
 
-    this.canShoot = false;
+    // this.canShoot = false;
   }
 
 	configureProjectile(pos){
@@ -85,7 +83,7 @@ export default class Computer{
     let totalDeltasquared = squaredDeltaX + squaredDeltaY;
     let totalDelta = Math.sqrt(totalDeltasquared);
 
-    let proportion = 20 / totalDelta;
+    let proportion = 5 / totalDelta;
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
 
@@ -126,15 +124,9 @@ export default class Computer{
   }
 
   action(){
-    debugger;
     this.move();
     this.fetchHumanPosition();
     if(this.alive){
-      if(this.canShoot){
-        debugger;
-        this.shoot();
-        this.canShoot = false;
-      }
       this.switchDirection();
       this.collidedWithProjectiles();
     }

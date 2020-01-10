@@ -14,9 +14,12 @@ export default class Game{
     this.running = false;
 
     this.computers = [];
+    this.numComputers = this.computers.length + this.computersBeingAdded;
+    this.computersBeingAdded = 0;
 
     this.humanProjectiles = [];
     this.computerProjectiles = [];
+
   }
 
   filterComputers(){
@@ -36,6 +39,23 @@ export default class Game{
     }
   }
 
+  spawnComputer(){
+    this.computersBeingAdded += 1;
+    let newCompStartX;
+    let randNum = Math.random();
+    if(randNum <= .5){
+      newCompStartX = 1150
+    }else{
+      newCompStartX = -50
+    }
+    window.setTimeout(() => {
+      this.computers.push(
+        new Computer(this.environment, this.context, this.human, newCompStartX)
+      )
+      this.computersBeingAdded -= 1;
+    }, 5000);
+  }
+
   animate(){
     this.background.animate(this.context);
     this.environment.animate(this.context);
@@ -43,6 +63,10 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
+    if(this.numComputers < 6){
+      debugger;
+      this.spawnComputer();
+    }
     // this.computer.()
     if(this.running){
       window.requestAnimationFrame(this.animate.bind(this));
@@ -60,11 +84,15 @@ export default class Game{
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
     this.environment.human = this.human;
-    let i = 0;
-    let compStartX = 850;
-    while(i < 5){
+    let i = 1;
+    let compStartX;
+    while(i < 6){
+      if(i % 2 === 0){
+        compStartX = 1150 + (100 * i);
+      }else{
+        compStartX = -50 - (100 * i);
+      }
       this.computers.push(new Computer(this.environment, this.context, this.human, compStartX));
-      compStartX += 30;
       i += 1;
     }
     this.running = false;
