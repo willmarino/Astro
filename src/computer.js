@@ -18,7 +18,6 @@ export default class Computer{
     this.additionalScore = 0;
 
     this.projectileCount = 10000;
-    this.projectilesToDelete = [];
 
 		this.xPos = xPos;
     this.yPos = 50;
@@ -245,10 +244,8 @@ export default class Computer{
   }
 
   collidedWithProjectiles(){
-    this.human.projectiles.forEach((hp) => {
+    Object.values(this.human.projectiles).forEach((hp) => {
       if(this.collide(this, hp)){
-        this.projectilesToDelete.push(hp);
-        console.log('hit!');
         hp.didHit = true;
         this.alive = false;
         this.additionalScore += 1;

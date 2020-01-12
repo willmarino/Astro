@@ -21,6 +21,7 @@ export default class Game{
     this.humanProjectiles = [];
     this.computerProjectiles = [];
 
+    this.allProjectiles = {};
 
   }
 
@@ -32,7 +33,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   filterComputers(){
-    this.computers = this.computers.filter(c => c.yPos < 715);
+    this.computers = this.computers.filter(c => c.yPos < 10000);
   }
 
   run(){
@@ -114,9 +115,21 @@ export default class Game{
     });
   }
 
+  addProjectiles(){
+    this.allProjectiles = this.human.projectiles;
+    for(let i = 0; i < this.computers.length; i++){
+      let curComp = this.computers[i];
+      debugger;
+      this.allProjectiles = Object.assign(this.allProjectiles, curComp.projectiles);
+    }
+  }
+
   step(){
-    // this.switchRounds();
+    // debugger;
+    // this.addProjectiles();
+
     this.animate();
+    
     this.addEnemyScore();
     this.filterComputers();
     if(this.running){
@@ -124,14 +137,10 @@ export default class Game{
     }
   }
 
-  // gameOver(){
-  //   document.removeChild()
-  // }
-
 
   animate(){
 
-    this.filterComputers();
+    // this.filterComputers();
     this.sendEnemyProjectiles();
 
     this.background.animate(this.context);

@@ -13,13 +13,11 @@ export default class Human{
 		this.environment = environment;
 		this.context = context;
 		this.computerProjectiles = computerProjectiles;
-		this.projectiles = [];
+		this.projectiles = {};
 		this.jumping = false;
 		this.projectileCount = 0;
 
 		this.additionalScore = 0;
-
-		this.projectilesToDelete = [];
 
 		this.curJumps = 0;
 
@@ -58,15 +56,30 @@ export default class Human{
 	// ----------------------------------MAIN--------------------------------------------------------------
 	// ----------------------------------MAIN--------------------------------------------------------------
 
+	filterProjectiles(){
+		let newProjectiles = {};
+		let that = this;
+		Object.keys(this.projectiles).forEach((key) => {
+			debugger;
+			if(that.projectiles[key].yPos < 710 && that.projectiles[key].yPos > -10){
+				let projectile = {[key]: that.projectiles[key]}
+				newProjectiles = Object.assign(projectile, newProjectiles);
+			}
+		})
+		this.projectiles = newProjectiles;
+	}
+
+
 	animate(context) {
 		this.move();
 		this.draw(context);
-		if (this.projectiles.length > 0) {
-			this.projectiles.forEach((p) => {
+		if (Object.values(this.projectiles).length > 0) {
+			Object.values(this.projectiles).forEach((p) => {
 				p.animate(context);
 			});
 		}
-		this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos <710);
+		this.filterProjectiles();
+
 		this.collidedWithProjectiles();
 	}
 
@@ -310,11 +323,10 @@ export default class Human{
 			let pos = {};
 			pos.x = e.clientX - rect.left;
 			pos.y = e.clientY - rect.top;
-	
-			that.projectiles.push(new Projectile(
-				that,
-				...that.configureProjectile(pos)
-			));
+
+			let newProj = new Projectile(that, ...that.configureProjectile(pos));
+			let newId = newProj.id;
+			that.projectiles = Object.assign({[newId]: newProj}, that.projectiles);
 
 			this.projectileCount += 1;
 		});
@@ -426,7 +438,6 @@ export default class Human{
 		Object.values(this.computerProjectiles).forEach((p) => {
 			if (that.collide(that, p)) {
 				p.didHit = true;
-				console.log('hit!');
 				that.alive = false;
 			}
 		});

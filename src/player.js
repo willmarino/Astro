@@ -1,12 +1,5 @@
 import Projectile from "./projectile";
 
-
-// q1 -- q2
-// |      |
-// q3 -- q4
-// only need q1 and q4 (or q3 and q2) for collision
-// width, height
-
 export default class Player{
   constructor(environment, context){
     this.context = context;
