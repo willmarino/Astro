@@ -43,7 +43,10 @@ export default class Environment{
       return 550;
     }else{
       let prevPlatHeight = this.platforms[this.platforms.length - 1].yStart;
-      let randomOffset = Math.round(Math.random() * 200);
+      let randomOffset = Math.round(Math.random() * 150);
+      if(randomOffset < 30){
+        randomOffset = 50;
+      }
       let randHeight;
       if(Math.random() < 0.5){
         randHeight = prevPlatHeight + randomOffset;

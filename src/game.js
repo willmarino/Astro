@@ -46,6 +46,12 @@ export default class Game{
       this.play();
     }
   }
+
+  switchRounds(){
+    if(this.human.distanceCovered > 100){
+      this.background.round = 1;
+    }
+  }
   
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -109,9 +115,18 @@ export default class Game{
   }
 
   step(){
+    // this.switchRounds();
     this.animate();
     this.addEnemyScore();
+    this.filterComputers();
+    if(this.running){
+      window.requestAnimationFrame(this.step.bind(this));
+    }
   }
+
+  // gameOver(){
+  //   document.removeChild()
+  // }
 
 
   animate(){
@@ -136,9 +151,6 @@ export default class Game{
       this.spawnComputer();
     }
 
-    if(this.running){
-      window.requestAnimationFrame(this.step.bind(this));
-    }
   }
 
 // --------------------------------------------------------------------------
@@ -150,8 +162,6 @@ export default class Game{
 
   play(){
     this.running = true;
-    this.filterComputers();
-    // this.animate();
     this.step();
   }
 

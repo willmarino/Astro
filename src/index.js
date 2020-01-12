@@ -9,4 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   game.restart();
 });
 
-
+// document.addEventListener((game.human.alive === false), () => {
+//   game.restart();
+// })
