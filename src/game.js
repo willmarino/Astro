@@ -23,6 +23,8 @@ export default class Game{
 
     this.allProjectiles = {};
 
+    this.startMenu = document.getElementById('start-menu');
+
   }
 
 // --------------------------------------------------------------------------
@@ -32,20 +34,10 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
+  // if computer players are offscreen, that means theyre no longer alive, and dont need to be
+  // in the game's computers list, and they dont need to be rendered
   filterComputers(){
     this.computers = this.computers.filter(c => c.yPos < 10000);
-  }
-
-  run(){
-    this.context.canvas.addEventListener('mousedown', () => {
-      this.click();
-    });
-  }
-
-  click(){
-    if(!this.running){
-      this.play();
-    }
   }
 
   switchRounds(){
@@ -53,6 +45,7 @@ export default class Game{
       this.background.round = 1;
     }
   }
+
   
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -60,6 +53,8 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
+
+
 
   setNumComputers(){
     this.numComputers = this.computers.length + this.computersBeingAdded;
@@ -119,24 +114,9 @@ export default class Game{
     this.allProjectiles = this.human.projectiles;
     for(let i = 0; i < this.computers.length; i++){
       let curComp = this.computers[i];
-      debugger;
       this.allProjectiles = Object.assign(this.allProjectiles, curComp.projectiles);
     }
   }
-
-  step(){
-    // debugger;
-    // this.addProjectiles();
-
-    this.animate();
-    
-    this.addEnemyScore();
-    this.filterComputers();
-    if(this.running){
-      window.requestAnimationFrame(this.step.bind(this));
-    }
-  }
-
 
   animate(){
 
@@ -156,7 +136,7 @@ export default class Game{
 
     this.setNumComputers();
 
-    if(this.numComputers < 6){
+    if(this.numComputers < 8){
       this.spawnComputer();
     }
 
@@ -169,17 +149,13 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
-  play(){
-    this.running = true;
-    this.step();
-  }
-
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
     this.score = new Score(this.context);
     this.environment.human = this.human;
+    this.computers = [];
     let i = 1;
     let compStartX;
     while(i < 6){
@@ -192,8 +168,74 @@ export default class Game{
       i += 1;
     }
     this.running = false;
-    this.step();
+
+    // this.step();
+
     this.run();
   }
 
+  // this will be run upon restart
+  run(){
+    let playButton = document.getElementById('play-button')
+    debugger;
+    playButton.addEventListener('mousedown', () => {
+      debugger;
+      document.getElementById('start-menu').remove();
+      this.click();
+    })
+
+    // this.context.canvas.addEventListener('mousedown', () => {
+    //   this.click();
+    // });
+  }
+
+  click(){
+    if(!this.running){
+      this.play();
+    }
+  }
+
+  play(){
+    this.running = true;
+    this.step();
+  }
+
+  step(){
+    // this.addProjectiles();
+    if(this.gameOver() === true){
+      this.rerun();
+    }
+    this.animate();
+    this.addEnemyScore();
+    this.filterComputers();
+    if(this.running){
+      window.requestAnimationFrame(this.step.bind(this));
+    }
+  }
+
+  gameOver(){
+    if(this.human.yPos > 710){
+      return true;
+    }else if(!this.human.alive && this.human.yPos > 710){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  rerun(){
+    debugger;
+    let gameAndTitle = document.getElementById('game-and-title');
+    gameAndTitle.appendChild(this.startMenu);
+    this.restart();
+  }
+
+
+
+
+
+
+
+
 }
+

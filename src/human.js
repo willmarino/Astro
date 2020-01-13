@@ -10,16 +10,17 @@ export default class Human{
 		};
 
 		this.alive = true;
+		this.projectiles = {};
 		this.environment = environment;
 		this.context = context;
 		this.computerProjectiles = computerProjectiles;
-		this.projectiles = {};
 		this.jumping = false;
 		this.projectileCount = 0;
 
 		this.additionalScore = 0;
 
 		this.curJumps = 0;
+		this.dashes = 0;
 
     this.xPos = 350;
     this.yPos = 100;
@@ -32,7 +33,8 @@ export default class Human{
 		this.curPlat = null;
 		this.lastPlat = this.environment.platforms[0];
 
-		this.movingLeft = true;
+		this.movingLeft = false;
+		this.movingRight = false;
 		this.goingDown = false;
 
 		this.distanceCovered = 0;
@@ -43,6 +45,7 @@ export default class Human{
 		this.bindUndoLeft();
 		this.bindDown();
 		this.bindUndoDown();
+		this.bindDash();
 
     this.bindJump();
     this.setClick = this.setClick.bind(this);
@@ -60,7 +63,6 @@ export default class Human{
 		let newProjectiles = {};
 		let that = this;
 		Object.keys(this.projectiles).forEach((key) => {
-			debugger;
 			if(that.projectiles[key].yPos < 710 && that.projectiles[key].yPos > -10){
 				let projectile = {[key]: that.projectiles[key]}
 				newProjectiles = Object.assign(projectile, newProjectiles);
@@ -92,28 +94,39 @@ export default class Human{
 
 	move(){
 
+		// if player is no longer 'alive', then apply gravity until they fall off screen
 		if(!this.alive){
 			this.applyGravity();
 			this.yPos += this.yVel;
 			return;
 		}
 
+		// check whether or not the player is above a platform, and if so, which platform
 		this.getCurrentPlatform();
 
+		// if player is above a platform, set jumping flag to false based on velocity and position
+		// if player is not above a platform, set onfloor flag to false
 		if(this.curPlat){
-			if(this.yVel > 0 && this.yPos < (this.curPlat.yStart - 20 || this.lastPlat.yStart) ){//I should be able to delete this
+			if(this.yVel > 0 && this.yPos < (this.curPlat.yStart - 20 || this.lastPlat.yStart) ){
 				this.jumping = false;
 			}
 		}else if(!this.curPlat){
 			this.onFloor = false;
 		}
+		// check whether or not the player is above a platform, and if so, which platform
 		this.getCurrentPlatform();
 
+		// if player is onfloor and not jumping, reset dashes and jumps, set yPos platform plus player height,
+		// set yVel to zero, and apply horizontal movement based on whether or not player has reached the designated side zones
 		if(this.onFloor && !this.jumping){
+			this.dashes = 0;
 			this.curJumps = 0;
 			this.yPos = this.curPlat.yStart - this.height;
 			this.yVel = 0;
 			this.isPlayerOnSide();
+		// if player is not yet 'onfloor', but is above a platform, check ypos to see whether onfloor flag should be set to true
+		// apply horizontal movement based on whether or not player has reached the designated side zones
+		// whether or not player is above a platform, apply gravity
 		}else if(!this.onFloor){
 			if(this.curPlat){
 				if(this.yPos >= this.curPlat.yStart - this.height && this.yVel >= 0){
@@ -125,10 +138,12 @@ export default class Human{
 			this.yVel += this.CONSTANTS.GRAVITY;
 			this.yPos += this.yVel;
 			this.isPlayerOnSide();
+		// if player is onfloor but jumping, have them leave the floor, circumventing the floor-stick effect
 		}else if(this.onFloor && this.jumping){
 			this.yPos += this.yVel;
 			this.isPlayerOnSide();
 		}
+		// apply friction to player movement to slow them down if no movement keys are being pressed.
 		if(!this.movingLeft && !this.movingRight){
 			if(this.xVel > 0){
 				this.xVel -= .3;
@@ -136,32 +151,12 @@ export default class Human{
 				this.xVel += .3;
 			}
 		}
+		// add change in xPos to total distance covered, will be used to change rounds
 		this.distanceCovered += this.xVel;
 	}
 
-	// move2(){
-	// 	debugger;
-	// 	// cur plat vs none
-	// 	if(!this.alive){
-	// 		this.applyGravity();
-	// 		this.yPos += this.yVel;
-	// 		return;
-	// 	}
-	// 	this.getCurrentPlatform();
-	// 	if(this.isInAir()){
-	// 		this.applyGravity();
-	// 		this.yPos += this.yVel;
-	// 		this.xPos += this.xVel;
-	// 	}
-	// 	if(this.isOnFloor()){
-	// 		if(!this.jumping){
-	// 			this.yVel = 0;
-	// 		}
-	// 		this.xPos += this.xVel;
-	// 	}
-
-	// }
-
+	// if player is at 300 or 800 px, stop horizontal movement to avoid leaving screen and give player
+	// a view of upcoming obstacles
 	isPlayerOnSide(){
 		if ((this.xPos >= 800 && this.xVel >= 0) || (this.xPos <= 300 && this.xVel <= 0)) {
 			null;
@@ -212,7 +207,6 @@ export default class Human{
 	// ----------------------COLLISION LOGIC---------------------------------------------------------------
 
 	collidedWithFloor() {
-		
 		if (this.curPlat) {
 			if (this.yPos >= this.curPlat.yStart - 10) {
 				this.onFloor = true;
@@ -220,6 +214,7 @@ export default class Human{
 		}
 	}
 
+	// checks if player xPos is between the left and right edges of any platform('above platform')
 	getCurrentPlatform() {
 		// 
 		let that = this;
@@ -251,6 +246,7 @@ export default class Human{
 			if (e.key === 'a') {
 				this.moveLeft();
 				this.movingLeft = true;
+				this.movingRight = false;
 			}
 		});
 	}
@@ -269,6 +265,7 @@ export default class Human{
 			if (e.key === 'd') {
 				this.moveRight();
 				this.movingRight = true;
+				this.movingLeft = false;
 			}
 		});
 	}
@@ -308,6 +305,36 @@ export default class Human{
 		});
 	}
 
+	// loop sets five timeouts in order to gradually slow down player after dashing
+	bindDash(){
+		window.addEventListener('keypress', (e) => {
+			if(e.key === 'Spacebar' || e.key === ' '){
+				if(this.dashes > 0){
+					return;
+				}
+				if(this.movingLeft){
+					this.xVel -= 7.5;
+					this.dashes += 1;
+					for(let i = 0; i < 5; i++){
+						setTimeout(() => {
+							this.xVel += 1.5;
+						}, 100 * i)
+					}
+				}else if(this.movingRight){
+					this.xVel += 7.5;
+					this.dashes += 1;
+					for(let i = 0; i < 5; i++){
+						setTimeout(() => {
+							this.xVel -= 1.5;
+						}, 100 * i)
+					}
+				}
+			}
+		})
+	}
+
+
+
 // ----------------------------------------------------------------------------------------------------
 // -------------------------PROJECTILE BIND AND CONFIG--------------------------------------------------------------------------
 // -------------------------PROJECTILE BIND AND CONFIG---------------------------------------------------------------------------
@@ -316,7 +343,8 @@ export default class Human{
 // -------------------------PROJECTILE BIND AND CONFIG---------------------------------------------------------------------------
 // -------------------------PROJECTILE BIND AND CONFIG---------------------------------------------------------------------------
 
-
+	// if player clicks, fetch click coordinates, wrap them in an object, create a projectile with the result
+	// of passing that object into configureProjectile
 	setClick(that) {
 		this.context.canvas.addEventListener('click', (e) => {
 			let rect = this.context.canvas.getBoundingClientRect();
@@ -332,6 +360,8 @@ export default class Human{
 		});
 	}
 
+	// calculates the necessary x and y velocities for the projectile(starting at player position)
+	// to get to the coordinates of the click
 	configureProjectile(pos){
 		let xDelta = pos.x - this.xPos;
 		let yDelta = pos.y - this.yPos;
@@ -386,28 +416,32 @@ export default class Human{
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------
 	
+
+	// commented out text is using four-corner detection, which is buggy, perhaps to small projectile sizes?
 	collide(obj1, obj2) {
 		// let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
 		// let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
 		// let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
 		// let obj1BotRight = { x : obj1.xPos + obj1.width, y : obj1.yPos + obj1.height};
 
-		let obj1CenterX = obj1.xPos + (obj1.xPos.width / 2);
-		let obj1CenterY = obj1.yPos + (obj1.yPos.width / 2);
-
-
-		let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2)) / 2;
-
+		
 		// let obj2TopLeft = {x : obj2.xPos, y : obj2.yPos};
 		// let obj2TopRight = { x: obj2.xPos + obj2.width, y: obj2.yPos };
 		// let obj2BotLeft = { x: obj2.xPos, y: obj2.yPos + obj2.height };
 		// let obj2BotRight = {x : obj2.xPos + obj2.width, y : obj2.yPos + obj2.height};
 
-		let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2)) / 2;
-		let obj2CenterX = obj2.xPos + (obj2.xPos.width / 2);
-		let obj2CenterY = obj2.yPos + (obj2.yPos.width / 2);
+		let obj1CenterX = obj1.xPos + (obj1.width / 2);
+		let obj1CenterY = obj1.yPos + (obj1.height / 2);
+		let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2));
 
-		let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
+		let obj2CenterX = obj2.xPos + (obj2.width / 2);
+		let obj2CenterY = obj2.yPos + (obj2.height / 2);
+		let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2));
+
+		let totalDelta = Math.sqrt(Math.pow(obj1CenterX - obj2CenterX, 2) + Math.pow(obj1CenterY - obj2CenterY, 2))
+
+		// this is using top right pos, should be using center, but probably doesnt matter
+		// let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
 
 		// let totalDelta = Math.sqrt(Math.pow(obj1CenterX - obj2CenterX))
 
@@ -424,8 +458,7 @@ export default class Human{
 		//   return false;
 		// }
 
-		
-		if (obj1Diag + obj2Diag + 10 > totalDelta) {
+		if(obj1Diag + obj2Diag + 10 > totalDelta) {
 			return true;
 		} else {
 			return false;
