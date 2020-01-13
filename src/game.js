@@ -177,9 +177,9 @@ export default class Game{
   // this will be run upon restart
   run(){
     let playButton = document.getElementById('play-button')
-    debugger;
+    // debugger;
     playButton.addEventListener('mousedown', () => {
-      debugger;
+      // debugger;
       document.getElementById('start-menu').remove();
       this.click();
     })
@@ -224,7 +224,7 @@ export default class Game{
   }
 
   rerun(){
-    debugger;
+    // debugger;
     let gameAndTitle = document.getElementById('game-and-title');
     gameAndTitle.appendChild(this.startMenu);
     this.restart();
