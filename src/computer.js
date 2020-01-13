@@ -20,7 +20,7 @@ export default class Computer{
     this.projectileCount = 10000;
 
 		this.xPos = xPos;
-    this.yPos = 50;
+    this.yPos = 100;
 		this.yVel = 0;
 		this.xVel = -5;
 		this.width = 30;
@@ -62,12 +62,12 @@ export default class Computer{
     let newProj;
     
     let randNum = Math.round(Math.random() * 10);
-    if(randNum >= 9){
+    if(randNum >= 11){
       newProj = (
         new Projectile(
           this,
-          ...this.configureProjectile(pos)
-          // true
+          ...this.configureProjectile(pos),
+          true
         )
       );
     }else{

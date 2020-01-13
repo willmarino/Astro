@@ -48,8 +48,8 @@ export default class Projectile{
   move(){
     if((this.playerXPos >= 800 && this.playerXVel >= 0)){
       this.xPos += this.xVel;
-      // this.xPos -= this.playerXVel;
-      this.xPos -= (this.playerXVel / 2);
+      this.xPos -= this.playerXVel;
+      // this.xPos -= (this.playerXVel / 2);
       this.yPos += this.yVel;
     } else if ((this.playerXPos <= 300 && this.playerXVel <= 0)){
       this.xPos += this.xVel;
@@ -63,10 +63,9 @@ export default class Projectile{
     // this.yPos += this.yVel;
   }
 
-  homingMove(playerXVel, playerYVel){
-    // ------------------------------------------------------------------------------------
-    this.xPos += playerXVel;
-    this.yPos += playerYVel;
+  homingMove(xVel, yVel){
+    this.xPos += xVel;
+    this.yPos += yVel;
   }
 
 
