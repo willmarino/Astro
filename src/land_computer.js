@@ -12,13 +12,13 @@ export default class LandComputer{
       // this.baseXvel = 5;
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 10;
+      this.xVel = 5;
     }else{
       this.xPos = 1800;
       // this.baseXvel = -5;
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -10;
+      this.xVel = -5;
     }
     
     this.yPos = 100;
@@ -34,7 +34,7 @@ export default class LandComputer{
     this.additionalScore = 0;
     this.curPlat = null;
     this.nextPlat = null;
-    this.jumping = false;
+    this.jumping = true;
     this.jumpingYVel = 8;
   }
 
@@ -64,22 +64,55 @@ export default class LandComputer{
     debugger;
     this.getCurrentPlatform();
     if(!this.alive){
+      debugger;
       this.yVel += this.CONSTANTS.GRAVITY;
-      this.xPos += this.xVel;
+      this.yPos += this.yVel;
+      return;
+      // this.xPos += this.xVel;
     }
+    this.switchDirections();
     if(this.curPlat && !this.jumping){
-      this.yPos = this.curPlat.yPos - this.height;
+      debugger;
+      this.yPos = this.curPlat.yStart - this.height;
       this.xPos += this.xVel;
     }
     if(this.isOnEdge()){
+      debugger;
       this.beginJump();
       this.jumping = true;
-      this.xPos += this.xVel
-      this.yPos += this.yVel
-      this.yVel -= this.CONSTANTS.GRAVITY;
+      this.xPos += this.xVel;
+      this.yPos += this.yVel;
+      this.yVel += this.CONSTANTS.GRAVITY;
     }
-    if(this.curPlat && this.jumping && this.yPos){
+    // if you have jumped already
+    if(this.jumping){
+      debugger;
+      // if you have jumped, your yVel is downward, and your ypos is on floor, then land
+      if (this.curPlat && this.yPos >= this.curPlat.yStart - this.height && this.yVel > 0){
+        debugger;
+        this.jumping = false;
+        this.yPos = this.curPlat.yStart - this.height;
+        this.yVel = 0;
+        this.xPos += this.xVel;
+      // if you are still midjump
+      }else{
+        debugger;
+        this.xPos += this.xVel;
+        this.yPos += this.yVel;
+        this.yVel += this.CONSTANTS.GRAVITY;
+      }
+    }
+  }
 
+  switchDirections(){
+    if (this.goingRight && this.human.xPos < this.xPos - 500) {
+      this.goingLeft = true;
+      this.goingRight = false;
+      this.xVel = -5;
+    } else if (this.goingLeft && this.human.xPos > this.xPos + 500){
+      this.goingRight = true;
+      this.goingLeft = false;
+      this.xVel = 5;
     }
   }
 
@@ -87,13 +120,13 @@ export default class LandComputer{
     if(this.goingLeft){
       if(this.curPlat
         && this.yPos === this.curPlat.yStart - this.height
-        && this.xPos === this.curPlat.xStart){
+        && this.xPos <= this.curPlat.xStart + 20){
           return true;
       }
     }else if(this.goingRight){
       if(this.curPlat
         && this.yPos === this.curPlat.yStart - this.height
-        && this.xPos === this.curPlat.xStart + this.curPlat.width){
+        && this.xPos >= this.curPlat.xStart + this.curPlat.width - 20){
           return true;
       }
     }
@@ -103,7 +136,7 @@ export default class LandComputer{
   beginJump(){
     // set local vars for curPlat and nextPlat
     let curPlat = this.curPlat;
-    let curPlatIdx = this.environment.platforms.find(p => p === curPlat);
+    let curPlatIdx = this.environment.platforms.indexOf(curPlat);
     let nextPlat;
     if(this.goingRight){
       nextPlat = this.environment.platforms[curPlatIdx + 1];
@@ -112,7 +145,7 @@ export default class LandComputer{
     }
     // heightDiff is height to be jumped
     // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
-    let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3
+    let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3;
     // set min jump height
     if(heightDiff < 25) heightDiff = 25;
     let maxJumpHeight = (curPlat.yStart < nextPlat.yStart)

@@ -134,7 +134,7 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
-    // this.landComp.animate(this.context);
+    this.landComp.animate(this.context);
 
     this.setNumComputers();
 
@@ -169,7 +169,7 @@ export default class Game{
       this.computers.push(new Computer(this.environment, this.context, this.human, compStartX));
       i += 1;
     }
-    // this.landComp = new LandComputer(this.environment, this.context, this.human);
+    this.landComp = new LandComputer(this.environment, this.context, this.human);
     this.running = false;
 
     // this.step();
