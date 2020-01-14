@@ -9,11 +9,20 @@ export default class LandComputer{
     let randNum = Math.random();
     if(randNum > 0.5){
       this.xPos = -500;
+      // this.baseXvel = 5;
+      this.goingRight = true;
+      this.goingLeft = false;
+      this.xVel = 10;
     }else{
       this.xPos = 1800;
+      // this.baseXvel = -5;
+      this.goingLeft = true;
+      this.goingRight = false;
+      this.xVel = -10;
     }
     
     this.yPos = 100;
+    this.yVel = 0;
     this.CONSTANTS = {
       GRAVITY: 0.5,
     };
@@ -25,7 +34,8 @@ export default class LandComputer{
     this.additionalScore = 0;
     this.curPlat = null;
     this.nextPlat = null;
-    this.jumping = null;
+    this.jumping = false;
+    this.jumpingYVel = 8;
   }
 
   animate(context){
@@ -46,23 +56,87 @@ export default class LandComputer{
   }
 
   draw(context){
-    this.fillStyle('purple');
-    this.fillRect(this.xPos, this.yPos, this.width, this.height);
+    context.fillStyle = 'purple';
+    context.fillRect(this.xPos, this.yPos, this.width, this.height);
   }
 
   move(){
+    debugger;
     this.getCurrentPlatform();
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
+      this.xPos += this.xVel;
     }
     if(this.curPlat && !this.jumping){
       this.yPos = this.curPlat.yPos - this.height;
+      this.xPos += this.xVel;
     }
+    if(this.isOnEdge()){
+      this.beginJump();
+      this.jumping = true;
+      this.xPos += this.xVel
+      this.yPos += this.yVel
+      this.yVel -= this.CONSTANTS.GRAVITY;
+    }
+    if(this.curPlat && this.jumping && this.yPos){
+
+    }
+  }
+
+  isOnEdge(){
+    if(this.goingLeft){
+      if(this.curPlat
+        && this.yPos === this.curPlat.yStart - this.height
+        && this.xPos === this.curPlat.xStart){
+          return true;
+      }
+    }else if(this.goingRight){
+      if(this.curPlat
+        && this.yPos === this.curPlat.yStart - this.height
+        && this.xPos === this.curPlat.xStart + this.curPlat.width){
+          return true;
+      }
+    }
+    return false;
+  }
+
+  beginJump(){
+    // set local vars for curPlat and nextPlat
+    let curPlat = this.curPlat;
+    let curPlatIdx = this.environment.platforms.find(p => p === curPlat);
+    let nextPlat;
+    if(this.goingRight){
+      nextPlat = this.environment.platforms[curPlatIdx + 1];
+    }else if(this.goingLeft){
+      nextPlat = this.environment.platforms[curPlatIdx - 1];
+    }
+    // heightDiff is height to be jumped
+    // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
+    let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3
+    // set min jump height
+    if(heightDiff < 25) heightDiff = 25;
+    let maxJumpHeight = (curPlat.yStart < nextPlat.yStart)
+      ? curPlat.yStart + heightDiff : nextPlat.yStart + heightDiff;
+      // gap btw platforms
+    let xGap = this.goingRight
+      ? nextPlat.xStart - (curPlat.xStart + curPlat.width)
+      : curPlat.xStart - (nextPlat.xStart + nextPlat.width);
+    // time jump will take from takeoff to land, in seconds
+    let jumpTime = (xGap / this.xVel);
+    // let jumpTime = (xGap < heightDiff) ? (heightDiff / this.jumpingYVel) : (xGap / this.xVel);
+
+    // in numSteps number of moves, yVel must go from x to 0
+    let halfway = xGap / 2;
+    let numSteps = halfway / this.xVel;
+    let initYVel = (0 + (0.5) * numSteps) * (-1);
+    this.yVel = initYVel;
+    // starting y velocity will need to be such that when the computer reaches the maximum of the jump parabola,
+    // its y velocity will have decreased to zero due to gravity
   }
 
   getCurrentPlatform(){
     this.environment.platforms.forEach((platform) => {
-      if(this.xPos > platform.xStart && this.xPos < platform.xStart + width){
+      if(this.xPos > platform.xStart && this.xPos < platform.xStart + platform.width){
         this.curPlat = platform;
       }
     });
