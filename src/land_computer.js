@@ -180,7 +180,6 @@ export default class LandComputer{
     //     this.curPlat = platform;
     //   }
     // });
-
     for(let i = 0; i < this.environment.platforms.length; i++){
       let platform = this.environment.platforms[i];
       if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width)){

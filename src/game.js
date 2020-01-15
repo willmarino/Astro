@@ -25,6 +25,11 @@ export default class Game{
     this.allProjectiles = {};
 
     this.startMenu = document.getElementById('start-menu');
+    this.playButton = document.getElementById('play-button');
+    this.playButton.addEventListener('mousedown', () => {
+      document.getElementById('start-menu').remove();
+      this.click();
+    });
 
   }
 
@@ -138,7 +143,7 @@ export default class Game{
 
     this.setNumComputers();
 
-    if(this.numComputers < 8){
+    if(this.numComputers < 4){
       this.spawnComputer();
     }
 
@@ -152,7 +157,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   restart(){
-    // debugger;
+    debugger;
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
@@ -180,17 +185,7 @@ export default class Game{
 
   // this will be run upon restart
   run(){
-    let playButton = document.getElementById('play-button');
     // debugger;
-    playButton.addEventListener('mousedown', () => {
-      // debugger;
-      document.getElementById('start-menu').remove();
-      this.click();
-    });
-
-    // this.context.canvas.addEventListener('mousedown', () => {
-    //   this.click();
-    // });
   }
 
   click(){
@@ -207,9 +202,9 @@ export default class Game{
   }
 
   step(){
-    // debugger;
+      // debugger;
     // this.addProjectiles();
-    if(this.gameOver() === true){
+    if(this.gameOver()){
       this.rerun();
     }
     this.animate();
@@ -221,9 +216,12 @@ export default class Game{
   }
 
   gameOver(){
+    // debugger;
     if(this.human.yPos > 710){
+      // debugger;
       return true;
     }else if(!this.human.alive && this.human.yPos > 710){
+      // debugger;
       return true;
     }else{
       return false;
@@ -234,6 +232,7 @@ export default class Game{
     // debugger;
     let gameAndTitle = document.getElementById('game-and-title');
     gameAndTitle.appendChild(this.startMenu);
+    // debugger;
     this.restart();
   }
 
