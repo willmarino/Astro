@@ -126,7 +126,7 @@ export default class LandComputer{
     }else if(this.goingRight){
       if(this.curPlat
         && this.yPos === this.curPlat.yStart - this.height
-        && this.xPos >= this.curPlat.xStart + this.curPlat.width - 20){
+        && this.xPos >= this.curPlat.xStart + this.curPlat.width - this.width - 20){
           return true;
       }
     }
@@ -138,11 +138,13 @@ export default class LandComputer{
     let curPlat = this.curPlat;
     let curPlatIdx = this.environment.platforms.indexOf(curPlat);
     let nextPlat;
+    debugger;
     if(this.goingRight){
       nextPlat = this.environment.platforms[curPlatIdx + 1];
     }else if(this.goingLeft){
       nextPlat = this.environment.platforms[curPlatIdx - 1];
     }
+    debugger;
     // heightDiff is height to be jumped
     // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
     let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3;
@@ -152,8 +154,9 @@ export default class LandComputer{
       ? curPlat.yStart + heightDiff : nextPlat.yStart + heightDiff;
       // gap btw platforms
     let xGap = this.goingRight
-      ? nextPlat.xStart - (curPlat.xStart + curPlat.width)
-      : curPlat.xStart - (nextPlat.xStart + nextPlat.width);
+      // ? nextPlat.xStart - (curPlat.xStart + curPlat.width)
+      ? nextPlat.xStart - this.xPos
+      : this.xPos - (nextPlat.xStart + nextPlat.width);
     // time jump will take from takeoff to land, in seconds
     let jumpTime = (xGap / this.xVel);
     // let jumpTime = (xGap < heightDiff) ? (heightDiff / this.jumpingYVel) : (xGap / this.xVel);
@@ -163,16 +166,34 @@ export default class LandComputer{
     let numSteps = halfway / this.xVel;
     let initYVel = (0 + (0.5) * numSteps) * (-1);
     this.yVel = initYVel;
+    debugger;
     // starting y velocity will need to be such that when the computer reaches the maximum of the jump parabola,
     // its y velocity will have decreased to zero due to gravity
   }
 
+  // edited getCurrentPlatform so that it sets this.curPlat to null if the comp is not above a platform,
+  // before it would only set new platforms, not set null for no platforms
+  // p.s. never use forEach, it sucks
   getCurrentPlatform(){
-    this.environment.platforms.forEach((platform) => {
-      if(this.xPos > platform.xStart && this.xPos < platform.xStart + platform.width){
+    // this.environment.platforms.forEach((platform) => {
+    //   if(this.xPos > platform.xStart && this.xPos < platform.xStart + platform.width){
+    //     this.curPlat = platform;
+    //   }
+    // });
+
+    for(let i = 0; i < this.environment.platforms.length; i++){
+      let platform = this.environment.platforms[i];
+      if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width)){
         this.curPlat = platform;
+        if(this.goingLeft){
+          this.nextPlat = this.environment.platforms[i - 1];
+        }else if(this.goingRight){
+          this.nextPlat = this.environment.platforms[i + 1];
+        }
+        return;
       }
-    });
+    }
+    this.curPlat = null;
   }
 
   filterProjectiles(){
