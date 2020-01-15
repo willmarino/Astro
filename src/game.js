@@ -152,6 +152,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   restart(){
+    // debugger;
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
@@ -179,13 +180,13 @@ export default class Game{
 
   // this will be run upon restart
   run(){
-    let playButton = document.getElementById('play-button')
+    let playButton = document.getElementById('play-button');
     // debugger;
     playButton.addEventListener('mousedown', () => {
       // debugger;
       document.getElementById('start-menu').remove();
       this.click();
-    })
+    });
 
     // this.context.canvas.addEventListener('mousedown', () => {
     //   this.click();
@@ -193,17 +194,20 @@ export default class Game{
   }
 
   click(){
+    // debugger;
     if(!this.running){
       this.play();
     }
   }
 
   play(){
+    // debugger;
     this.running = true;
     this.step();
   }
 
   step(){
+    // debugger;
     // this.addProjectiles();
     if(this.gameOver() === true){
       this.rerun();
