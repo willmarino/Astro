@@ -12,13 +12,13 @@ export default class LandComputer{
       // this.baseXvel = 5;
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 5;
+      this.xVel = 3;
     }else{
       this.xPos = 1800;
       // this.baseXvel = -5;
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -5;
+      this.xVel = -3;
     }
     
     this.yPos = 100;
@@ -108,11 +108,11 @@ export default class LandComputer{
     if (this.goingRight && this.human.xPos < this.xPos - 500) {
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -5;
+      this.xVel = -3;
     } else if (this.goingLeft && this.human.xPos > this.xPos + 500){
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 5;
+      this.xVel = 3;
     }
   }
 
@@ -137,19 +137,14 @@ export default class LandComputer{
     // set local vars for curPlat and nextPlat
     let curPlat = this.curPlat;
     let curPlatIdx = this.environment.platforms.indexOf(curPlat);
-    let nextPlat;
-    // debugger;
-    if(this.goingRight){
-      nextPlat = this.environment.platforms[curPlatIdx + 1];
-    }else if(this.goingLeft){
-      nextPlat = this.environment.platforms[curPlatIdx - 1];
-    }
+    let nextPlat = this.nextPlat;
     // debugger;
     // heightDiff is height to be jumped
     // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
     let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3;
     // set min jump height
     if(heightDiff < 25) heightDiff = 25;
+    // set max jump height on canvas dimensions according to which plat is lower
     let maxJumpHeight = (curPlat.yStart < nextPlat.yStart)
       ? curPlat.yStart + heightDiff : nextPlat.yStart + heightDiff;
       // gap btw platforms
@@ -161,14 +156,60 @@ export default class LandComputer{
     let jumpTime = (xGap / this.xVel);
     // let jumpTime = (xGap < heightDiff) ? (heightDiff / this.jumpingYVel) : (xGap / this.xVel);
 
+
     // in numSteps number of moves, yVel must go from x to 0
     let halfway = xGap / 2;
     let numSteps = halfway / this.xVel;
+
+    // fallingDist is the distance that the comp will fall after yvel is 0
+    // the minimum vertical distance is has to travel btw maxima and plat
+
+
+
     let initYVel = (0 + (0.5) * numSteps) * (-1);
     this.yVel = initYVel;
     // debugger;
     // starting y velocity will need to be such that when the computer reaches the maximum of the jump parabola,
     // its y velocity will have decreased to zero due to gravity
+  }
+
+  beginJump2(){
+    let startX = this.xPos;
+    let startY = this.curPlat.yStart;
+    let endY = this.nextPlat.yStart;
+
+    let endX;
+    if(this.goingRight){
+      endX = this.nextPlat.xStart + this.width + 10;
+    }else if(this.goingLeft){
+      endX = this.nextPlat.xStart + this.nextPlat.width - this.width - 10;
+    }
+
+    let xDiff = Math.abs(endX - startX);
+    
+    // steps steps first half, steps steps second half
+    let dist, steps, yvel = this.fallingDistance(xDiff / 2);
+
+    let yVertex = this.nextPlat + dist;
+
+    if(this.curPlat.yStart >= this.nextPlat.yStart){
+      this.yVel = yvel * (-1);
+    } else if (this.curPlat.yStart < this.nextPlat.yStart){
+      this.maxHeight = this.nextPlat + dist;
+      // let 
+    }
+
+  }
+
+  fallingDistance(xDiff){
+    let steps = Math.round(xDiff / this.xVel);
+    let yVel = 0;
+    let dist = 0;
+    for(let i = 0; i < steps; i++){
+      dist += yVel;
+      yvel += this.CONSTANTS.GRAVITY;
+    }
+    return [dist, steps, yvel];
   }
 
   // edited getCurrentPlatform so that it sets this.curPlat to null if the comp is not above a platform,
@@ -193,6 +234,7 @@ export default class LandComputer{
       }
     }
     this.curPlat = null;
+    this.nextPlat = null;
   }
 
   filterProjectiles(){

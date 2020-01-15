@@ -10,7 +10,7 @@ export default class Background{
       'green',
       'orange',
       'blue'
-    ]
+    ];
   }
 
   setRound(num){

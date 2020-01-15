@@ -74,7 +74,7 @@ export default class Environment{
   }
 
   generatePlatformGap(){
-    return Math.round(Math.random() * 100) + 15;
+    return Math.round(Math.random() * 100) + 100;
   }
 
   // --------------------------------------------------------------------------
