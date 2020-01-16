@@ -1,1 +1,2 @@
- - when landcomp tries to jump gaps, it sometimes loses its curPlat before it jumps, leaving it stuck on an edge
+  - when landcomp tries to jump gaps, it sometimes loses its curPlat before it jumps, leaving it stuck on an edge
+  - first, fix the movement bug where player movement on edge of environment adds to computer player velocity

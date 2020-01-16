@@ -167,11 +167,11 @@ export default class Computer{
     }
     if(this.human.xPos >= 800){
       if(this.xVel <= 0){
-        this.xPos -= 1;
+        // this.xPos -= 1;
       }
     }else if(this.human.xPos <= 300){
       if (this.human.xPos <= 300){
-        this.xPos += 1;
+        // this.xPos += 1;
       }
     }
   }

@@ -6,22 +6,23 @@ export default class LandComputer{
     this.context = context;
     this.human = human;
 
+    let positions = this.getStartPlatforms();
+
     let randNum = Math.random();
     if(randNum > 0.5){
-      this.xPos = 100;
-      // this.baseXvel = 5;
+      this.xPos = positions.left.xStart + ((positions.left.width / 2));
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 3;
+      this.xVel = 4;
     }else{
-      this.xPos = 1000;
-      // this.baseXvel = -5;
+      this.xPos = positions.right.xStart + ((positions.right.width / 2));
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -3;
+      this.xVel = -4;
     }
-    
+    debugger;
     this.getCurrentPlatform();
+    debugger;
     this.yPos = this.curPlat.yStart;
     this.yVel = 0;
     this.CONSTANTS = {
@@ -35,8 +36,13 @@ export default class LandComputer{
     this.additionalScore = 0;
     this.curPlat = null;
     this.nextPlat = null;
-    this.jumping = true;
-    this.jumpingYVel = 8;
+    this.jumping = false;
+    // this.jumpingYVel = 8;
+  }
+
+  getStartPlatforms(){
+    let mid = Math.round(this.environment.platforms.length / 2);
+    return { left: this.environment.platforms[mid - 1], right: this.environment.platforms[mid + 1]};
   }
 
   animate(context){
@@ -71,6 +77,11 @@ export default class LandComputer{
       return;
       // this.xPos += this.xVel;
     }
+
+    if((this.human.xPos >= 800 && this.human.xVel > 0) || (this.human.xPos <= 300 && this.human.xVel < 0)){
+      this.xPos -= this.human.xVel;
+    }
+
     this.switchDirections();
     if(this.curPlat && !this.jumping){
       debugger;
@@ -110,11 +121,11 @@ export default class LandComputer{
     if (this.goingRight && this.human.xPos < this.xPos - 500) {
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -3;
+      this.xVel = -4;
     } else if (this.goingLeft && this.human.xPos > this.xPos + 500){
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 3;
+      this.xVel = 4;
     }
   }
 
@@ -135,7 +146,7 @@ export default class LandComputer{
     return false;
   }
 
-  beginJump2(){
+  beginJumpOld(){
     // set local vars for curPlat and nextPlat
     let curPlat = this.curPlat;
     let curPlatIdx = this.environment.platforms.indexOf(curPlat);
@@ -200,11 +211,14 @@ export default class LandComputer{
 
     // let yVertex = this.nextPlat. + dist;
     debugger;
-    if(this.curPlat.yStart >= this.nextPlat.yStart){
+    if(this.curPlat.yStart <= this.nextPlat.yStart){
+      debugger;
       this.yVel = yVel * (-1);
-    } else if (this.curPlat.yStart < this.nextPlat.yStart){
-      this.maxHeight = this.nextPlat.yStart + dist;
-      this.yVel = this.calculateRise(steps, maxHeight);
+    } else if (this.curPlat.yStart > this.nextPlat.yStart){
+      debugger;
+      let maxHeight = this.nextPlat.yStart - this.height - dist;
+      this.yVel = this.calculateRise(steps, maxHeight) * (-1);
+      debugger;
     }
     debugger;
 
@@ -216,7 +230,8 @@ export default class LandComputer{
     for(let i = 1; i <= roundedSteps; i++){
       count += i;
     }
-    // maxHeight = roundedSteps(initYvel) - count(grav)
+    // maxHeight = (roundedSteps * initYvel) - (count * grav)
+    // maxHeight + (count * grav) = roundedSteps * initYvel
     let initYvel = (maxHeight + (count * 0.5)) / roundedSteps;
     debugger;
     return initYvel;

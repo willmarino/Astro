@@ -47,7 +47,7 @@ export default class Game{
   }
 
   switchRounds(){
-    if(this.human.distanceCovered > 100){
+    if(this.score.score > 5){
       this.background.round = 1;
     }
   }
@@ -129,7 +129,9 @@ export default class Game{
     // this.filterComputers();
     this.sendEnemyProjectiles();
 
+    this.switchRounds();
     this.background.animate(this.context);
+
     this.environment.animate(this.context);
     this.human.animate(this.context);
     this.score.animate();
