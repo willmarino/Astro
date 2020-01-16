@@ -157,7 +157,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   restart(){
-    debugger;
+    // debugger;
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);

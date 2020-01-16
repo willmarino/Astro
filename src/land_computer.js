@@ -8,20 +8,21 @@ export default class LandComputer{
 
     let randNum = Math.random();
     if(randNum > 0.5){
-      this.xPos = -500;
+      this.xPos = 100;
       // this.baseXvel = 5;
       this.goingRight = true;
       this.goingLeft = false;
       this.xVel = 3;
     }else{
-      this.xPos = 1800;
+      this.xPos = 1000;
       // this.baseXvel = -5;
       this.goingLeft = true;
       this.goingRight = false;
       this.xVel = -3;
     }
     
-    this.yPos = 100;
+    this.getCurrentPlatform();
+    this.yPos = this.curPlat.yStart;
     this.yVel = 0;
     this.CONSTANTS = {
       GRAVITY: 0.5,
@@ -61,10 +62,10 @@ export default class LandComputer{
   }
 
   move(){
-    // debugger;
+    debugger;
     this.getCurrentPlatform();
     if(!this.alive){
-      // debugger;
+      debugger;
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
       return;
@@ -72,13 +73,14 @@ export default class LandComputer{
     }
     this.switchDirections();
     if(this.curPlat && !this.jumping){
-      // debugger;
+      debugger;
       this.yPos = this.curPlat.yStart - this.height;
       this.xPos += this.xVel;
     }
     if(this.isOnEdge()){
-      // debugger;
+      debugger;
       this.beginJump();
+      debugger;
       this.jumping = true;
       this.xPos += this.xVel;
       this.yPos += this.yVel;
@@ -86,17 +88,17 @@ export default class LandComputer{
     }
     // if you have jumped already
     if(this.jumping){
-      // debugger;
+      debugger;
       // if you have jumped, your yVel is downward, and your ypos is on floor, then land
       if (this.curPlat && this.yPos >= this.curPlat.yStart - this.height && this.yVel > 0){
-        // debugger;
+        debugger;
         this.jumping = false;
         this.yPos = this.curPlat.yStart - this.height;
         this.yVel = 0;
         this.xPos += this.xVel;
       // if you are still midjump
       }else{
-        // debugger;
+        debugger;
         this.xPos += this.xVel;
         this.yPos += this.yVel;
         this.yVel += this.CONSTANTS.GRAVITY;
@@ -126,14 +128,14 @@ export default class LandComputer{
     }else if(this.goingRight){
       if(this.curPlat
         && this.yPos === this.curPlat.yStart - this.height
-        && this.xPos >= this.curPlat.xStart + this.curPlat.width - this.width - 20){
+        && this.xPos >= this.curPlat.xStart + this.curPlat.width - this.width - 10){
           return true;
       }
     }
     return false;
   }
 
-  beginJump(){
+  beginJump2(){
     // set local vars for curPlat and nextPlat
     let curPlat = this.curPlat;
     let curPlatIdx = this.environment.platforms.indexOf(curPlat);
@@ -173,43 +175,63 @@ export default class LandComputer{
     // its y velocity will have decreased to zero due to gravity
   }
 
-  beginJump2(){
+  beginJump(){
+    debugger;
     let startX = this.xPos;
     let startY = this.curPlat.yStart;
     let endY = this.nextPlat.yStart;
 
     let endX;
     if(this.goingRight){
-      endX = this.nextPlat.xStart + this.width + 10;
+      endX = this.nextPlat.xStart + 10;
     }else if(this.goingLeft){
       endX = this.nextPlat.xStart + this.nextPlat.width - this.width - 10;
     }
-
+    debugger;
     let xDiff = Math.abs(endX - startX);
     
     // steps steps first half, steps steps second half
-    let dist, steps, yvel = this.fallingDistance(xDiff / 2);
+    // let dist, steps, yvel = this.calculateFall(xDiff / 2);
+    let obj = this.calculateFall(xDiff / 2);
+    let dist = obj.dist;
+    let steps = obj.steps;
+    let yVel = obj.yVel;
+    debugger;
 
-    let yVertex = this.nextPlat + dist;
-
+    // let yVertex = this.nextPlat. + dist;
+    debugger;
     if(this.curPlat.yStart >= this.nextPlat.yStart){
-      this.yVel = yvel * (-1);
+      this.yVel = yVel * (-1);
     } else if (this.curPlat.yStart < this.nextPlat.yStart){
-      this.maxHeight = this.nextPlat + dist;
-      // let 
+      this.maxHeight = this.nextPlat.yStart + dist;
+      this.yVel = this.calculateRise(steps, maxHeight);
     }
+    debugger;
 
   }
 
-  fallingDistance(xDiff){
-    let steps = Math.round(xDiff / this.xVel);
+  calculateRise(steps, maxHeight){
+    let roundedSteps = Math.round(steps);
+    let count = 0;
+    for(let i = 1; i <= roundedSteps; i++){
+      count += i;
+    }
+    // maxHeight = roundedSteps(initYvel) - count(grav)
+    let initYvel = (maxHeight + (count * 0.5)) / roundedSteps;
+    debugger;
+    return initYvel;
+  }
+
+  calculateFall(xDiff){
+    let steps = Math.abs(Math.round(xDiff / this.xVel));
     let yVel = 0;
     let dist = 0;
     for(let i = 0; i < steps; i++){
       dist += yVel;
-      yvel += this.CONSTANTS.GRAVITY;
+      yVel += this.CONSTANTS.GRAVITY;
     }
-    return [dist, steps, yvel];
+    debugger;
+    return {dist, steps, yVel};
   }
 
   // edited getCurrentPlatform so that it sets this.curPlat to null if the comp is not above a platform,
