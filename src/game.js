@@ -16,6 +16,7 @@ export default class Game{
     this.running = false;
 
     this.computers = [];
+    this.landComputers = [];
     this.computersBeingAdded = 0;
     this.numComputers = this.computers.length + this.computersBeingAdded;
 
@@ -141,11 +142,14 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context);
     });
-    this.landComp.animate(this.context);
+    // this.landComp.animate(this.context);
+    this.landComputers.forEach((comp) => {
+      comp.animate(this.context);
+    })
 
     this.setNumComputers();
 
-    if(this.numComputers < 4){
+    if(this.numComputers < 2){
       this.spawnComputer();
     }
 
@@ -168,7 +172,7 @@ export default class Game{
     this.computers = [];
     let i = 1;
     let compStartX;
-    while(i < 6){
+    while(i < 2){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -177,7 +181,12 @@ export default class Game{
       this.computers.push(new Computer(this.environment, this.context, this.human, compStartX));
       i += 1;
     }
-    this.landComp = new LandComputer(this.environment, this.context, this.human);
+    let j = 0;
+    while(j < 10){
+      this.landComputers.push(new LandComputer(this.environment, this.context, this.human, j * 5));
+      j += 1;
+    }
+    // this.landComp = new LandComputer(this.environment, this.context, this.human);
     this.running = false;
 
     // this.step();

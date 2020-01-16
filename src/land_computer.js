@@ -1,7 +1,7 @@
 
 
 export default class LandComputer{
-  constructor(environment, context, human){
+  constructor(environment, context, human, posOffset){
     this.environment = environment;
     this.context = context;
     this.human = human;
@@ -10,12 +10,12 @@ export default class LandComputer{
 
     let randNum = Math.random();
     if(randNum > 0.5){
-      this.xPos = positions.left.xStart + ((positions.left.width / 2));
+      this.xPos = positions.left.xStart + ((positions.left.width / 2)) + posOffset;
       this.goingRight = true;
       this.goingLeft = false;
       this.xVel = 4;
     }else{
-      this.xPos = positions.right.xStart + ((positions.right.width / 2));
+      this.xPos = positions.right.xStart + ((positions.right.width / 2)) - posOffset;
       this.goingLeft = true;
       this.goingRight = false;
       this.xVel = -4;
@@ -235,6 +235,14 @@ export default class LandComputer{
     let initYvel = (maxHeight + (count * 0.5)) / roundedSteps;
     debugger;
     return initYvel;
+  }
+
+  calculateRise2(steps, maxHeight){
+    // let yDiff = Math.abs(this.curPlat.yStart - maxHeight);
+    // let initYvel = 0;
+
+
+
   }
 
   calculateFall(xDiff){
