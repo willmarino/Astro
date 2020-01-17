@@ -10,12 +10,12 @@ export default class LandComputer{
 
     let randNum = Math.random();
     if(randNum > 0.5){
-      this.xPos = positions.left.xStart + ((positions.left.width / 2)) + posOffset;
+      this.xPos = positions.left.xStart + ((positions.left.width / 2));
       this.goingRight = true;
       this.goingLeft = false;
       this.xVel = 4;
     }else{
-      this.xPos = positions.right.xStart + ((positions.right.width / 2)) - posOffset;
+      this.xPos = positions.right.xStart + ((positions.right.width / 2));
       this.goingLeft = true;
       this.goingRight = false;
       this.xVel = -4;
@@ -216,7 +216,7 @@ export default class LandComputer{
       this.yVel = yVel * (-1);
     } else if (this.curPlat.yStart > this.nextPlat.yStart){
       debugger;
-      let maxHeight = this.nextPlat.yStart - this.height - dist;
+      let maxHeight = (this.nextPlat.yStart - this.curPlat.yStart - dist) * (-1);
       this.yVel = this.calculateRise(steps, maxHeight) * (-1);
       debugger;
     }
@@ -230,19 +230,9 @@ export default class LandComputer{
     for(let i = 1; i <= roundedSteps; i++){
       count += i;
     }
-    // maxHeight = (roundedSteps * initYvel) - (count * grav)
-    // maxHeight + (count * grav) = roundedSteps * initYvel
     let initYvel = (maxHeight + (count * 0.5)) / roundedSteps;
     debugger;
     return initYvel;
-  }
-
-  calculateRise2(steps, maxHeight){
-    // let yDiff = Math.abs(this.curPlat.yStart - maxHeight);
-    // let initYvel = 0;
-
-
-
   }
 
   calculateFall(xDiff){
