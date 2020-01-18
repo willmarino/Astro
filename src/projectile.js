@@ -37,7 +37,6 @@ export default class Projectile{
   }
   
   animate(context, xVel=null, yVel=null){
-    debugger; 
     if(this.owner === 'computer'){
       if(this.homing === true){
         this.homingMove(xVel, yVel);
@@ -91,7 +90,6 @@ export default class Projectile{
   }
 
   homingMove(xVel, yVel){
-    debugger;
 
     if((this.human.xPos >= 800 && this.human.xVel >= 0)){
       this.xPos += xVel;

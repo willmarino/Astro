@@ -4,3 +4,9 @@
     in order to change velocity accordingly, owner is often computer, it needs to only be checking
     for human position, thats all that matters for this purpose 
   
+  -Right now when a projectile collides with an enemy, it is no longer drawn, but it is still functional in the game,
+  I need to take it out of the game entirely once it hits an enemy
+
+  -reorganize collision logic so that collision funtions are in a util file, and they are called in game file, instead of being
+    spread out into different class files. This will make my code more readable generally, and in particular make it easier to debug
+    issues with collision.

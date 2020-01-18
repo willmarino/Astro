@@ -35,6 +35,25 @@ export default class Computer{
 
   // ------------------------------------------------------------
 
+
+  filterProjectiles(){
+    let projectiles = Object.values(this.projectiles).filter(p => p.didHit === true);
+    projectiles.forEach((p) => {
+      let id = p.id;
+      delete this.projectiles[id];
+    })
+  }
+
+  filterHomingProjectiles(){
+    let homingProjectiles = Object.values(this.projectiles).filter(p => p.homing === true);
+    Object.values(homingProjectiles).forEach((hp) => {
+      let id = hp.id;
+      if(hp.alive === false){
+        delete this.projectiles[id];
+      }
+    })
+  }
+
   initiateShot(){
     window.setInterval(() => {
       this.shoot();
@@ -94,12 +113,10 @@ export default class Computer{
 
     // if projectile is homing, we need to call this method and compare the projectile's
     // current position with that of the human player, else we are comparing the player and the computer
-    debugger;
     if(homing === false){
       xDelta = pos.x - this.xPos;
       yDelta = pos.y - this.yPos;
     }else if(homing === true){
-      debugger;
       xDelta = pos.x - projectile.xPos;
       yDelta = pos.y - projectile.yPos;
     }
@@ -199,12 +216,12 @@ export default class Computer{
   animate(context, human){
     this.action();
     this.draw(context);
+    this.filterHomingProjectiles();
     let pos;
     if(Object.values(this.projectiles).length > 0){
       Object.values(this.projectiles).forEach((p) => {
         if(p.homing === true){
           pos = {x: human.xPos, y: human.yPos};
-          debugger;
           p.animate(context, ...this.configureProjectile(pos, true, p));
         }else{
           p.animate(context);
@@ -266,6 +283,7 @@ export default class Computer{
   }
 
   collidedWithProjectiles(){
+    // check for computer player collision with human player projectiles
     Object.values(this.human.projectiles).forEach((hp) => {
       if(this.collide(this, hp)){
         hp.didHit = true;
@@ -274,6 +292,17 @@ export default class Computer{
         return true;
       }
     });
+    // check for computer homing missle collision with human player projectiles
+    let homingMissles = Object.values(this.projectiles).filter(p => p.homing === true);
+    homingMissles.forEach((hm) => {
+      Object.values(this.human.projectiles).forEach((hp) => {
+        if(this.collide(hm, hp)){
+          hp.didHit = true;
+          hm.alive = false;
+          return true;
+        }
+      })
+    })
   }
 
 

@@ -47,6 +47,14 @@ export default class Game{
     this.computers = this.computers.filter(c => c.yPos < 10000);
   }
 
+  addEnemyScore(){
+    let that = this;
+    this.computers.forEach((comp) => {
+      that.score.score += comp.additionalScore;
+      comp.additionalScore = 0;
+    });
+  }
+
   switchRounds(){
     if(this.score.score > 5){
       this.background.round = 1;
@@ -109,31 +117,7 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
-  addEnemyScore(){
-    let that = this;
-    this.computers.forEach((comp) => {
-      that.score.score += comp.additionalScore;
-      comp.additionalScore = 0;
-    });
-  }
-
-  addProjectiles(){
-    this.allProjectiles = this.human.projectiles;
-    for(let i = 0; i < this.computers.length; i++){
-      let curComp = this.computers[i];
-      this.allProjectiles = Object.assign(this.allProjectiles, curComp.projectiles);
-    }
-  }
-
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-// --------------------------------------------------------------------------
-
   restart(){
-    // debugger;
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
@@ -166,25 +150,20 @@ export default class Game{
 
   // this will be run upon restart
   run(){
-    // debugger;
   }
 
   click(){
-    // debugger;
     if(!this.running){
       this.play();
     }
   }
 
   play(){
-    // debugger;
     this.running = true;
     this.step();
   }
 
   step(){
-      // debugger;
-    // this.addProjectiles();
     if(this.gameOver()){
       this.rerun();
     }
@@ -227,12 +206,9 @@ export default class Game{
   }
 
   gameOver(){
-    // debugger;
     if(this.human.yPos > 710){
-      // debugger;
       return true;
     }else if(!this.human.alive && this.human.yPos > 710){
-      // debugger;
       return true;
     }else{
       return false;
@@ -240,19 +216,32 @@ export default class Game{
   }
 
   rerun(){
-    // debugger;
     let gameAndTitle = document.getElementById('game-and-title');
     gameAndTitle.appendChild(this.startMenu);
-    // debugger;
     this.restart();
   }
 
 
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
+  // addProjectiles(){
+  //   this.allProjectiles = this.human.projectiles;
+  //   for(let i = 0; i < this.computers.length; i++){
+  //     let curComp = this.computers[i];
+  //     this.allProjectiles = Object.assign(this.allProjectiles, curComp.projectiles);
+  //   }
+  // }
 
 
 
 
 
 }
+
+
 

@@ -93,7 +93,6 @@ export default class Human{
 	}
 
 	move(){
-		// debugger;
 		// if player is no longer 'alive', then apply gravity until they fall off screen
 		if(!this.alive){
 			this.applyGravity();
@@ -459,6 +458,7 @@ export default class Human{
 		// }
 
 		if(obj1Diag + obj2Diag + 10 > totalDelta) {
+			debugger;
 			return true;
 		} else {
 			return false;
@@ -470,6 +470,7 @@ export default class Human{
 		let that = this;
 		Object.values(this.computerProjectiles).forEach((p) => {
 			if (that.collide(that, p)) {
+				debugger;
 				p.didHit = true;
 				that.alive = false;
 			}

@@ -20,9 +20,7 @@ export default class LandComputer{
       this.goingRight = false;
       this.xVel = -4;
     }
-    // debugger;
     this.getCurrentPlatform();
-    // debugger;
     this.yPos = this.curPlat.yStart;
     this.yVel = 0;
     this.CONSTANTS = {
@@ -68,10 +66,9 @@ export default class LandComputer{
   }
 
   move(){
-    // debugger;
     this.getCurrentPlatform();
     if(!this.alive){
-      // debugger;
+
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
       return;
@@ -84,14 +81,14 @@ export default class LandComputer{
 
     this.switchDirections();
     if(this.curPlat && !this.jumping){
-      // debugger;
+
       this.yPos = this.curPlat.yStart - this.height;
       this.xPos += this.xVel;
     }
     if(this.isOnEdge()){
-      // debugger;
+
       this.beginJump();
-      // debugger;
+
       this.jumping = true;
       this.xPos += this.xVel;
       this.yPos += this.yVel;
@@ -99,17 +96,17 @@ export default class LandComputer{
     }
     // if you have jumped already
     if(this.jumping){
-      // debugger;
+
       // if you have jumped, your yVel is downward, and your ypos is on floor, then land
       if (this.curPlat && this.yPos >= this.curPlat.yStart - this.height && this.yVel > 0){
-        // debugger;
+  
         this.jumping = false;
         this.yPos = this.curPlat.yStart - this.height;
         this.yVel = 0;
         this.xPos += this.xVel;
       // if you are still midjump
       }else{
-        // debugger;
+  
         this.xPos += this.xVel;
         this.yPos += this.yVel;
         this.yVel += this.CONSTANTS.GRAVITY;
@@ -151,7 +148,6 @@ export default class LandComputer{
     let curPlat = this.curPlat;
     let curPlatIdx = this.environment.platforms.indexOf(curPlat);
     let nextPlat = this.nextPlat;
-    // debugger;
     // heightDiff is height to be jumped
     // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
     let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3;
@@ -181,13 +177,11 @@ export default class LandComputer{
 
     let initYVel = (0 + (0.5) * numSteps) * (-1);
     this.yVel = initYVel;
-    // debugger;
     // starting y velocity will need to be such that when the computer reaches the maximum of the jump parabola,
     // its y velocity will have decreased to zero due to gravity
   }
 
   beginJump(){
-    // debugger;
     let startX = this.xPos;
     let startY = this.curPlat.yStart;
     let endY = this.nextPlat.yStart;
@@ -198,7 +192,6 @@ export default class LandComputer{
     }else if(this.goingLeft){
       endX = this.nextPlat.xStart + this.nextPlat.width - this.width - 10;
     }
-    // debugger;
     let xDiff = Math.abs(endX - startX);
     
     // steps steps first half, steps steps second half
@@ -207,20 +200,17 @@ export default class LandComputer{
     let dist = obj.dist;
     let steps = obj.steps;
     let yVel = obj.yVel;
-    // debugger;
 
     // let yVertex = this.nextPlat. + dist;
-    // debugger;
     if(this.curPlat.yStart <= this.nextPlat.yStart){
-      // debugger;
+
       this.yVel = yVel * (-1);
     } else if (this.curPlat.yStart > this.nextPlat.yStart){
-      // debugger;
+
       let maxHeight = (this.nextPlat.yStart - this.curPlat.yStart - dist) * (-1);
       this.yVel = this.calculateRise(steps, maxHeight) * (-1);
-      // debugger;
+
     }
-    // debugger;
 
   }
 
@@ -231,7 +221,6 @@ export default class LandComputer{
       count += i;
     }
     let initYvel = (maxHeight + (count * 0.5)) / roundedSteps;
-    // debugger;
     return initYvel;
   }
 
@@ -243,7 +232,6 @@ export default class LandComputer{
       dist += yVel;
       yVel += this.CONSTANTS.GRAVITY;
     }
-    // debugger;
     return {dist, steps, yVel};
   }
 
