@@ -4,6 +4,7 @@ import Background from "./background";
 import Computer from "./computer";
 import Score from "./score";
 import LandComputer from "./land_computer";
+import * as CollisionUtil from './util/collision_logic';
 
 
 export default class Game{
@@ -23,8 +24,6 @@ export default class Game{
     this.humanProjectiles = [];
     this.computerProjectiles = [];
 
-    this.allProjectiles = {};
-
     this.startMenu = document.getElementById('start-menu');
     this.playButton = document.getElementById('play-button');
     this.playButton.addEventListener('mousedown', () => {
@@ -33,6 +32,29 @@ export default class Game{
     });
 
   }
+
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+
+  checkCollision(){
+    CollisionUtil.objectCollision(this.human, this.computerProjectiles);
+
+    let homingProjectiles = this.computerProjectiles.filter(p => p.homing === true);
+    homingProjectiles.forEach((hp) => {
+      CollisionUtil.objectCollision(hp, this.humanProjectiles);
+    })
+
+    this.computers.forEach((computer) => {
+      CollisionUtil.objectCollision(computer, this.humanProjectiles);
+    })
+  }
+
+
 
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -121,8 +143,8 @@ export default class Game{
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
-    this.score = new Score(this.context);
     this.environment.human = this.human;
+    this.score = new Score(this.context);
     this.computers = [];
     let i = 1;
     let compStartX;
@@ -169,6 +191,7 @@ export default class Game{
     }
     this.animate();
     this.addEnemyScore();
+    this.switchRounds();
     this.filterComputers();
     if(this.running){
       window.requestAnimationFrame(this.step.bind(this));
@@ -176,13 +199,8 @@ export default class Game{
   }
 
   animate(){
-
-    // this.filterComputers();
     this.sendEnemyProjectiles();
-
-    this.switchRounds();
     this.background.animate(this.context);
-
     this.environment.animate(this.context);
     this.human.animate(this.context);
     this.score.animate();

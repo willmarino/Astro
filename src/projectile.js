@@ -42,16 +42,16 @@ export default class Projectile{
         this.homingMove(xVel, yVel);
         this.homingDraw(context);
       }else{
-        this.computerMove();
+        this.computerProjectileMove();
         this.draw(context);
       }
     }else{
-      this.humanMove();
+      this.humanProjectileMove();
       this.draw(context);
     }
   }
   
-  humanMove(){
+  humanProjectileMove(){
     if((this.playerXPos >= 800 && this.playerXVel >= 0)){
       this.xPos += this.xVel;
       if(this.owner === 'computer'){
@@ -70,7 +70,7 @@ export default class Projectile{
     }
   }
 
-  computerMove(){
+  computerProjectileMove(){
     if((this.human.xPos >= 800 && this.human.xVel >= 0)){
       this.xPos += this.xVel;
       if(this.owner === 'computer'){

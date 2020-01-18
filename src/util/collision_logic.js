@@ -37,7 +37,7 @@ export const collide = (obj1, obj2) => {
 
 }
 
-export const collidedWithProjectiles = (obj, projectiles) => {
+export const objectCollision = (obj, projectiles) => {
   projectiles.forEach((p) => {
     if(collide(obj, p)){
       p.didHit = true;

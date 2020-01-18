@@ -10,3 +10,7 @@
   -reorganize collision logic so that collision funtions are in a util file, and they are called in game file, instead of being
     spread out into different class files. This will make my code more readable generally, and in particular make it easier to debug
     issues with collision.
+    - I want to pull up human and computer projectiles and then I want to check for any collisions between human, computers,
+    homing missles, and projectiles. I will filter out the projectiles which have collided, and the ones which are off screen,
+    (if they are not homing missles, as they should be able to come back and hit players from off screen), animate them, and then send
+    the newly filter lists of projectiles back down to the human and computer players.
