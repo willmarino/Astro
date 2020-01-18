@@ -1,7 +1,7 @@
 import Projectile from "./projectile";
 
 export default class Computer{
-  constructor(environment, context, human, xPos=850){
+  constructor(environment, context, human, counterOffset, xPos=850){
     this.type = 'computer';
 
 		this.CONSTANTS = {
@@ -17,7 +17,8 @@ export default class Computer{
 
     this.additionalScore = 0;
 
-    this.projectileCount = 10000;
+    debugger;
+    this.projectileCount = 10000 + counterOffset;
 
 		this.xPos = xPos;
     this.yPos = 100;
@@ -74,6 +75,7 @@ export default class Computer{
   }
 
   shoot(){
+    debugger;
     let pos = {};
     pos.x = this.playerPosX;
     pos.y = this.playerPosY;
@@ -81,7 +83,7 @@ export default class Computer{
     let newProj;
     
     let randNum = Math.round(Math.random() * 10);
-    if(randNum >= 0){
+    if(randNum >= 8){
       newProj = (
         new Projectile(
           this,

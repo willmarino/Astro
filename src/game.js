@@ -21,8 +21,10 @@ export default class Game{
     this.computersBeingAdded = 0;
     this.numComputers = this.computers.length + this.computersBeingAdded;
 
-    this.humanProjectiles = [];
-    this.computerProjectiles = [];
+    this.humanProjectiles = {};
+    this.computerProjectiles = {};
+
+    this.projectileOffset = 100;
 
     this.startMenu = document.getElementById('start-menu');
     this.playButton = document.getElementById('play-button');
@@ -33,6 +35,41 @@ export default class Game{
 
   }
 
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+
+  filterProjectiles(){
+    this.grabHumanProjectiles();
+    this.grabComputerProjectiles();
+    this.checkCollisions();
+    this.deleteProjectiles(this.humanProjectiles);
+    this.deleteProjectiles(this.computerProjectiles);
+  }
+
+  deleteProjectiles(projectiles){
+    Object.values(projectiles).forEach((p) => {
+      if(p.didHit){
+        delete projectiles[p.id];
+      }else if(!p.alive){
+        delete projectiles[p.id];
+      }else if(this.offScreen(p) && !p.homing){
+        delete projectiles[p.id];
+      }
+    })
+  }
+
+  offScreen(projectile){
+    if(projectile.xPos > 1150 || projectile.xPos < -50){
+      return true;
+    }else if(projectile.yPos > 800 || projectile.yPos < -50){
+      return true;
+    }
+    return false;
+  }
 
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -41,7 +78,26 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
-  checkCollision(){
+  grabHumanProjectiles(){
+    this.humanProjectiles = this.human.projectiles;
+  }
+
+  grabComputerProjectiles(){
+    let res = {};
+    this.computers.forEach((computer) => {
+      res = Object.assign(res, computer.projectiles);
+    })
+    return res;
+  }
+
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+
+  checkCollisions(){
     CollisionUtil.objectCollision(this.human, this.computerProjectiles);
 
     let homingProjectiles = this.computerProjectiles.filter(p => p.homing === true);
@@ -54,8 +110,6 @@ export default class Game{
     })
   }
 
-
-
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -66,7 +120,7 @@ export default class Game{
   // if computer players are offscreen, that means theyre no longer alive, and dont need to be
   // in the game's computers list, and they dont need to be rendered
   filterComputers(){
-    this.computers = this.computers.filter(c => c.yPos < 10000);
+    this.computers = this.computers.filter(c => c.yPos < 1000);
   }
 
   addEnemyScore(){
@@ -154,7 +208,8 @@ export default class Game{
       }else{
         compStartX = -50 - (100 * i);
       }
-      this.computers.push(new Computer(this.environment, this.context, this.human, compStartX));
+      this.computers.push(new Computer(this.environment, this.context, this.human, this.projectileOffset, compStartX));
+      this.projectileOffset += 100;
       i += 1;
     }
     // let j = 0;

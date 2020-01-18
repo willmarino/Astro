@@ -1,6 +1,6 @@
   - add functionality to let player shoot down homing missiles
 
-  xxxxx-first, change projectile move method, right now it is checking for owner position
+  XXXXX-first, change projectile move method, right now it is checking for owner position
     in order to change velocity accordingly, owner is often computer, it needs to only be checking
     for human position, thats all that matters for this purpose 
   
@@ -14,3 +14,6 @@
     homing missles, and projectiles. I will filter out the projectiles which have collided, and the ones which are off screen,
     (if they are not homing missles, as they should be able to come back and hit players from off screen), animate them, and then send
     the newly filter lists of projectiles back down to the human and computer players.
+    00000- Offset projectile id counter in each computer so that they dont overlap when pulled all together up into game file
+
+  00000-For unknown reason, when one homing projectils is shot, the other dissapears - (default values in constructors must be last)
