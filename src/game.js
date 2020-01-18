@@ -125,36 +125,6 @@ export default class Game{
     }
   }
 
-  animate(){
-
-    // this.filterComputers();
-    this.sendEnemyProjectiles();
-
-    this.switchRounds();
-    this.background.animate(this.context);
-
-    this.environment.animate(this.context);
-    this.human.animate(this.context);
-    this.score.animate();
-
-    this.setPlayerTracking();
-
-    this.computers.forEach((c) => {
-      c.animate(this.context);
-    });
-    this.landComp.animate(this.context);
-    // this.landComputers.forEach((comp) => {
-    //   comp.animate(this.context);
-    // })
-
-    this.setNumComputers();
-
-    if(this.numComputers < 2){
-      this.spawnComputer();
-    }
-
-  }
-
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -172,7 +142,7 @@ export default class Game{
     this.computers = [];
     let i = 1;
     let compStartX;
-    while(i < 2){
+    while(i < 1){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -224,6 +194,36 @@ export default class Game{
     if(this.running){
       window.requestAnimationFrame(this.step.bind(this));
     }
+  }
+
+  animate(){
+
+    // this.filterComputers();
+    this.sendEnemyProjectiles();
+
+    this.switchRounds();
+    this.background.animate(this.context);
+
+    this.environment.animate(this.context);
+    this.human.animate(this.context);
+    this.score.animate();
+
+    this.setPlayerTracking();
+
+    this.computers.forEach((c) => {
+      c.animate(this.context, this.human);
+    });
+    this.landComp.animate(this.context);
+    // this.landComputers.forEach((comp) => {
+    //   comp.animate(this.context);
+    // })
+
+    this.setNumComputers();
+
+    if(this.numComputers < 1){
+      this.spawnComputer();
+    }
+
   }
 
   gameOver(){

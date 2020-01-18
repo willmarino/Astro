@@ -1,4 +1,4 @@
-import Platform from "./platform";
+ import Platform from "./platform";
 
 export default class Environment{
   constructor(dimensions, context, human=null){

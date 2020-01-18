@@ -93,7 +93,7 @@ export default class Human{
 	}
 
 	move(){
-
+		// debugger;
 		// if player is no longer 'alive', then apply gravity until they fall off screen
 		if(!this.alive){
 			this.applyGravity();

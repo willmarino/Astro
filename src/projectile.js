@@ -2,10 +2,11 @@
 
 export default class Projectile{
   // constructor(id, playerXVel, playerPos, context, xVel, yVel){
-  constructor(player, projectileXVel, projectileYVel, homing=false){
+  constructor(player, projectileXVel, projectileYVel, homing=false, human=null){
 
     this.homing = homing;
 
+    this.human = human;
     this.owner = player.type;
     this.context = player.context;
 
@@ -24,48 +25,93 @@ export default class Projectile{
       this.height = 5;
     }else{
       if(homing){
-        this.width = 20;
-        this.height = 20;  
+        this.width = 15;
+        this.height = 15;  
       }else{
         this.width = 5;
         this.height = 5;
       }
     }
-
+    this.alive = true;
     this.id = player.projectileCount;
   }
   
   animate(context, xVel=null, yVel=null){
-    if(this.homing === true){
-      this.homingMove(xVel, yVel);
-      this.homingDraw(context);
+    debugger; 
+    if(this.owner === 'computer'){
+      if(this.homing === true){
+        this.homingMove(xVel, yVel);
+        this.homingDraw(context);
+      }else{
+        this.computerMove();
+        this.draw(context);
+      }
     }else{
-      this.move();
+      this.humanMove();
       this.draw(context);
     }
   }
   
-  move(){
+  humanMove(){
     if((this.playerXPos >= 800 && this.playerXVel >= 0)){
       this.xPos += this.xVel;
-      this.xPos -= this.playerXVel;
-      // this.xPos -= (this.playerXVel / 2);
+      if(this.owner === 'computer'){
+        this.xPos -= (this.playerXVel / 2);
+      }
       this.yPos += this.yVel;
     } else if ((this.playerXPos <= 300 && this.playerXVel <= 0)){
       this.xPos += this.xVel;
-      this.xPos -= (this.playerXVel / 2);
+      if(this.owner === 'computer'){
+        this.xPos -= (this.playerXVel / 2);
+      }
       this.yPos += this.yVel;
     }else{
       this.xPos += this.xVel;
       this.yPos += this.yVel;
     }
-    // this.xPos += this.xVel;
-    // this.yPos += this.yVel;
+  }
+
+  computerMove(){
+    if((this.human.xPos >= 800 && this.human.xVel >= 0)){
+      this.xPos += this.xVel;
+      if(this.owner === 'computer'){
+        this.xPos -= (this.human.xVel / 2);
+      }
+      this.yPos += this.yVel;
+    } else if ((this.human.xPos <= 300 && this.human.xVel <= 0)){
+      this.xPos += this.xVel;
+      if(this.owner === 'computer'){
+        this.xPos -= (this.human.xVel / 2);
+      }
+      this.yPos += this.yVel;
+    }else{
+      this.xPos += this.xVel;
+      this.yPos += this.yVel;
+    }
   }
 
   homingMove(xVel, yVel){
-    this.xPos += xVel;
-    this.yPos += yVel;
+    debugger;
+
+    if((this.human.xPos >= 800 && this.human.xVel >= 0)){
+      this.xPos += xVel;
+      if(this.owner === 'computer'){
+        this.xPos -= (this.human.xVel / 2);
+      }
+      this.yPos += yVel;
+    } else if ((this.human.xPos <= 300 && this.human.xVel <= 0)){
+      this.xPos += xVel;
+      if(this.owner === 'computer'){
+        this.xPos -= (this.human.xVel / 2);
+      }
+      this.yPos += yVel;
+    }else{
+      this.xPos += xVel;
+      this.yPos += yVel;
+    }
+
+    // console.log(xVel);
+    // console.log(yVel);
   }
 
 

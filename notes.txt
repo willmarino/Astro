@@ -1,2 +1,6 @@
-  - when landcomp tries to jump gaps, it sometimes loses its curPlat before it jumps, leaving it stuck on an edge
-  - first, fix the movement bug where player movement on edge of environment adds to computer player velocity
+  - add functionality to let player shoot down homing missiles
+
+  xxxxx-first, change projectile move method, right now it is checking for owner position
+    in order to change velocity accordingly, owner is often computer, it needs to only be checking
+    for human position, thats all that matters for this purpose 
+  

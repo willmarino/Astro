@@ -62,19 +62,22 @@ export default class Computer{
     let newProj;
     
     let randNum = Math.round(Math.random() * 10);
-    if(randNum >= 11){
+    if(randNum >= 0){
       newProj = (
         new Projectile(
           this,
           ...this.configureProjectile(pos),
-          true
+          true,
+          this.human
         )
       );
     }else{
       newProj = (
         new Projectile(
           this,
-          ...this.configureProjectile(pos)
+          ...this.configureProjectile(pos),
+          false,
+          this.human
         )
       );
     }
@@ -83,11 +86,23 @@ export default class Computer{
     this.projectileCount += 1;
   }
 
-	configureProjectile(pos, homing=false){
+	configureProjectile(pos, homing=false, projectile=null){
     let randNum = Math.random();
     
-    let xDelta = pos.x - this.xPos;
-    let yDelta = pos.y - this.yPos;
+    let xDelta;
+    let yDelta;
+
+    // if projectile is homing, we need to call this method and compare the projectile's
+    // current position with that of the human player, else we are comparing the player and the computer
+    debugger;
+    if(homing === false){
+      xDelta = pos.x - this.xPos;
+      yDelta = pos.y - this.yPos;
+    }else if(homing === true){
+      debugger;
+      xDelta = pos.x - projectile.xPos;
+      yDelta = pos.y - projectile.yPos;
+    }
 
     if(homing === false){
       let randOffset = Math.round(Math.random() * 200);
@@ -103,7 +118,12 @@ export default class Computer{
     let totalDeltasquared = squaredDeltaX + squaredDeltaY;
     let totalDelta = Math.sqrt(totalDeltasquared);
 
-    let proportion = 5 / totalDelta;
+    let proportion;
+    if(projectile === null){
+      proportion = 5 / totalDelta;
+    }else{
+      proportion = 3 / totalDelta;
+    }
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
 
@@ -176,14 +196,16 @@ export default class Computer{
     }
   }
   // ------------------------------------------------------------
-  animate(context){
+  animate(context, human){
     this.action();
     this.draw(context);
+    let pos;
     if(Object.values(this.projectiles).length > 0){
       Object.values(this.projectiles).forEach((p) => {
         if(p.homing === true){
-          let pos = {x: this.human.xPos, y: this.human.yPos};
-          p.animate(context, ...this.configureProjectile(pos, true));
+          pos = {x: human.xPos, y: human.yPos};
+          debugger;
+          p.animate(context, ...this.configureProjectile(pos, true, p));
         }else{
           p.animate(context);
         }
