@@ -38,10 +38,15 @@ export const collide = (obj1, obj2) => {
 }
 
 export const objectCollision = (obj, projectiles) => {
+  let count = 0
   projectiles.forEach((p) => {
     if(collide(obj, p)){
+      if(obj.type === 'computer' && p.owner === 'human'){
+        if(obj.alive) count += 1;
+      }
       p.didHit = true;
       obj.alive = false;
     }
   })
+  return count;
 }

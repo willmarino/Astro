@@ -59,30 +59,29 @@ export default class Human{
 	// ----------------------------------MAIN--------------------------------------------------------------
 	// ----------------------------------MAIN--------------------------------------------------------------
 
-	filterProjectiles(){
-		let newProjectiles = {};
-		let that = this;
-		Object.keys(this.projectiles).forEach((key) => {
-			if(that.projectiles[key].yPos < 710 && that.projectiles[key].yPos > -10){
-				let projectile = {[key]: that.projectiles[key]}
-				newProjectiles = Object.assign(projectile, newProjectiles);
-			}
-		})
-		this.projectiles = newProjectiles;
-	}
+	// filterProjectiles(){
+	// 	let newProjectiles = {};
+	// 	let that = this;
+	// 	Object.keys(this.projectiles).forEach((key) => {
+	// 		if(that.projectiles[key].yPos < 710 && that.projectiles[key].yPos > -10){
+	// 			let projectile = {[key]: that.projectiles[key]}
+	// 			newProjectiles = Object.assign(projectile, newProjectiles);
+	// 		}
+	// 	})
+	// 	this.projectiles = newProjectiles;
+	// }
 
 
 	animate(context) {
 		this.move();
 		this.draw(context);
-		if (Object.values(this.projectiles).length > 0) {
-			Object.values(this.projectiles).forEach((p) => {
-				p.animate(context);
-			});
-		}
-		this.filterProjectiles();
-
-		this.collidedWithProjectiles();
+		// if (Object.values(this.projectiles).length > 0) {
+		// 	Object.values(this.projectiles).forEach((p) => {
+		// 		p.animate(context);
+		// 	});
+		// }
+		// this.filterProjectiles();
+		// this.collidedWithProjectiles();
 	}
 
 	draw(context) {
@@ -458,7 +457,6 @@ export default class Human{
 		// }
 
 		if(obj1Diag + obj2Diag + 10 > totalDelta) {
-			debugger;
 			return true;
 		} else {
 			return false;
@@ -466,16 +464,16 @@ export default class Human{
 
 	}
 
-	collidedWithProjectiles() {
-		let that = this;
-		Object.values(this.computerProjectiles).forEach((p) => {
-			if (that.collide(that, p)) {
-				debugger;
-				p.didHit = true;
-				that.alive = false;
-			}
-		});
-	}
+	// collidedWithProjectiles() {
+	// 	let that = this;
+	// 	Object.values(this.computerProjectiles).forEach((p) => {
+	// 		if (that.collide(that, p)) {
+	// 			debugger;
+	// 			p.didHit = true;
+	// 			that.alive = false;
+	// 		}
+	// 	});
+	// }
 
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------

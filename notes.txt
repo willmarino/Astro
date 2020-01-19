@@ -7,7 +7,7 @@
   -Right now when a projectile collides with an enemy, it is no longer drawn, but it is still functional in the game,
   I need to take it out of the game entirely once it hits an enemy
 
-  -reorganize collision logic so that collision funtions are in a util file, and they are called in game file, instead of being
+  -00000reorganize collision logic so that collision funtions are in a util file, and they are called in game file, instead of being
     spread out into different class files. This will make my code more readable generally, and in particular make it easier to debug
     issues with collision.
     - I want to pull up human and computer projectiles and then I want to check for any collisions between human, computers,
@@ -15,5 +15,14 @@
     (if they are not homing missles, as they should be able to come back and hit players from off screen), animate them, and then send
     the newly filter lists of projectiles back down to the human and computer players.
     00000- Offset projectile id counter in each computer so that they dont overlap when pulled all together up into game file
+    - Commented out rendering, filtration, and collision detection of projectiles in human class
+    - Everything seems to be working!
 
   00000-For unknown reason, when one homing projectils is shot, the other dissapears - (default values in constructors must be last)
+
+  - Work on moving configureProjectile out into its own file
+  - fixed projectiles dissapearing if their owner dies
+
+  -Need to work on projectiles dissapearing at random
+  - fixed, changed how I was setting projectile id's, in order to prevent overlap/overwriting of projectiles when they were
+    pulled up into game.js together

@@ -16,6 +16,7 @@ export default class Game{
     };
     this.running = false;
 
+    this.computerCount = 0;
     this.computers = [];
     this.landComputers = [];
     this.computersBeingAdded = 0;
@@ -48,6 +49,19 @@ export default class Game{
     this.checkCollisions();
     this.deleteProjectiles(this.humanProjectiles);
     this.deleteProjectiles(this.computerProjectiles);
+  }
+
+  sendDownProjectiles(){
+    this.human.projectiles = this.humanProjectiles;
+    this.computers.forEach((computer) => {
+      let projectiles = {};
+      this.computerProjectiles.forEach((p) => {
+        if(p.player.id === computer.id){
+          projectiles = Object.assign(p, projectiles);
+        }
+      })
+      computer.projectiles = projectiles;
+    })
   }
 
   deleteProjectiles(projectiles){
@@ -83,11 +97,11 @@ export default class Game{
   }
 
   grabComputerProjectiles(){
-    let res = {};
+    let res = this.computerProjectiles;
     this.computers.forEach((computer) => {
       res = Object.assign(res, computer.projectiles);
     })
-    return res;
+    this.computerProjectiles = res;
   }
 
 // --------------------------------------------------------------------------
@@ -98,15 +112,15 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   checkCollisions(){
-    CollisionUtil.objectCollision(this.human, this.computerProjectiles);
+    CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
 
-    let homingProjectiles = this.computerProjectiles.filter(p => p.homing === true);
+    let homingProjectiles = Object.values(this.computerProjectiles).filter(p => p.homing === true);
     homingProjectiles.forEach((hp) => {
-      CollisionUtil.objectCollision(hp, this.humanProjectiles);
+      CollisionUtil.objectCollision(hp, Object.values(this.humanProjectiles));
     })
 
     this.computers.forEach((computer) => {
-      CollisionUtil.objectCollision(computer, this.humanProjectiles);
+      this.score.score += CollisionUtil.objectCollision(computer, Object.values(this.humanProjectiles));
     })
   }
 
@@ -120,16 +134,16 @@ export default class Game{
   // if computer players are offscreen, that means theyre no longer alive, and dont need to be
   // in the game's computers list, and they dont need to be rendered
   filterComputers(){
-    this.computers = this.computers.filter(c => c.yPos < 1000);
+    this.computers = this.computers.filter(c => c.yPos < 700);
   }
 
-  addEnemyScore(){
-    let that = this;
-    this.computers.forEach((comp) => {
-      that.score.score += comp.additionalScore;
-      comp.additionalScore = 0;
-    });
-  }
+  // addEnemyScore(){
+  //   let that = this;
+  //   this.computers.forEach((comp) => {
+  //     that.score.score += comp.additionalScore;
+  //     comp.additionalScore = 0;
+  //   });
+  // }
 
   switchRounds(){
     if(this.score.score > 5){
@@ -162,8 +176,9 @@ export default class Game{
     }
     window.setTimeout(() => {
       this.computers.push(
-        new Computer(this.environment, this.context, this.human, newCompStartX)
+        new Computer(this.environment, this.context, this.human, this.computerCount, newCompStartX)
       );
+      this.computerCount += 1;
       this.computersBeingAdded -= 1;
     }, 5000);
   }
@@ -178,12 +193,54 @@ export default class Game{
     });
   }
 
-  sendEnemyProjectiles(){
-    this.computers.forEach((comp) => {
-      Object.values(comp.projectiles).forEach((projectile) => {
-        this.human.computerProjectiles[projectile.id] = projectile;
-      });
-    });
+  // sendEnemyProjectiles(){
+  //   this.computers.forEach((comp) => {
+  //     Object.values(comp.projectiles).forEach((projectile) => {
+  //       this.human.computerProjectiles[projectile.id] = projectile;
+  //     });
+  //   });
+  // }
+
+  configureProjectile(pos, homing=false, projectile=null){
+    let randNum = Math.random();
+    
+    let xDelta;
+    let yDelta;
+
+    // if projectile is homing, we need to call this method and compare the projectile's
+    // current position with that of the human player, else we are comparing the player and the computer
+    if(homing === false){
+      xDelta = pos.x - this.xPos;
+      yDelta = pos.y - this.yPos;
+    }else if(homing === true){
+      xDelta = pos.x - projectile.xPos;
+      yDelta = pos.y - projectile.yPos;
+    }
+
+    if(homing === false){
+      let randOffset = Math.round(Math.random() * 200);
+      if(randNum < 0.25){
+        xDelta += randOffset;
+      }else if(randNum > 0.25 && randNum < 0.5){
+        xDelta -= randOffset;
+      }
+    }
+
+    let squaredDeltaX = Math.pow(xDelta, 2);
+    let squaredDeltaY = Math.pow(yDelta, 2);
+    let totalDeltasquared = squaredDeltaX + squaredDeltaY;
+    let totalDelta = Math.sqrt(totalDeltasquared);
+
+    let proportion;
+    if(projectile === null){
+      proportion = 5 / totalDelta;
+    }else{
+      proportion = 3 / totalDelta;
+    }
+    let xVel = xDelta * proportion;
+    let yVel = yDelta * proportion;
+
+    return [xVel, yVel];
   }
 
 // --------------------------------------------------------------------------
@@ -202,14 +259,14 @@ export default class Game{
     this.computers = [];
     let i = 1;
     let compStartX;
-    while(i < 1){
+    while(i < 3){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
         compStartX = -50 - (100 * i);
       }
-      this.computers.push(new Computer(this.environment, this.context, this.human, this.projectileOffset, compStartX));
-      this.projectileOffset += 100;
+      this.computers.push(new Computer(this.environment, this.context, this.human, this.computerCount, compStartX));
+      this.computerCount += 1;
       i += 1;
     }
     // let j = 0;
@@ -245,20 +302,25 @@ export default class Game{
       this.rerun();
     }
     this.animate();
-    this.addEnemyScore();
+    this.filterProjectiles();
     this.switchRounds();
     this.filterComputers();
+    this.setNumComputers();
+
+    if(this.numComputers < 3){
+      this.spawnComputer();
+    }
     if(this.running){
       window.requestAnimationFrame(this.step.bind(this));
     }
   }
 
   animate(){
-    this.sendEnemyProjectiles();
     this.background.animate(this.context);
     this.environment.animate(this.context);
     this.human.animate(this.context);
     this.score.animate();
+    this.animateProjectiles();
 
     this.setPlayerTracking();
 
@@ -270,12 +332,20 @@ export default class Game{
     //   comp.animate(this.context);
     // })
 
-    this.setNumComputers();
+  }
 
-    if(this.numComputers < 1){
-      this.spawnComputer();
-    }
-
+  animateProjectiles(){
+    Object.values(this.humanProjectiles).forEach((p) => {
+      p.animate(this.context);
+    })
+    Object.values(this.computerProjectiles).forEach((p) => {
+      if(p.homing){
+        let pos = {x : this.human.xPos, y: this.human.yPos};
+        p.animate(this.context, ...this.configureProjectile(pos, true, p));
+      }else{
+        p.animate(this.context);
+      }
+    })
   }
 
   gameOver(){

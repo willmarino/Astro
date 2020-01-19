@@ -1,7 +1,7 @@
 import Projectile from "./projectile";
 
 export default class Computer{
-  constructor(environment, context, human, counterOffset, xPos=850){
+  constructor(environment, context, human, id, xPos=850){
     this.type = 'computer';
 
 		this.CONSTANTS = {
@@ -16,9 +16,7 @@ export default class Computer{
     this.humanProjectiles = human.projectiles;
 
     this.additionalScore = 0;
-
-    debugger;
-    this.projectileCount = 10000 + counterOffset;
+    this.projectileCount = 10000 + (id * 100);
 
 		this.xPos = xPos;
     this.yPos = 100;
@@ -37,27 +35,27 @@ export default class Computer{
   // ------------------------------------------------------------
 
 
-  filterProjectiles(){
-    let projectiles = Object.values(this.projectiles).filter(p => p.didHit === true);
-    projectiles.forEach((p) => {
-      let id = p.id;
-      delete this.projectiles[id];
-    })
-  }
+  // filterProjectiles(){
+  //   let projectiles = Object.values(this.projectiles).filter(p => p.didHit === true);
+  //   projectiles.forEach((p) => {
+  //     let id = p.id;
+  //     delete this.projectiles[id];
+  //   })
+  // }
 
-  filterHomingProjectiles(){
-    let homingProjectiles = Object.values(this.projectiles).filter(p => p.homing === true);
-    Object.values(homingProjectiles).forEach((hp) => {
-      let id = hp.id;
-      if(hp.alive === false){
-        delete this.projectiles[id];
-      }
-    })
-  }
+  // filterHomingProjectiles(){
+  //   let homingProjectiles = Object.values(this.projectiles).filter(p => p.homing === true);
+  //   Object.values(homingProjectiles).forEach((hp) => {
+  //     let id = hp.id;
+  //     if(hp.alive === false){
+  //       delete this.projectiles[id];
+  //     }
+  //   })
+  // }
 
   initiateShot(){
     window.setInterval(() => {
-      this.shoot();
+      if(this.alive) this.shoot();
     }, 2000);
   }
 
@@ -69,16 +67,17 @@ export default class Computer{
     }
   }
 
-  fetchHumanPosition(){
-    this.playerPosX = this.human.xPos;
-    this.playerPosY = this.human.yPos;
-  }
+  // fetchHumanPosition(){
+  //   this.playerPosX = this.human.xPos;
+  //   this.playerPosY = this.human.yPos;
+  // }
 
   shoot(){
-    debugger;
     let pos = {};
-    pos.x = this.playerPosX;
-    pos.y = this.playerPosY;
+    // pos.x = this.playerPosX;
+    // pos.y = this.playerPosY;
+    pos.x = this.human.xPos;
+    pos.y = this.human.yPos;
 
     let newProj;
     
@@ -180,10 +179,10 @@ export default class Computer{
 
   action(){
     this.move();
-    this.fetchHumanPosition();
+    // this.fetchHumanPosition();
     if(this.alive){
       this.switchDirection();
-      this.collidedWithProjectiles();
+      // this.collidedWithProjectiles();
     }
   }
 
@@ -215,27 +214,28 @@ export default class Computer{
     }
   }
   // ------------------------------------------------------------
-  animate(context, human){
+  // animate(context, human){
+  animate(context){
     this.action();
     this.draw(context);
-    this.filterHomingProjectiles();
-    let pos;
-    if(Object.values(this.projectiles).length > 0){
-      Object.values(this.projectiles).forEach((p) => {
-        if(p.homing === true){
-          pos = {x: human.xPos, y: human.yPos};
-          p.animate(context, ...this.configureProjectile(pos, true, p));
-        }else{
-          p.animate(context);
-        }
-      });
-    }
+    // this.filterHomingProjectiles();
+    // let pos;
+    // if(Object.values(this.projectiles).length > 0){
+    //   Object.values(this.projectiles).forEach((p) => {
+    //     if(p.homing === true){
+    //       pos = {x: human.xPos, y: human.yPos};
+    //       p.animate(context, ...this.configureProjectile(pos, true, p));
+    //     }else{
+    //       p.animate(context);
+    //     }
+    //   });
+    // }
     // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
-    Object.values(this.projectiles).forEach((p) => {
-      if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 710)){
-        delete this.projectiles[p.id];
-      }
-    });
+    // Object.values(this.projectiles).forEach((p) => {
+    //   if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 710)){
+    //     delete this.projectiles[p.id];
+    //   }
+    // });
   }
   // ------------------------------------------------------------
   collidedWithFloor(){
@@ -284,28 +284,28 @@ export default class Computer{
 
   }
 
-  collidedWithProjectiles(){
+  // collidedWithProjectiles(){
     // check for computer player collision with human player projectiles
-    Object.values(this.human.projectiles).forEach((hp) => {
-      if(this.collide(this, hp)){
-        hp.didHit = true;
-        this.alive = false;
-        this.additionalScore += 1;
-        return true;
-      }
-    });
-    // check for computer homing missle collision with human player projectiles
-    let homingMissles = Object.values(this.projectiles).filter(p => p.homing === true);
-    homingMissles.forEach((hm) => {
-      Object.values(this.human.projectiles).forEach((hp) => {
-        if(this.collide(hm, hp)){
-          hp.didHit = true;
-          hm.alive = false;
-          return true;
-        }
-      })
-    })
-  }
+    // Object.values(this.human.projectiles).forEach((hp) => {
+    //   if(this.collide(this, hp)){
+    //     hp.didHit = true;
+    //     this.alive = false;
+    //     this.additionalScore += 1;
+    //     return true;
+    //   }
+    // });
+    // // check for computer homing missle collision with human player projectiles
+    // let homingMissles = Object.values(this.projectiles).filter(p => p.homing === true);
+    // homingMissles.forEach((hm) => {
+    //   Object.values(this.human.projectiles).forEach((hp) => {
+    //     if(this.collide(hm, hp)){
+    //       hp.didHit = true;
+    //       hm.alive = false;
+    //       return true;
+    //     }
+    //   })
+    // })
+  // }
 
 
 }
