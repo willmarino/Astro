@@ -29,11 +29,7 @@ export default class Game{
 
     this.startMenu = document.getElementById('start-menu');
     this.playButton = document.getElementById('play-button');
-    this.playButton.addEventListener('mousedown', () => {
-      document.getElementById('start-menu').remove();
-      this.click();
-    });
-
+    this.gameAndTitle = document.getElementById('game-and-title');
   }
 
 // --------------------------------------------------------------------------
@@ -137,14 +133,6 @@ export default class Game{
     this.computers = this.computers.filter(c => c.yPos < 700);
   }
 
-  // addEnemyScore(){
-  //   let that = this;
-  //   this.computers.forEach((comp) => {
-  //     that.score.score += comp.additionalScore;
-  //     comp.additionalScore = 0;
-  //   });
-  // }
-
   switchRounds(){
     if(this.score.score > 5){
       this.background.round = 1;
@@ -192,14 +180,6 @@ export default class Game{
       });
     });
   }
-
-  // sendEnemyProjectiles(){
-  //   this.computers.forEach((comp) => {
-  //     Object.values(comp.projectiles).forEach((projectile) => {
-  //       this.human.computerProjectiles[projectile.id] = projectile;
-  //     });
-  //   });
-  // }
 
   configureProjectile(pos, homing=false, projectile=null){
     let randNum = Math.random();
@@ -276,31 +256,11 @@ export default class Game{
     // }
     this.landComp = new LandComputer(this.environment, this.context, this.human);
     this.running = false;
-
-    // this.step();
-
-    this.run();
-  }
-
-  // this will be run upon restart
-  run(){
-  }
-
-  click(){
-    if(!this.running){
-      this.play();
-    }
-  }
-
-  play(){
-    this.running = true;
+    this.gameAndTitle.removeChild(this.startMenu);
     this.step();
   }
 
   step(){
-    if(this.gameOver()){
-      this.rerun();
-    }
     this.animate();
     this.filterProjectiles();
     this.switchRounds();
@@ -310,8 +270,10 @@ export default class Game{
     if(this.numComputers < 3){
       this.spawnComputer();
     }
-    if(this.running){
+    if(!this.gameOver()){
       window.requestAnimationFrame(this.step.bind(this));
+    }else{
+      this.gameAndTitle.appendChild(this.startMenu);
     }
   }
 
@@ -357,31 +319,6 @@ export default class Game{
       return false;
     }
   }
-
-  rerun(){
-    let gameAndTitle = document.getElementById('game-and-title');
-    gameAndTitle.appendChild(this.startMenu);
-    this.restart();
-  }
-
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  // addProjectiles(){
-  //   this.allProjectiles = this.human.projectiles;
-  //   for(let i = 0; i < this.computers.length; i++){
-  //     let curComp = this.computers[i];
-  //     this.allProjectiles = Object.assign(this.allProjectiles, curComp.projectiles);
-  //   }
-  // }
-
-
-
 
 
 }
