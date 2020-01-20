@@ -6,7 +6,7 @@ export default class Computer{
 
 		this.CONSTANTS = {
       GRAVITY: 0.5,
-      JETPACK: 0.5
+      JETPACK: -0.5
     };
 
     this.alive = true;
@@ -17,6 +17,7 @@ export default class Computer{
 
     this.additionalScore = 0;
     this.projectileCount = 10000 + (id * 100);
+    this.id = id;
 
 		this.xPos = xPos;
     this.yPos = 100;
@@ -34,25 +35,6 @@ export default class Computer{
 
   // ------------------------------------------------------------
 
-
-  // filterProjectiles(){
-  //   let projectiles = Object.values(this.projectiles).filter(p => p.didHit === true);
-  //   projectiles.forEach((p) => {
-  //     let id = p.id;
-  //     delete this.projectiles[id];
-  //   })
-  // }
-
-  // filterHomingProjectiles(){
-  //   let homingProjectiles = Object.values(this.projectiles).filter(p => p.homing === true);
-  //   Object.values(homingProjectiles).forEach((hp) => {
-  //     let id = hp.id;
-  //     if(hp.alive === false){
-  //       delete this.projectiles[id];
-  //     }
-  //   })
-  // }
-
   initiateShot(){
     window.setInterval(() => {
       if(this.alive) this.shoot();
@@ -67,15 +49,8 @@ export default class Computer{
     }
   }
 
-  // fetchHumanPosition(){
-  //   this.playerPosX = this.human.xPos;
-  //   this.playerPosY = this.human.yPos;
-  // }
-
   shoot(){
     let pos = {};
-    // pos.x = this.playerPosX;
-    // pos.y = this.playerPosY;
     pos.x = this.human.xPos;
     pos.y = this.human.yPos;
 
@@ -190,27 +165,12 @@ export default class Computer{
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
-    }else{
-      this.yPos += this.yVel;
       this.xPos += this.xVel;
-      if(this.collidedWithFloor() !== true){
-        this.yVel += this.CONSTANTS.GRAVITY;
-        this.yVel -= this.CONSTANTS.JETPACK;
-      }
-      if(this.xVel > 0 && this.collidedWithFloor()){
-        this.xVel -= 0.1;
-      } else if (this.xVel < 0 && this.collidedWithFloor()){
-        this.xVel += 0.1;
-      }
-    }
-    if(this.human.xPos >= 800){
-      if(this.xVel <= 0){
-        // this.xPos -= 1;
-      }
-    }else if(this.human.xPos <= 300){
-      if (this.human.xPos <= 300){
-        // this.xPos += 1;
-      }
+    }else{
+      this.xPos += this.xVel;
+      this.yVel += this.CONSTANTS.GRAVITY;
+      this.yVel += this.CONSTANTS.JETPACK;
+      this.yPos += this.yVel;
     }
   }
   // ------------------------------------------------------------
@@ -218,94 +178,6 @@ export default class Computer{
   animate(context){
     this.action();
     this.draw(context);
-    // this.filterHomingProjectiles();
-    // let pos;
-    // if(Object.values(this.projectiles).length > 0){
-    //   Object.values(this.projectiles).forEach((p) => {
-    //     if(p.homing === true){
-    //       pos = {x: human.xPos, y: human.yPos};
-    //       p.animate(context, ...this.configureProjectile(pos, true, p));
-    //     }else{
-    //       p.animate(context);
-    //     }
-    //   });
-    // }
-    // this.projectiles = this.projectiles.filter(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 410);
-    // Object.values(this.projectiles).forEach((p) => {
-    //   if (!(p => p.xPos < 1110 && p.xPos > -10 && p.yPos > -10 && p.yPos < 710)){
-    //     delete this.projectiles[p.id];
-    //   }
-    // });
   }
-  // ------------------------------------------------------------
-  collidedWithFloor(){
-    if(this.yPos >= this.environment.height - 13){
-      this.yVel = 0;
-      return true;
-    }
-  }
-
-  collide(obj1, obj2){
-    // let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
-    // let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
-    // let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
-    // let obj1BotRight = { x : obj1.xPos + obj1.width, y : obj1.yPos + obj1.height};
-
-    let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2)) / 2;
-
-    // let obj2TopLeft = {x : obj2.xPos, y : obj2.yPos};
-    // let obj2TopRight = { x: obj2.xPos + obj2.width, y: obj2.yPos };
-    // let obj2BotLeft = { x: obj2.xPos, y: obj2.yPos + obj2.height };
-    // let obj2BotRight = {x : obj2.xPos + obj2.width, y : obj2.yPos + obj2.height};
-
-    let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2)) / 2;
-
-    let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
-    
-    // if((obj1TopLeft.x < obj2BotRight.x && obj1TopLeft.y < obj2BotRight.y) &&
-    //   (obj1Diag + obj2Diag > totalDelta)){
-    //   return true;
-    // } else if (obj1TopRight.x > obj2BotLeft.x && obj1TopRight.y > obj2BotLeft.y && (obj1Diag + obj2Diag > totalDelta)){
-    //   return true;
-    // } else if (obj1BotRight.x > obj2TopLeft.x && obj1BotRight.y > obj2TopLeft.y && (obj1Diag + obj2Diag > totalDelta)){
-    //   return true;
-    // } else if (obj1BotLeft.x < obj2TopRight.x && obj1BotLeft.y > obj2TopRight.y && (obj1Diag + obj2Diag > totalDelta)){
-    //   return true;
-    // }else{
-    //   return false;
-    // }
-    
-    
-    if(obj1Diag + obj2Diag + 10 > totalDelta){
-      return true;
-    }else{
-      return false;
-    }
-
-  }
-
-  // collidedWithProjectiles(){
-    // check for computer player collision with human player projectiles
-    // Object.values(this.human.projectiles).forEach((hp) => {
-    //   if(this.collide(this, hp)){
-    //     hp.didHit = true;
-    //     this.alive = false;
-    //     this.additionalScore += 1;
-    //     return true;
-    //   }
-    // });
-    // // check for computer homing missle collision with human player projectiles
-    // let homingMissles = Object.values(this.projectiles).filter(p => p.homing === true);
-    // homingMissles.forEach((hm) => {
-    //   Object.values(this.human.projectiles).forEach((hp) => {
-    //     if(this.collide(hm, hp)){
-    //       hp.didHit = true;
-    //       hm.alive = false;
-    //       return true;
-    //     }
-    //   })
-    // })
-  // }
-
 
 }

@@ -19,7 +19,6 @@ playButton.addEventListener('mousedown', () => {
   // document.removeChild(startMenu);
   // game.step();
   // should call recursively until game is over
-  debugger;
   // if(game.gameOver()){
   //   gameAndTitle.appendChild(startMenu);
   // }

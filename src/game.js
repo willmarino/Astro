@@ -17,6 +17,8 @@ export default class Game{
     this.running = false;
 
     this.computerCount = 0;
+    this.landComputerCount = 0;
+
     this.computers = [];
     this.landComputers = [];
     this.computersBeingAdded = 0;
@@ -24,6 +26,7 @@ export default class Game{
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
+    this.landComputerProjectiles = {};
 
     this.projectileOffset = 100;
 
@@ -45,6 +48,7 @@ export default class Game{
     this.checkCollisions();
     this.deleteProjectiles(this.humanProjectiles);
     this.deleteProjectiles(this.computerProjectiles);
+    this.deleteProjectiles(this.landComputerProjectiles);
   }
 
   sendDownProjectiles(){
@@ -57,6 +61,15 @@ export default class Game{
         }
       })
       computer.projectiles = projectiles;
+    })
+    this.landComputers.forEach((lc) => {
+      let projectiles = {};
+      this.landComputerProjectiles.forEach((p) => {
+        if(p.player.id === lc.id){
+          projectiles = Object.assign(p, projectiles);
+        }
+      })
+      lc.projectiles = projectiles;
     })
   }
 
@@ -98,6 +111,13 @@ export default class Game{
       res = Object.assign(res, computer.projectiles);
     })
     this.computerProjectiles = res;
+
+    let landRes = this.landComputerProjectiles;
+    this.landComputers.forEach((lc) => {
+      landRes = Object.assign(landRes, lc.projectiles);
+    })
+    this.landComputerProjectiles = landRes;
+    debugger;
   }
 
 // --------------------------------------------------------------------------
@@ -109,6 +129,7 @@ export default class Game{
 
   checkCollisions(){
     CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
+    CollisionUtil.objectCollision(this.human, Object.values(this.landComputerProjectiles));
 
     let homingProjectiles = Object.values(this.computerProjectiles).filter(p => p.homing === true);
     homingProjectiles.forEach((hp) => {
@@ -117,6 +138,9 @@ export default class Game{
 
     this.computers.forEach((computer) => {
       this.score.score += CollisionUtil.objectCollision(computer, Object.values(this.humanProjectiles));
+    })
+    this.landComputers.forEach((lc) => {
+      this.score.score += CollisionUtil.objectCollision(lc, Object.values(this.humanProjectiles))
     })
   }
 
@@ -249,12 +273,12 @@ export default class Game{
       this.computerCount += 1;
       i += 1;
     }
-    // let j = 0;
-    // while(j < 10){
-    //   this.landComputers.push(new LandComputer(this.environment, this.context, this.human, j * 5));
-    //   j += 1;
-    // }
-    this.landComp = new LandComputer(this.environment, this.context, this.human);
+    let j = 0;
+    while(j < 2){
+      this.landComputers.push(new LandComputer(this.environment, this.context, this.human, j));
+      j += 1;
+    }
+    // this.landComp = new LandComputer(this.environment, this.context, this.human);
     this.running = false;
     this.gameAndTitle.removeChild(this.startMenu);
     this.step();
@@ -289,10 +313,10 @@ export default class Game{
     this.computers.forEach((c) => {
       c.animate(this.context, this.human);
     });
-    this.landComp.animate(this.context);
-    // this.landComputers.forEach((comp) => {
-    //   comp.animate(this.context);
-    // })
+    // this.landComp.animate(this.context);
+    this.landComputers.forEach((comp) => {
+      comp.animate(this.context);
+    })
 
   }
 
@@ -307,6 +331,9 @@ export default class Game{
       }else{
         p.animate(this.context);
       }
+    })
+    Object.values(this.landComputerProjectiles).forEach((p) => {
+      p.animate(this.context);
     })
   }
 

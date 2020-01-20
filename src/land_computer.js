@@ -1,15 +1,16 @@
+import Projectile from "./projectile";
 
 
 export default class LandComputer{
-  constructor(environment, context, human, posOffset){
+  constructor(environment, context, human, id){
     this.environment = environment;
     this.context = context;
     this.human = human;
 
     let positions = this.getStartPlatforms();
 
-    let randNum = Math.random();
-    if(randNum > 0.5){
+    // let randNum = Math.random();
+    if(id % 2 === 0){
       this.xPos = positions.left.xStart + ((positions.left.width / 2));
       this.goingRight = true;
       this.goingLeft = false;
@@ -27,6 +28,7 @@ export default class LandComputer{
       GRAVITY: 0.5,
     };
 
+    this.projectileCount = 500 * id;
     this.height = 30;
     this.width = 30;
     this.projectiles = {};
@@ -35,7 +37,14 @@ export default class LandComputer{
     this.curPlat = null;
     this.nextPlat = null;
     this.jumping = false;
-    // this.jumpingYVel = 8;
+
+    this.initiateShot();
+  }
+
+  initiateShot(){
+    window.setInterval(() => {
+      if(this.alive) this.shoot();
+    }, 2000)
   }
 
   getStartPlatforms(){
@@ -49,7 +58,7 @@ export default class LandComputer{
     Object.values(this.projectiles).forEach((p) => {
       p.animate(context);
     });
-    this.filterProjectiles();
+    // this.filterProjectiles();
   }
 
   action(){
@@ -143,44 +152,6 @@ export default class LandComputer{
     return false;
   }
 
-  beginJumpOld(){
-    // set local vars for curPlat and nextPlat
-    let curPlat = this.curPlat;
-    let curPlatIdx = this.environment.platforms.indexOf(curPlat);
-    let nextPlat = this.nextPlat;
-    // heightDiff is height to be jumped
-    // maxJumpHeight is lower plat + max height of jump, in context of canvas dimensions
-    let heightDiff = Math.abs(curPlat.yStart - nextPlat.yStart) * 1.3;
-    // set min jump height
-    if(heightDiff < 25) heightDiff = 25;
-    // set max jump height on canvas dimensions according to which plat is lower
-    let maxJumpHeight = (curPlat.yStart < nextPlat.yStart)
-      ? curPlat.yStart + heightDiff : nextPlat.yStart + heightDiff;
-      // gap btw platforms
-    let xGap = this.goingRight
-      // ? nextPlat.xStart - (curPlat.xStart + curPlat.width)
-      ? nextPlat.xStart - this.xPos
-      : this.xPos - (nextPlat.xStart + nextPlat.width);
-    // time jump will take from takeoff to land, in seconds
-    let jumpTime = (xGap / this.xVel);
-    // let jumpTime = (xGap < heightDiff) ? (heightDiff / this.jumpingYVel) : (xGap / this.xVel);
-
-
-    // in numSteps number of moves, yVel must go from x to 0
-    let halfway = xGap / 2;
-    let numSteps = halfway / this.xVel;
-
-    // fallingDist is the distance that the comp will fall after yvel is 0
-    // the minimum vertical distance is has to travel btw maxima and plat
-
-
-
-    let initYVel = (0 + (0.5) * numSteps) * (-1);
-    this.yVel = initYVel;
-    // starting y velocity will need to be such that when the computer reaches the maximum of the jump parabola,
-    // its y velocity will have decreased to zero due to gravity
-  }
-
   beginJump(){
     let startX = this.xPos;
     let startY = this.curPlat.yStart;
@@ -239,11 +210,6 @@ export default class LandComputer{
   // before it would only set new platforms, not set null for no platforms
   // p.s. never use forEach, it sucks
   getCurrentPlatform(){
-    // this.environment.platforms.forEach((platform) => {
-    //   if(this.xPos > platform.xStart && this.xPos < platform.xStart + platform.width){
-    //     this.curPlat = platform;
-    //   }
-    // });
     for(let i = 0; i < this.environment.platforms.length; i++){
       let platform = this.environment.platforms[i];
       if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width)){
@@ -259,6 +225,59 @@ export default class LandComputer{
     this.curPlat = null;
     this.nextPlat = null;
   }
+
+
+  shoot(){
+    let newProjectile = new Projectile(
+      this, ...this.configureProjectile({x : this.human.xPos, y : this.human.yPos})
+    );
+    this.projectiles[newProjectile.id] = newProjectile;
+    this.projectileCount += 1;
+    debugger;
+  }
+
+  configureProjectile(pos, homing=false, projectile=null){
+    let randNum = Math.random();
+    
+    let xDelta;
+    let yDelta;
+
+    // if projectile is homing, we need to call this method and compare the projectile's
+    // current position with that of the human player, else we are comparing the player and the computer
+    if(homing === false){
+      xDelta = pos.x - this.xPos;
+      yDelta = pos.y - this.yPos;
+    }else if(homing === true){
+      xDelta = pos.x - projectile.xPos;
+      yDelta = pos.y - projectile.yPos;
+    }
+
+    if(homing === false){
+      let randOffset = Math.round(Math.random() * 200);
+      if(randNum < 0.25){
+        xDelta += randOffset;
+      }else if(randNum > 0.25 && randNum < 0.5){
+        xDelta -= randOffset;
+      }
+    }
+
+    let squaredDeltaX = Math.pow(xDelta, 2);
+    let squaredDeltaY = Math.pow(yDelta, 2);
+    let totalDeltasquared = squaredDeltaX + squaredDeltaY;
+    let totalDelta = Math.sqrt(totalDeltasquared);
+
+    let proportion;
+    if(projectile === null){
+      proportion = 5 / totalDelta;
+    }else{
+      proportion = 3 / totalDelta;
+    }
+    let xVel = xDelta * proportion;
+    let yVel = yDelta * proportion;
+
+    return [xVel, yVel];
+  }
+
 
   filterProjectiles(){
     Object.values(this.projectiles).forEach((p) => {
