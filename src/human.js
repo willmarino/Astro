@@ -59,29 +59,10 @@ export default class Human{
 	// ----------------------------------MAIN--------------------------------------------------------------
 	// ----------------------------------MAIN--------------------------------------------------------------
 
-	// filterProjectiles(){
-	// 	let newProjectiles = {};
-	// 	let that = this;
-	// 	Object.keys(this.projectiles).forEach((key) => {
-	// 		if(that.projectiles[key].yPos < 710 && that.projectiles[key].yPos > -10){
-	// 			let projectile = {[key]: that.projectiles[key]}
-	// 			newProjectiles = Object.assign(projectile, newProjectiles);
-	// 		}
-	// 	})
-	// 	this.projectiles = newProjectiles;
-	// }
-
 
 	animate(context) {
 		this.move();
 		this.draw(context);
-		// if (Object.values(this.projectiles).length > 0) {
-		// 	Object.values(this.projectiles).forEach((p) => {
-		// 		p.animate(context);
-		// 	});
-		// }
-		// this.filterProjectiles();
-		// this.collidedWithProjectiles();
 	}
 
 	draw(context) {
@@ -405,82 +386,5 @@ export default class Human{
 			this.yVel += 5;
 		}
 	}
-
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	
-
-	// commented out text is using four-corner detection, which is buggy, perhaps to small projectile sizes?
-	collide(obj1, obj2) {
-		// let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
-		// let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
-		// let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
-		// let obj1BotRight = { x : obj1.xPos + obj1.width, y : obj1.yPos + obj1.height};
-
-		
-		// let obj2TopLeft = {x : obj2.xPos, y : obj2.yPos};
-		// let obj2TopRight = { x: obj2.xPos + obj2.width, y: obj2.yPos };
-		// let obj2BotLeft = { x: obj2.xPos, y: obj2.yPos + obj2.height };
-		// let obj2BotRight = {x : obj2.xPos + obj2.width, y : obj2.yPos + obj2.height};
-
-		let obj1CenterX = obj1.xPos + (obj1.width / 2);
-		let obj1CenterY = obj1.yPos + (obj1.height / 2);
-		let obj1Diag = Math.sqrt(Math.pow(obj1.width / 2, 2) + Math.pow(obj1.height / 2, 2));
-
-		let obj2CenterX = obj2.xPos + (obj2.width / 2);
-		let obj2CenterY = obj2.yPos + (obj2.height / 2);
-		let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2));
-
-		let totalDelta = Math.sqrt(Math.pow(obj1CenterX - obj2CenterX, 2) + Math.pow(obj1CenterY - obj2CenterY, 2))
-
-		// this is using top right pos, should be using center, but probably doesnt matter
-		// let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
-
-		// let totalDelta = Math.sqrt(Math.pow(obj1CenterX - obj2CenterX))
-
-		// if((obj1TopLeft.x < obj2BotRight.x && obj1TopLeft.y < obj2BotRight.y) &&
-		//   (obj1Diag + obj2Diag > totalDelta)){
-		//   return true;
-		// } else if (obj1TopRight.x > obj2BotLeft.x && obj1TopRight.y > obj2BotLeft.y && (obj1Diag + obj2Diag > totalDelta)){
-		//   return true;
-		// } else if (obj1BotRight.x > obj2TopLeft.x && obj1BotRight.y > obj2TopLeft.y && (obj1Diag + obj2Diag > totalDelta)){
-		//   return true;
-		// } else if (obj1BotLeft.x < obj2TopRight.x && obj1BotLeft.y > obj2TopRight.y && (obj1Diag + obj2Diag > totalDelta)){
-		//   return true;
-		// }else{
-		//   return false;
-		// }
-
-		if(obj1Diag + obj2Diag + 10 > totalDelta) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	// collidedWithProjectiles() {
-	// 	let that = this;
-	// 	Object.values(this.computerProjectiles).forEach((p) => {
-	// 		if (that.collide(that, p)) {
-	// 			debugger;
-	// 			p.didHit = true;
-	// 			that.alive = false;
-	// 		}
-	// 	});
-	// }
-
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
-	// ----------------------------------------------------------------------------------------------------
 
 }

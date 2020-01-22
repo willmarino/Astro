@@ -26,3 +26,6 @@
   -Need to work on projectiles dissapearing at random
   - fixed, changed how I was setting projectile id's, in order to prevent overlap/overwriting of projectiles when they were
     pulled up into game.js together
+
+  - (fixed)Fix bug where land enemies cannot die from falling below platforms, probably have to add logic to curPlat
+  - Increment score when landenemy is hit

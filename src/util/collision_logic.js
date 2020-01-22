@@ -1,4 +1,5 @@
 export const collide = (obj1, obj2) => {
+
   // let obj1TopLeft = {x : obj1.xPos, y: obj1.yPos};
   // let obj1TopRight = { x: obj1.xPos + obj1.width, y: obj1.yPos };
   // let obj1BotLeft = { x: obj1.xPos, y: obj1.yPos + obj1.height };
@@ -37,16 +38,21 @@ export const collide = (obj1, obj2) => {
 
 }
 
-export const objectCollision = (obj, projectiles) => {
-  let count = 0
-  projectiles.forEach((p) => {
+export const objectCollision = (obj, projectiles, computers) => {
+  let count = 0;
+  for(let i = 0; i < projectiles.length; i++){
+    let p = projectiles[i];
+    if(!obj || !p){
+    }
     if(collide(obj, p)){
-      if(obj.type === 'computer' && p.owner === 'human'){
-        if(obj.alive) count += 1;
+      if((obj.type === 'computer' || obj.type === 'land-computer') && p.owner === 'human'){
+        if(obj.alive) count += 2;
+      }else if(obj.homing){
       }
       p.didHit = true;
       obj.alive = false;
     }
-  })
+  }
+
   return count;
 }

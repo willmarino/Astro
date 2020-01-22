@@ -3,7 +3,7 @@
 export default class Projectile{
   // constructor(id, playerXVel, playerPos, context, xVel, yVel){
   constructor(player, projectileXVel, projectileYVel, homing=false, human=null){
-
+    this.player = player;
     this.homing = homing;
 
     this.human = human;
@@ -107,19 +107,16 @@ export default class Projectile{
       this.xPos += xVel;
       this.yPos += yVel;
     }
-
-    // console.log(xVel);
-    // console.log(yVel);
   }
 
-
+// ---------------------
   draw(context){
     if(!this.didHit){
       if(this.owner === 'human'){
         context.fillStyle = 'black';
         context.fillRect(this.xPos, this.yPos, this.width, this.height);  
       }else{
-        context.fillStyle = 'white';
+        context.fillStyle = 'black';
         context.fillRect(this.xPos, this.yPos, this.width, this.height);
       }
     }

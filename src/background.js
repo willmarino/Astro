@@ -6,16 +6,17 @@ export default class Background{
     this.round = round;
 
     this.colors = [
+      'white',
       '#5eaec4',
-      'orange',
-      'green',
-      'blue'
+      // 'green',
+      'blue',
+      'orange'
     ];
   }
 
-  setRound(num){
-    this.round = num;
-  }
+  // setRound(num){
+  //   this.round = num;
+  // }
 
   draw(context){
     context.fillStyle = this.colors[this.round];
