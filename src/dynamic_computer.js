@@ -16,7 +16,7 @@ export default class DynamicComputer{
     this.humanProjectiles = human.projectiles;
 
     this.additionalScore = 0;
-    this.projectileCount = 10000 + (id * 100);
+    this.projectileCount = 15000 + (id * 100);
     this.id = id;
 
 		this.xPos = xPos;
@@ -50,78 +50,78 @@ export default class DynamicComputer{
   }
 
   shoot(){
-    let pos = {};
-    pos.x = this.human.xPos;
-    pos.y = this.human.yPos;
-
-    let newProj;
-    
-    let randNum = Math.round(Math.random() * 10);
-    if(randNum >= 8){
-      newProj = (
-        new Projectile(
-          this,
-          ...this.configureProjectile(pos),
-          true,
-          this.human
-        )
-      );
-    }else{
-      newProj = (
-        new Projectile(
-          this,
-          ...this.configureProjectile(pos),
-          false,
-          this.human
-        )
-      );
-    }
-        
-    this.projectiles[newProj.id] = newProj;
-    this.projectileCount += 1;
+    // debugger;
+    this.configureProjectiles();
+    // debugger;
   }
 
-	configureProjectile(pos, homing=false, projectile=null){
-    let randNum = Math.random();
-    
-    let xDelta;
-    let yDelta;
+	configureProjectiles(){
+    let totalVel = 5;
 
-    // if projectile is homing, we need to call this method and compare the projectile's
-    // current position with that of the human player, else we are comparing the player and the computer
-    if(homing === false){
-      xDelta = pos.x - this.xPos;
-      yDelta = pos.y - this.yPos;
-    }else if(homing === true){
-      xDelta = pos.x - projectile.xPos;
-      yDelta = pos.y - projectile.yPos;
+    for(let i = 0; i < 8; i++){
+      // debugger;
+      let newProj = new Projectile(
+        this,
+        ...this.configureProjectile(i, totalVel),
+        false,
+        this.human
+      );
+      this.projectiles[newProj.id] = newProj;
+      this.projectileCount += 1;
+      // debugger;
     }
+  }
 
-    if(homing === false){
-      let randOffset = Math.round(Math.random() * 200);
-      if(randNum < 0.25){
-        xDelta += randOffset;
-      }else if(randNum > 0.25 && randNum < 0.5){
-        xDelta -= randOffset;
+  configureProjectile(num, totalVel){
+    // debugger;
+    let xVel;
+    let yVel;
+    if(num % 2 === 0){
+      switch(num){
+        case 0:
+          xVel = 0;
+          yVel = totalVel * (-1);
+          break;
+        case 2:
+          xVel = totalVel;
+          yVel = 0;
+          break;
+        case 4:
+          xVel = 0;
+          yVel = totalVel;
+          break;
+        case 6:
+          xVel = totalVel * (-1);
+          yVel = 0;
+          break;
+      }
+    }else{
+      // let balancedVel = Math.sqrt(2 * Math.pow(totalVel, 2));
+      let balancedVel = totalVel / 2;
+      switch(num){
+        case 1:
+          xVel = balancedVel;
+          yVel = balancedVel * (-1);
+          break;
+        case 3:
+          xVel = balancedVel;
+          yVel = balancedVel;
+          break;
+        case 5:
+          xVel = balancedVel * (-1);
+          yVel = balancedVel;
+          break;
+        case 7:
+          xVel = balancedVel * (-1);
+          yVel = balancedVel * (-1);
+          break;
       }
     }
 
-    let squaredDeltaX = Math.pow(xDelta, 2);
-    let squaredDeltaY = Math.pow(yDelta, 2);
-    let totalDeltasquared = squaredDeltaX + squaredDeltaY;
-    let totalDelta = Math.sqrt(totalDeltasquared);
-
-    let proportion;
-    if(projectile === null){
-      proportion = 5 / totalDelta;
-    }else{
-      proportion = 3 / totalDelta;
-    }
-    let xVel = xDelta * proportion;
-    let yVel = yDelta * proportion;
-
     return [xVel, yVel];
   }
+
+
 
 
   // ------------------------------------------------------------
@@ -154,10 +154,8 @@ export default class DynamicComputer{
 
   action(){
     this.move();
-    // this.fetchHumanPosition();
     if(this.alive){
       this.switchDirection();
-      // this.collidedWithProjectiles();
     }
   }
 

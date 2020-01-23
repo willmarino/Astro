@@ -53,6 +53,7 @@ export default class Game{
     this.deleteProjectiles(this.humanProjectiles);
     this.deleteProjectiles(this.computerProjectiles);
     this.deleteProjectiles(this.landComputerProjectiles);
+    this.deleteProjectiles(this.dynamicComputerProjectiles);
     this.sendDownProjectiles();
   }
 
@@ -73,36 +74,13 @@ export default class Game{
         this.landComputers[compId].projectiles[p.id] = p;
       }
     }
-
-
-
-
-    // for(let i = 0; i < this.computers.length; i++){
-    //   let curComp = this.computers[i];
-    //   let projectiles = {};
-    //   for(let j = 0; j < Object.values(this.computerProjectiles).length; j++){
-    //     let curPro = Object.values(this.computerProjectiles)[j];
-    //     let id = curPro.player.id;
-    //     if(id === curComp.id){
-    //       projectiles[id] = curPro;
-    //     }
-    //   }
-    //   curComp.projectiles = projectiles;
-    // }
-
-    // for(let i = 0; i < (this.landComputers).length; i++){
-    //   let curLandComp = this.landComputers[i];
-    //   let projectiles = {};
-    //   for(let j = 0; j < Object.values(this.landComputerProjectiles).length; j++){
-    //     let curPro = Object.values(this.landComputerProjectiles)[j];
-    //     let id = curPro.player.id;
-    //     if(id === curLandComp.id){
-    //       projectiles[id] = curPro;
-    //     }
-    //   }
-    //   curLandComp.projectiles = projectiles;
-    // }
-
+    for(let i = 0; i < Object.values(this.dynamicComputerProjectiles).length; i++){
+      let p = Object.values(this.dynamicComputerProjectiles)[i];
+      let compId = p.player.id;
+      if(this.dynamicComputers[compId]){
+        this.dynamicComputers[compId].projectiles[p.id] = p;
+      }
+    }
   }
 
   deleteProjectiles(projectiles){
@@ -145,6 +123,13 @@ export default class Game{
     })
     this.computerProjectiles = res;
 
+    let dynRes = this.dynamicComputerProjectiles;
+    Object.values(this.dynamicComputers).forEach((computer) => {
+      dynRes = Object.assign(dynRes, computer.projectiles);
+      computer.projectiles = {};
+    })
+    this.dynamicComputerProjectiles = dynRes;
+
     let landRes = this.landComputerProjectiles;
     Object.values(this.landComputers).forEach((lc) => {
       landRes = Object.assign(landRes, lc.projectiles);
@@ -164,17 +149,31 @@ export default class Game{
     CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
     CollisionUtil.objectCollision(this.human, Object.values(this.landComputerProjectiles));
     let homingProjectiles = Object.values(this.computerProjectiles).filter(p => p.homing === true);
+
+
+    // this.didPlayerHit(homingProjectiles);
+    this.didPlayerHit(this.computers);
+    this.didPlayerHit(this.landComputers);
+    this.didPlayerHit(this.dynamicComputers);
     for(let i = 0; i < homingProjectiles.length; i++){
       let hp = homingProjectiles[i]
       CollisionUtil.objectCollision(hp, Object.values(this.humanProjectiles));
     }
-    for(let i = 0; i < Object.values(this.computers).length; i++){
-      let computer = Object.values(this.computers)[i];
-      this.score.score += CollisionUtil.objectCollision(computer, Object.values(this.humanProjectiles), this.computers);
-    }
-    for(let i = 0; i < Object.values(this.landComputers).length; i++){
-      let lc = Object.values(this.landComputers)[i];
-      this.score.score += CollisionUtil.objectCollision(lc, Object.values(this.humanProjectiles))
+    // for(let i = 0; i < Object.values(this.computers).length; i++){
+    //   let computer = Object.values(this.computers)[i];
+    //   this.score.score += CollisionUtil.objectCollision(computer, Object.values(this.humanProjectiles));
+    // }
+    // for(let i = 0; i < Object.values(this.landComputers).length; i++){
+    //   let lc = Object.values(this.landComputers)[i];
+    //   this.score.score += CollisionUtil.objectCollision(lc, Object.values(this.humanProjectiles))
+    // }
+  }
+
+  didPlayerHit(objects){
+    let objectsArr = Object.values(objects);
+    for(let i = 0; i < objectsArr.length; i++){
+      let el = objectsArr[i];
+      this.score.score += CollisionUtil.objectCollision(el, Object.values(this.humanProjectiles));
     }
   }
 
@@ -246,6 +245,10 @@ export default class Game{
     }, 5000);
   }
 
+  spawnDynamicComputer(){
+
+  }
+
   configureProjectile(pos, homing=false, projectile=null){
     let randNum = Math.random();
     
@@ -291,7 +294,7 @@ export default class Game{
   createInitialComputers(){
     let i = 1;
     let compStartX;
-    while(i < 6){
+    while(i < 1){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -310,7 +313,12 @@ export default class Game{
       j += 1;
     }
     let k = 0;
-    while(k < 1){
+    while(k < 3){
+      if(k % 2 === 0){
+        compStartX = 1150 + (100 * k);
+      }else{
+        compStartX = -50 - (100 * k);
+      }
       let newDynamicComp = new DynamicComputer(this.environment, this.context, this.human, this.computerCount, compStartX);
       this.dynamicComputers[newDynamicComp.id] = newDynamicComp;
       this.computerCount += 1;
@@ -343,7 +351,7 @@ export default class Game{
     this.switchRounds();
     this.setNumComputers();
 
-    if(this.numComputers < 6){
+    if(this.numComputers < 1){
       this.spawnComputer();
     }
     if(!this.gameOver()){
@@ -386,7 +394,13 @@ export default class Game{
     Object.values(this.landComputerProjectiles).forEach((p) => {
       p.animate(this.context);
     })
+    for(let i = 0; i < Object.values(this.dynamicComputerProjectiles).length; i++){
+      let p = Object.values(this.dynamicComputerProjectiles)[i];
+      p.animate(this.context);
+    }
   }
+
+
 
   gameOver(){
     if(this.human.yPos > 710){

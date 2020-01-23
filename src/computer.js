@@ -154,10 +154,8 @@ export default class Computer{
 
   action(){
     this.move();
-    // this.fetchHumanPosition();
     if(this.alive){
       this.switchDirection();
-      // this.collidedWithProjectiles();
     }
   }
 
