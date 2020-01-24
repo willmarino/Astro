@@ -37,7 +37,6 @@ export default class Projectile{
   }
   
   animate(context, xVel=null, yVel=null){
-    debugger;
     if(this.owner === 'computer'){
       if(this.homing === true){
         this.homingMove(xVel, yVel);
@@ -47,7 +46,6 @@ export default class Projectile{
         this.draw(context);
       }
     }else{
-      debugger;
       this.humanProjectileMove();
       this.draw(context);
     }

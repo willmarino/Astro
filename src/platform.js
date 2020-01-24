@@ -6,6 +6,9 @@ export default class Platform{
     this.yStart = yStart;
     this.width = width;
     this.height = height;
+
+    this.shrinking = false;
+    
   }
 
   draw(context) {
@@ -16,6 +19,10 @@ export default class Platform{
   move(x, y){
     this.xStart += x;
     this.yStart += y;
+  }
+
+  shrink(x){
+    this.width -= x;
   }
 
 }

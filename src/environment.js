@@ -53,8 +53,8 @@ export default class Environment{
       }else{
         randHeight = prevPlatHeight - randomOffset;
       }
-      if(randHeight < 350){
-        randHeight = 350;
+      if(randHeight < 450){
+        randHeight = 450;
       }else if(randHeight > 625){
         randHeight = 625;
       }
@@ -64,7 +64,6 @@ export default class Environment{
 
   generatePlatformWidth(){
     let randomOffset = Math.round(Math.random() * 200);
-    // let randomNegOffset = Math.round(Math.random() * (200 * (-1)));
     let randNum = Math.random();
     if(randNum < .5){
       return 400 + randomOffset;
@@ -97,15 +96,14 @@ export default class Environment{
     let that = this;
     if(this.human.xPos >= 800 && this.human.xVel > 0){
       this.platforms.forEach((plat) => {
-        // plat.move(that.human.xVel * (-1) - .1, 0);
         plat.move(that.human.xVel * (-1), 0);
       });
     }else if(this.human.xPos <= 300 && this.human.xVel < 0){
       this.platforms.forEach((plat) => {
-        // plat.move(this.human.xVel * (-1) + .1, 0);
         plat.move(this.human.xVel * (-1), 0);
       });
     }
+    // --------------------
     if(this.platforms[0].xStart < -1450){
       this.platforms.shift();
       let prevPlat = this.platforms[this.platforms.length - 1];
@@ -128,6 +126,11 @@ export default class Environment{
           15
         ));
     }
+    // --------------------------
+  }
+
+  addPlatforms(){
+    
   }
 
   draw(context){
