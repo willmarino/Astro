@@ -9,6 +9,10 @@ export default class DynamicComputer{
       JETPACK: -0.5
     };
 
+    this.movement = {
+      configuringMove: false
+    }
+
     this.alive = true;
 		this.environment = environment;
     this.context = context;
@@ -25,6 +29,8 @@ export default class DynamicComputer{
 		this.xVel = -5;
 		this.width = 30;
     this.height = 30;
+    
+    this.stepNum = 0;
     
     this.human = human;
 
@@ -50,9 +56,7 @@ export default class DynamicComputer{
   }
 
   shoot(){
-    // debugger;
     this.configureProjectiles();
-    // debugger;
   }
 
 	configureProjectiles(){
@@ -142,7 +146,30 @@ export default class DynamicComputer{
     if (this.xVel < -5) {
       this.xVel = -5;
     }
-	}
+  }
+
+
+  configureMove(){
+    window.setTimeout(() => {
+      let xConfig = this.configure(this.xPos, 200, 1100, 0);
+      let yConfig = this.configure(this.yPos, 50, 700, 0);
+      this.xVel = xConfig.diff / 10;
+      this.yVel = yConfig.diff / 10;
+      this.movement.configuringMove = false;
+    }, 1000)
+  }
+
+  configure(startPos, d, upperBound, lowerBound){
+    let randNum = Math.random();
+    let diff = d + (Math.random() * d);
+    if(randNum < 0.5) diff *= (-1);
+    let end = startPos + diff;
+    if(end > upperBound || end < lowerBound){
+      diff *= (-1);
+    }
+    return {end, diff};
+  }
+
   // ------------------------------------------------------------
 
 	draw(context){
@@ -159,7 +186,7 @@ export default class DynamicComputer{
     }
   }
 
-  move(){
+  move2(){
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
@@ -171,8 +198,24 @@ export default class DynamicComputer{
       this.yPos += this.yVel;
     }
   }
+
+  move(){
+    if(!this.alive){
+      this.yVel += this.CONSTANTS.GRAVITY;
+      this.yPos += this.yVel;
+    }else if(!this.movement.configuringMove){
+      if(this.stepNum === 9){
+        this.stepNum = 0;
+        this.movement.configuringMove = true;
+        this.configureMove();
+      }else{
+        this.yPos += this.yVel;
+        this.xPos += this.xVel;
+        this.stepNum += 1;
+      }
+    }
+  }
   // ------------------------------------------------------------
-  // animate(context, human){
   animate(context){
     this.action();
     this.draw(context);
