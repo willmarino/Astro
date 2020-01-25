@@ -324,7 +324,7 @@ export default class Game{
   createInitialComputers(offset=1){
     let i = 1;
     let compStartX;
-    while(i < 1){
+    while(i < 3){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -336,7 +336,7 @@ export default class Game{
       i += 1;
     }
     let j = 0;
-    while(j < 2){
+    while(j < 3){
       let newLandComp = new LandComputer(this.environment, this.context, this.human, this.computerCount);
       this.landComputers[newLandComp.id] = newLandComp;
       this.computerCount += 1;
@@ -382,12 +382,10 @@ export default class Game{
     this.setNumComputers();
     this.setNumDynamicComputers();
 
-    if(this.numComputers < 1){
+    if(this.numComputers < 3){
       this.spawnComputer();
     }
-    debugger;
     if(this.numdynamicComputers < 3){
-      debugger;
       this.spawnDynamicComputer();
     }
     if(!this.gameOver()){

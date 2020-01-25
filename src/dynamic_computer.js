@@ -9,9 +9,7 @@ export default class DynamicComputer{
       JETPACK: -0.5
     };
 
-    this.movement = {
-      configuringMove: false
-    }
+    this.moving = true;
 
     this.alive = true;
 		this.environment = environment;
@@ -26,7 +24,7 @@ export default class DynamicComputer{
 		this.xPos = xPos;
     this.yPos = 100;
 		this.yVel = 0;
-		this.xVel = -5;
+		this.xVel = 5;
 		this.width = 30;
     this.height = 30;
     
@@ -34,18 +32,10 @@ export default class DynamicComputer{
     
     this.human = human;
 
-    this.canShoot = false;
-    this.initiateShot();
 
 	}
 
   // ------------------------------------------------------------
-
-  initiateShot(){
-    window.setInterval(() => {
-      if(this.alive) this.shoot();
-    }, 2000);
-  }
 
   switchDirection(){
     if(this.xPos <= 20){
@@ -150,27 +140,39 @@ export default class DynamicComputer{
 
 
   configureMove(){
+    debugger;
+    this.shoot()
+    let that = this;
     window.setTimeout(() => {
-      let xConfig = this.configure(this.xPos, 200, 1100, 0);
-      let yConfig = this.configure(this.yPos, 50, 700, 0);
-      this.xVel = xConfig.diff / 10;
-      this.yVel = yConfig.diff / 10;
-      this.movement.configuringMove = false;
+      let xConfig = that.configure(that.xPos, 100, 1000, 100);
+      let yConfig = that.configure(that.yPos, 50, 300, 50);
+      that.xVel = xConfig / 10;
+      that.yVel = yConfig / 10;
+      debugger;
+      that.moving = true;
     }, 1000)
   }
 
   configure(startPos, d, upperBound, lowerBound){
-    let randNum = Math.random();
-    let diff = d + (Math.random() * d);
-    if(randNum < 0.5) diff *= (-1);
-    let end = startPos + diff;
-    if(end > upperBound || end < lowerBound){
-      diff *= (-1);
+    let end;
+    let diff;
+    if(startPos > (0.75 * upperBound)){
+      end = (upperBound / 2) - (Math.random() * d);
+      diff = (startPos - end) * (-1);
+    }else if(startPos < upperBound / 2){
+      end = (upperBound / 2) + (Math.random() * d);
+      diff = end - startPos;
+    }else{
+      diff = d + (Math.random() * d);
     }
-    return {end, diff};
+    return diff;
   }
 
   // ------------------------------------------------------------
+  animate(context){
+    this.action();
+    this.draw(context);
+  }
 
 	draw(context){
     context.fillStyle = 'black';
@@ -199,26 +201,73 @@ export default class DynamicComputer{
     }
   }
 
-  move(){
+  move3(){
+    debugger;
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
-    }else if(!this.movement.configuringMove){
+    }else if(!this.moving){
+      debugger;
       if(this.stepNum === 9){
+        debugger;
         this.stepNum = 0;
         this.movement.configuringMove = true;
         this.configureMove();
+        debugger;
       }else{
+        debugger;
         this.yPos += this.yVel;
         this.xPos += this.xVel;
         this.stepNum += 1;
       }
+    }else{
+      debugger;
+      if(this.isPlayerOnEdge()){
+        this.xPos += (this.human.xVel * (-1));
+      }
     }
   }
-  // ------------------------------------------------------------
-  animate(context){
-    this.action();
-    this.draw(context);
+  // if comp is not alive, then apply gravity and move
+  // if stepnum is not at 9, apply x and y vel
+  // if stepnum is at 9, configure move and set stepnum to 0
+  onScreen(){
+      if(this.xPos < 0 || this.xPos > 1100){
+        return false;
+      }else{
+        return true;
+      }
+  }
+
+  move(){
+    debugger;
+    if(!this.alive){
+      this.yVel += this.CONSTANTS.GRAVITY;
+      this.yPos += this.yVel;
+    }else if(!this.moving){
+      debugger;
+      this.xVel = 0;
+      this.yVel = 0;
+      if(this.isPlayerOnEdge() && this.onScreen()){
+        this.xPos += this.human.xVel * (-1);
+      }
+    }else{
+      debugger;
+      if(this.stepNum === 9){
+        debugger;
+        this.moving = false;
+        this.stepNum = 0;
+        this.configureMove();
+      }else{
+        debugger;
+        this.xPos += this.xVel;
+        this.yPos += this.yVel;
+        this.stepNum += 1;
+      }
+    }
+  }
+
+  isPlayerOnEdge(){
+    return (this.human.xPos >= 800 || this.human.xPos <= 300);
   }
 
 }

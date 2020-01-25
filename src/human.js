@@ -383,7 +383,7 @@ export default class Human{
 
 	down(){
 		if(this.goingDown === true){
-			this.yVel += 5;
+			this.yVel += 7;
 		}
 	}
 

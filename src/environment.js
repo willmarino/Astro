@@ -1,4 +1,5 @@
- import Platform from "./platform";
+import Platform from "./platform";
+import Shield from "./powerups/shield";
 
 export default class Environment{
   constructor(dimensions, context, human=null){
@@ -10,6 +11,8 @@ export default class Environment{
 
     this.height = 300;
 
+    this.powerupsCount = 0;
+    this.powerups = {};
     this.platforms = [];
     this.generatePlatforms();
 
@@ -23,18 +26,41 @@ export default class Environment{
     while(
       this.platforms[this.platforms.length - 1].xStart +
       this.platforms[this.platforms.length - 1].width < 2000){
+        
         let prevPlat = this.platforms[this.platforms.length - 1];
         let newYStart = this.generatePlatformYStart();
         if(newYStart - prevPlat.yStart > 50){
           newYStart = prevPlat.yStart + 50;
         }
-        this.platforms.push(
-          new Platform(
-            prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
-            newYStart,
-            this.generatePlatformWidth(),
-            15
-          ));
+        // this.platforms.push(
+        //   new Platform(
+        //     prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
+        //     newYStart,
+        //     this.generatePlatformWidth(),
+        //     15
+        //   )
+        // );
+        let newPlat = new Platform(
+          prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
+          newYStart,
+          this.generatePlatformWidth(),
+          15
+        );
+        this.platforms.push(newPlat);
+        let randNum = Math.random();
+        if(randNum <= 1){
+          // let plat = this.platforms[this.platforms.length - 1];
+          debugger;
+          let newShield = new Shield(
+            newPlat.xStart + (Math.random() * newPlat.width),
+            newPlat.yStart - 10,
+            this.powerupsCount,
+            newPlat
+          )
+          this.powerupsCount += 1;
+          newPlat.powerups[newShield.id] = newShield;
+        }
+
       }
   }
 
@@ -83,13 +109,31 @@ export default class Environment{
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
+  removePowerups(){
+    for(let i = 0; i < Object.values(this.powerups).length; i++){
+      let p = Object.values(this.powerups)[i];
+      if(!this.platforms.includes(p.plat)){
+        delete this.powerups[p];
+      }
+    }
+  }
+
   animate(context){
     this.draw(context);
     this.action();
+    for(let i = 0; i < Object.values(this.powerups).length; i++){
+      let p = Object.values(this.powerups)[i];
+      p.animate(context);
+      // for(let j = 0; j < Object.values(p.powerups).length; j++){
+      //   let powerup = Object.values(p.powerups)[j];
+      //   powerup.animate(context);
+      // }
+    }
   }
 
   action(){
     this.move();
+    this.removePowerups();
   }
 
   move(){

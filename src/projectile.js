@@ -1,7 +1,6 @@
 
 
 export default class Projectile{
-  // constructor(id, playerXVel, playerPos, context, xVel, yVel){
   constructor(player, projectileXVel, projectileYVel, homing=false, human=null){
     this.player = player;
     this.homing = homing;
@@ -16,8 +15,8 @@ export default class Projectile{
     this.playerXPos = player.xPos;
     this.playerYPos = player.yPos;
 
-    this.xPos = player.xPos;
-    this.yPos = player.yPos;
+    this.xPos = player.xPos + (player.width / 2);
+    this.yPos = player.yPos + (player.width / 2);
     this.xVel = projectileXVel;
     this.yVel = projectileYVel;
     if(player.type === 'human'){

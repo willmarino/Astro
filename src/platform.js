@@ -7,6 +7,8 @@ export default class Platform{
     this.width = width;
     this.height = height;
 
+    this.powerups = {};
+
     this.shrinking = false;
     
   }
