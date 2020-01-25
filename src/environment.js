@@ -32,14 +32,6 @@ export default class Environment{
         if(newYStart - prevPlat.yStart > 50){
           newYStart = prevPlat.yStart + 50;
         }
-        // this.platforms.push(
-        //   new Platform(
-        //     prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
-        //     newYStart,
-        //     this.generatePlatformWidth(),
-        //     15
-        //   )
-        // );
         let newPlat = new Platform(
           prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
           newYStart,
@@ -47,21 +39,35 @@ export default class Environment{
           15
         );
         this.platforms.push(newPlat);
-        let randNum = Math.random();
-        if(randNum <= 1){
-          // let plat = this.platforms[this.platforms.length - 1];
-          debugger;
-          let newShield = new Shield(
-            newPlat.xStart + (Math.random() * newPlat.width),
-            newPlat.yStart - 10,
-            this.powerupsCount,
-            newPlat
-          )
-          this.powerupsCount += 1;
-          newPlat.powerups[newShield.id] = newShield;
-        }
-
+        this.generatePowerup(newPlat);
+        // let randNum = Math.random();
+        // if(randNum <= 1){
+        //   debugger;
+        //   let newShield = new Shield(
+        //     newPlat.xStart + (Math.random() * newPlat.width),
+        //     newPlat.yStart - 10,
+        //     this.powerupsCount,
+        //     newPlat
+        //   )
+        //   this.powerupsCount += 1;
+        //   newPlat.powerups[newShield.id] = newShield;
+        // }
       }
+  }
+
+  generatePowerup(newPlat){
+    let randNum = Math.random();
+    if(randNum <= 1){
+      debugger;
+      let newShield = new Shield(
+        newPlat.xStart + (Math.random() * newPlat.width),
+        newPlat.yStart - 10,
+        this.powerupsCount,
+        newPlat
+      )
+      this.powerupsCount += 1;
+      newPlat.powerups[newShield.id] = newShield;
+    }
   }
 
   generatePlatformYStart(){
@@ -109,31 +115,19 @@ export default class Environment{
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
-  removePowerups(){
-    for(let i = 0; i < Object.values(this.powerups).length; i++){
-      let p = Object.values(this.powerups)[i];
-      if(!this.platforms.includes(p.plat)){
-        delete this.powerups[p];
-      }
-    }
-  }
-
   animate(context){
     this.draw(context);
     this.action();
-    for(let i = 0; i < Object.values(this.powerups).length; i++){
-      let p = Object.values(this.powerups)[i];
-      p.animate(context);
-      // for(let j = 0; j < Object.values(p.powerups).length; j++){
-      //   let powerup = Object.values(p.powerups)[j];
-      //   powerup.animate(context);
-      // }
-    }
   }
 
   action(){
     this.move();
-    this.removePowerups();
+  }
+
+  draw(context){
+    this.platforms.forEach((p) => {
+      p.draw(context);
+    });
   }
 
   move(){
@@ -151,39 +145,28 @@ export default class Environment{
     if(this.platforms[0].xStart < -1450){
       this.platforms.shift();
       let prevPlat = this.platforms[this.platforms.length - 1];
-      this.platforms.push(
-        new Platform(
-          prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
-          this.generatePlatformYStart(),
-          this.generatePlatformWidth(),
-          15
-        ));
+      let newPlat = new Platform(
+        prevPlat.xStart + prevPlat.width + this.generatePlatformGap(),
+        this.generatePlatformYStart(),
+        this.generatePlatformWidth(),
+        15
+      );
+      this.platforms.push(newPlat);
+      this.generatePowerup(newPlat);
     }else if(this.platforms[this.platforms.length - 1].xStart > 1300){
       this.platforms.pop();
       let newPlatWidth = this.generatePlatformWidth();
       let nextPlat = this.platforms[0];
-      this.platforms.unshift(
-        new Platform(
+      let newPlat = new Platform(
           nextPlat.xStart - this.generatePlatformGap() - newPlatWidth,
           this.generatePlatformYStart(),
           newPlatWidth,
           15
-        ));
+      );
+      this.platforms.unshift(newPlat);
+      this.generatePowerup(newPlat);
     }
     // --------------------------
-  }
-
-  addPlatforms(){
-    
-  }
-
-  draw(context){
-    this.platforms.forEach((p) => {
-      p.draw(context);
-    });
-    
-    
-
   }
 
 }
