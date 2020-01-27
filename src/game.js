@@ -29,6 +29,12 @@ export default class Game{
     this.numComputers = Object.values(this.computers).length + this.computersBeingAdded;
     this.dynamicComputersBeingAdded = 0;
     this.numdynamicComputers = Object.values(this.dynamicComputers).length + this.dynamicComputersBeingAdded;
+    this.landComputersBeingAdded = 0;
+    this.numLandComputers = Object.values(this.landComputers).length + this.landComputersBeingAdded;
+
+    this.canSpawnComp = true;
+    this.canSpawnDynComp = true;
+    this.canSpawnLandComp = true;
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
@@ -187,7 +193,6 @@ export default class Game{
     // this.human.powerups = Object.assign(CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups)), this.human.powerups);
     let newPowerup = CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups));
     if(newPowerup){
-      debugger;
       this.human.powerups[newPowerup.id] = newPowerup;
       delete this.environment.platforms[newPowerup.platform.id].powerups[newPowerup.id];
       delete this.allPowerups[newPowerup.id];
@@ -270,7 +275,26 @@ export default class Game{
     this.numdynamicComputers = Object.values(this.dynamicComputers).length + this.dynamicComputersBeingAdded;
   }
 
+  setNumLandComputers(){
+    this.numLandComputers = Object.values(this.landComputers).length + this.landComputersBeingAdded;
+  }
+
+  spawnLandComputer(){
+    this.canSpawnLandComp = false;
+    this.landComputersBeingAdded += 1;
+    window.setTimeout(() => {
+      let newLandComp = new LandComputer(this.environment, this.context, this.human, this.landComputerCount);
+      this.landComputers[newLandComp.id] = newLandComp;
+      this.landComputerCount += 1;
+      this.landComputersBeingAdded -= 1;
+      this.canSpawnLandComp = true;
+      console.log('spawned!');
+      console.log(newLandComp.xPos);
+    }, 5000);
+  }
+
   spawnComputer(){
+    this.canSpawnComp = false;
     this.computersBeingAdded += 1;
     let newCompStartX;
     let randNum = Math.random();
@@ -284,10 +308,12 @@ export default class Game{
       this.computers[this.computerCount] = newComp;
       this.computerCount += 1;
       this.computersBeingAdded -= 1;
+      this.canSpawnComp = true;
     }, 5000);
   }
 
   spawnDynamicComputer(){
+    this.canSpawnDynComp = false;
     this.dynamicComputersBeingAdded += 1;
     let newCompStartX;
     let randNum = Math.random();
@@ -301,6 +327,7 @@ export default class Game{
       this.dynamicComputers[this.computerCount] = newDynamicComp;
       this.computerCount += 1;
       this.dynamicComputersBeingAdded -= 1;
+      this.canSpawnDynComp = true;
     }, 5000);
   }
   
@@ -363,9 +390,9 @@ export default class Game{
     }
     let j = 0;
     while(j < 1){
-      let newLandComp = new LandComputer(this.environment, this.context, this.human, this.computerCount);
+      let newLandComp = new LandComputer(this.environment, this.context, this.human, this.landComputerCount);
       this.landComputers[newLandComp.id] = newLandComp;
-      this.computerCount += 1;
+      this.landComputerCount += 1;
       j += 1;
     }
     let k = 0;
@@ -407,12 +434,16 @@ export default class Game{
     this.switchRounds();
     this.setNumComputers();
     this.setNumDynamicComputers();
+    this.setNumLandComputers();
 
-    if(this.numComputers < 1){
-      this.spawnComputer();
-    }
-    if(this.numdynamicComputers < 1){
-      this.spawnDynamicComputer();
+    // if(this.numComputers < 10){
+    //   if(this.canSpawnComp) this.spawnComputer();
+    // }
+    // if(this.numdynamicComputers < 10){
+    //   if(this.canSpawnDynComp) this.spawnDynamicComputer();
+    // }
+    if(this.numLandComputers < 10){
+      if(this.canSpawnLandComp) this.spawnLandComputer();
     }
     if(!this.gameOver()){
       window.requestAnimationFrame(this.step.bind(this));
@@ -427,12 +458,28 @@ export default class Game{
     this.human.animate(this.context);
     this.score.animate();
     this.animateProjectiles();
+    let that = this;
     Object.values(this.computers).forEach((c) => {
       c.animate(this.context, this.human);
     });
-    Object.values(this.landComputers).forEach((comp) => {
+    // Object.values(this.landComputers).forEach((comp) => {
+    //   if(!comp.type){
+    //     console.log()
+    //     debugger;
+    //   }
+    //   comp.animate(this.context);
+    // })
+
+    for(let i = 0; i < Object.values(this.landComputers).length; i++){
+      let comp = Object.values(this.landComputers)[i];
+      if(!comp.type){
+        debugger;
+      }
       comp.animate(this.context);
-    })
+
+    }
+
+
     Object.values(this.dynamicComputers).forEach((dc) => {
       dc.animate(this.context, this.human);
     });

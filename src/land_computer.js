@@ -8,21 +8,22 @@ export default class LandComputer{
     this.human = human;
     this.type = 'land-computer';
 
-    let positions = this.getStartPlatforms();
-    // let randNum = Math.random();
     if(id % 2 === 0){
-      this.curPlat = positions.left;
-      this.xPos = positions.left.xStart + ((positions.left.width / 2));
+      this.curPlat = this.environment.head.next;
+      this.nextPlat = this.curPlat.next;
+      this.xPos = this.curPlat.xStart + ((this.curPlat.width) / 2);
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 4;
+      this.xVel = 6;
     }else{
-      this.curPlat = positions.right;
-      this.xPos = positions.right.xStart + ((positions.right.width / 2));
-      this.goingLeft = true;
+      this.curPlat = this.environment.tail.prev;
+      this.nextPlat = this.curPlat.prev;
+      this.xPos = this.curPlat.xStart + ((this.curPlat.width) / 2);
       this.goingRight = false;
-      this.xVel = -4;
+      this.goingLeft = true;
+      this.xVel = -6;
     }
+
     this.yPos = this.curPlat.yStart;
     this.yVel = 0;
     this.CONSTANTS = {
@@ -37,7 +38,6 @@ export default class LandComputer{
     this.projectiles = {};
     this.alive = true;
     this.additionalScore = 0;
-    // this.curPlat = null;
     this.nextPlat = null;
     this.jumping = false;
 
@@ -84,10 +84,10 @@ export default class LandComputer{
     if((this.human.xPos >= 800 && this.human.xVel > 0) || (this.human.xPos <= 300 && this.human.xVel < 0)){
       this.xPos -= this.human.xVel;
     }
-
-    this.switchDirections();
+    // if(this.curPlat && !this)
+    // this.switchDirections();
     if(this.curPlat && !this.jumping){
-
+      this.switchDirections();
       this.yPos = this.curPlat.yStart - this.height;
       this.xPos += this.xVel;
     }
@@ -124,11 +124,11 @@ export default class LandComputer{
     if (this.goingRight && this.human.xPos < this.xPos - 500) {
       this.goingLeft = true;
       this.goingRight = false;
-      this.xVel = -4;
+      this.xVel = this.xVel * (-1);
     } else if (this.goingLeft && this.human.xPos > this.xPos + 500){
       this.goingRight = true;
       this.goingLeft = false;
-      this.xVel = 4;
+      this.xVel = this.xVel * (-1);
     }
   }
 
