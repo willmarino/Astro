@@ -1,6 +1,7 @@
 export default class Shield{
   constructor(xPos, yPos, id, platform){
-
+    this.didHit = false;
+    this.type = 'shield';
     this.xPos = xPos;
     this.yPos = yPos;
     this.health = 3;
@@ -8,6 +9,7 @@ export default class Shield{
     this.platform = platform;
     this.width = 10;
     this.height = 10;
+    this.present = true;
   }
 
   animate(context, x, y){

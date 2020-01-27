@@ -42,12 +42,9 @@ export const objectCollision = (obj, projectiles, computers) => {
   let count = 0;
   for(let i = 0; i < projectiles.length; i++){
     let p = projectiles[i];
-    if(!obj || !p){
-    }
     if(collide(obj, p)){
       if((obj.type === 'computer' || obj.type === 'land-computer') && p.owner === 'human'){
         if(obj.alive) count += 2;
-      }else if(obj.homing){
       }
       p.didHit = true;
       obj.alive = false;
@@ -55,4 +52,15 @@ export const objectCollision = (obj, projectiles, computers) => {
   }
 
   return count;
+}
+
+export const powerupCollision = (obj, powerups) => {
+  for(let i = 0; i < powerups.length; i++){
+    let p = powerups[i];
+    if(collide(obj, p)){
+      p.present = false;
+      return p;
+    }
+  }
+  return null;
 }

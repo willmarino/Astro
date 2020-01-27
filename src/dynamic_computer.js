@@ -53,7 +53,6 @@ export default class DynamicComputer{
     let totalVel = 5;
 
     for(let i = 0; i < 8; i++){
-      // debugger;
       let newProj = new Projectile(
         this,
         ...this.configureProjectile(i, totalVel),
@@ -62,12 +61,10 @@ export default class DynamicComputer{
       );
       this.projectiles[newProj.id] = newProj;
       this.projectileCount += 1;
-      // debugger;
     }
   }
 
   configureProjectile(num, totalVel){
-    // debugger;
     let xVel;
     let yVel;
     if(num % 2 === 0){
@@ -140,7 +137,6 @@ export default class DynamicComputer{
 
 
   configureMove(){
-    debugger;
     this.shoot()
     let that = this;
     window.setTimeout(() => {
@@ -148,7 +144,6 @@ export default class DynamicComputer{
       let yConfig = that.configure(that.yPos, 50, 300, 50);
       that.xVel = xConfig / 10;
       that.yVel = yConfig / 10;
-      debugger;
       that.moving = true;
     }, 1000)
   }
@@ -202,26 +197,20 @@ export default class DynamicComputer{
   }
 
   move3(){
-    debugger;
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
     }else if(!this.moving){
-      debugger;
       if(this.stepNum === 9){
-        debugger;
         this.stepNum = 0;
         this.movement.configuringMove = true;
         this.configureMove();
-        debugger;
       }else{
-        debugger;
         this.yPos += this.yVel;
         this.xPos += this.xVel;
         this.stepNum += 1;
       }
     }else{
-      debugger;
       if(this.isPlayerOnEdge()){
         this.xPos += (this.human.xVel * (-1));
       }
@@ -239,26 +228,21 @@ export default class DynamicComputer{
   }
 
   move(){
-    debugger;
     if(!this.alive){
       this.yVel += this.CONSTANTS.GRAVITY;
       this.yPos += this.yVel;
     }else if(!this.moving){
-      debugger;
       this.xVel = 0;
       this.yVel = 0;
       if(this.isPlayerOnEdge() && this.onScreen()){
         this.xPos += this.human.xVel * (-1);
       }
     }else{
-      debugger;
       if(this.stepNum === 9){
-        debugger;
         this.moving = false;
         this.stepNum = 0;
         this.configureMove();
       }else{
-        debugger;
         this.xPos += this.xVel;
         this.yPos += this.yVel;
         this.stepNum += 1;

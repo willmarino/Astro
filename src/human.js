@@ -39,6 +39,9 @@ export default class Human{
 
 		this.distanceCovered = 0;
 
+		this.powerups = {};
+		this.shielded = false;
+
 		this.bindLeft();
 		this.bindRight();
 		this.bindUndoRight();
@@ -196,18 +199,18 @@ export default class Human{
 	// checks if player xPos is between the left and right edges of any platform('above platform')
 	getCurrentPlatform() {
 		// 
-		let that = this;
-		for (let i = 0; i < this.environment.platforms.length; i++) {
-			let plat = that.environment.platforms[i];
-			if (that.xPos > plat.xStart && that.xPos < plat.xStart + plat.width && that.yPos < plat.yStart + plat.height) {
+		// let that = this;
+		for (let i = 0; i < Object.values(this.environment.platforms).length; i++) {
+			let plat = Object.values(this.environment.platforms)[i];
+			if (this.xPos > plat.xStart && this.xPos < plat.xStart + plat.width && this.yPos < plat.yStart + plat.height) {
 				
-				that.curPlat = plat;
-				that.lastPlat = that.curPlat;
+				this.curPlat = plat;
+				this.lastPlat = this.curPlat;
 				break;
 			} else {
 				
-				that.curPlat = null;
-				// that.onFloor = false;
+				this.curPlat = null;
+				// this.onFloor = false;
 			}
 		}
 	}
@@ -312,6 +315,14 @@ export default class Human{
 		})
 	}
 
+	bindUseShield(){
+		window.addEventListener('keypress', (e) => {
+			if(e.key === 'r'){
+				this.useShield();
+			}
+		})
+	}
+
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -385,6 +396,10 @@ export default class Human{
 		if(this.goingDown === true){
 			this.yVel += 7;
 		}
+	}
+
+	useShield(){
+
 	}
 
 }

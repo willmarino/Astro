@@ -34,6 +34,7 @@ export default class Game{
     this.computerProjectiles = {};
     this.landComputerProjectiles = {};
     this.dynamicComputerProjectiles = {};
+    this.allPowerups = {} // actually only the powerups from the player's current platform
 
     this.projectileOffset = 100;
 
@@ -50,15 +51,15 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   filterProjectiles(){
-    this.grabHumanProjectiles();
-    this.grabComputerProjectiles();
+    this.grabAll();
+
     this.checkCollisions();
-    // this.deleteProjectiles(this.humanProjectiles);
-    // this.deleteProjectiles(this.computerProjectiles);
-    // this.deleteProjectiles(this.landComputerProjectiles);
-    // this.deleteProjectiles(this.dynamicComputerProjectiles);
+
     this.deleteAllProjectiles();
+    // this.deletePowerups();
+
     this.sendDownProjectiles();
+    // this.sendDownPowerups(this.allPowerups, this.environment.platforms);
   }
 
   deleteAllProjectiles(){
@@ -73,28 +74,17 @@ export default class Game{
     this.sendDown(this.computerProjectiles, this.computers);
     this.sendDown(this.landComputerProjectiles, this.landComputers);
     this.sendDown(this.dynamicComputerProjectiles, this.dynamicComputers);
+  }
 
-    // for(let i = 0; i < Object.values(this.computerProjectiles).length; i++){
-    //   let p = Object.values(this.computerProjectiles)[i];
-    //   let compId = p.player.id;
-    //   if(this.computers[compId]){
-    //     this.computers[compId].projectiles[p.id] = p;
-    //   }
-    // }
-    // for(let i = 0; i < Object.values(this.landComputerProjectiles).length; i++){
-    //   let p = Object.values(this.landComputerProjectiles)[i];
-    //   let compId = p.player.id;
-    //   if(this.landComputers[compId]){
-    //     this.landComputers[compId].projectiles[p.id] = p;
-    //   }
-    // }
-    // for(let i = 0; i < Object.values(this.dynamicComputerProjectiles).length; i++){
-    //   let p = Object.values(this.dynamicComputerProjectiles)[i];
-    //   let compId = p.player.id;
-    //   if(this.dynamicComputers[compId]){
-    //     this.dynamicComputers[compId].projectiles[p.id] = p;
-    //   }
-    // }
+  sendDownPowerups(powerups, platforms){
+    let powerupsArr = Object.values(powerups);
+    for(let i = 0; i < powerupsArr.length; i++){
+      let p = powerupsArr[i];
+      let platId = p.platform.id;
+      if(platforms[platId]){
+        platforms[platId].powerups[p.id] = p;
+      }
+    }
   }
 
   sendDown(projectiles, comps){
@@ -104,6 +94,16 @@ export default class Game{
       let compId = p.player.id;
       if(comps[compId]){
         comps[compId].projectiles[p.id] = p;
+      }
+    }
+  }
+
+  deletePowerups(){
+    let powersArr = Object.values(this.allPowerups);
+    for(let i = 0; i < powersArr.length; i++){
+      let p = powersArr[i];
+      if(!p.present){
+        delete this.allPowerups[p.id];
       }
     }
   }
@@ -136,6 +136,12 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 
+  grabAll(){
+    this.grabHumanProjectiles();
+    this.grabComputerProjectiles();
+    this.grabPowerups();
+  }
+
   grabHumanProjectiles(){
     this.humanProjectiles = this.human.projectiles;
   }
@@ -156,6 +162,16 @@ export default class Game{
 
   }
 
+  grabPowerups(){
+    if(this.human.curPlat){
+      let powerups = Object.values(this.human.curPlat.powerups);
+      for(let i = 0; i < powerups.length; i++){
+        let p = powerups[i];
+        this.allPowerups[p.id] = p;
+      }
+    }
+  }
+
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
@@ -167,6 +183,16 @@ export default class Game{
     CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
     CollisionUtil.objectCollision(this.human, Object.values(this.landComputerProjectiles));
     CollisionUtil.objectCollision(this.human, Object.values(this.dynamicComputerProjectiles));
+
+    // this.human.powerups = Object.assign(CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups)), this.human.powerups);
+    let newPowerup = CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups));
+    if(newPowerup){
+      debugger;
+      this.human.powerups[newPowerup.id] = newPowerup;
+      delete this.environment.platforms[newPowerup.platform.id].powerups[newPowerup.id];
+      delete this.allPowerups[newPowerup.id];
+    }
+
     this.didPlayerHit(this.computers);
     this.didPlayerHit(this.landComputers);
     this.didPlayerHit(this.dynamicComputers);

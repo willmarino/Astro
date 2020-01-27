@@ -9,7 +9,6 @@ export default class LandComputer{
     this.type = 'land-computer';
 
     let positions = this.getStartPlatforms();
-
     // let randNum = Math.random();
     if(id % 2 === 0){
       this.curPlat = positions.left;
@@ -24,7 +23,6 @@ export default class LandComputer{
       this.goingRight = false;
       this.xVel = -4;
     }
-    // this.getCurrentPlatform();
     this.yPos = this.curPlat.yStart;
     this.yVel = 0;
     this.CONSTANTS = {
@@ -53,7 +51,9 @@ export default class LandComputer{
   }
 
   getStartPlatforms(){
-    let mid = Math.round(this.environment.platforms.length / 2);
+    let keys = Object.keys(this.environment.platforms);
+    let mid = Math.round(keys.length / 2);
+    // let mid = Math.round(this.environment.platforms.length / 2);
     return { left: this.environment.platforms[mid - 1], right: this.environment.platforms[mid + 1]};
   }
 
@@ -207,14 +207,14 @@ export default class LandComputer{
   // before it would only set new platforms, not set null for no platforms
   // p.s. never use forEach, it sucks
   getCurrentPlatform(){
-    for(let i = 0; i < this.environment.platforms.length; i++){
-      let platform = this.environment.platforms[i];
+    for(let i = 0; i < Object.values(this.environment.platforms).length; i++){
+      let platform = Object.values(this.environment.platforms)[i];
       if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width) && (this.yPos <= platform.yStart + this.height)){
         this.curPlat = platform;
         if(this.goingLeft){
-          this.nextPlat = this.environment.platforms[i - 1];
+          this.nextPlat = Object.values(this.environment.platforms)[i - 1];
         }else if(this.goingRight){
-          this.nextPlat = this.environment.platforms[i + 1];
+          this.nextPlat = Object.values(this.environment.platforms)[i + 1];
         }
         return;
       }

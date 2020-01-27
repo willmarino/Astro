@@ -1,13 +1,14 @@
 
 
 export default class Platform{
-  constructor(xStart, yStart, width, height){
+  constructor(xStart, yStart, width, height, id){
     this.xStart = xStart;
     this.yStart = yStart;
     this.width = width;
     this.height = height;
     this.powerups = {};
     this.shrinking = false;
+    this.id = id;
     
   }
 
