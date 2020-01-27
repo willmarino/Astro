@@ -20,6 +20,7 @@ export default class DynamicComputer{
     this.additionalScore = 0;
     this.projectileCount = 15000 + (id * 100);
     this.id = id;
+    this.health = 2;
 
 		this.xPos = xPos;
     this.yPos = 100;

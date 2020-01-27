@@ -31,6 +31,7 @@ export default class LandComputer{
     };
 
     this.id = id;
+    this.health = 2;
 
     this.projectileCount = 500 * id;
     this.height = 30;

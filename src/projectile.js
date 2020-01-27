@@ -31,6 +31,7 @@ export default class Projectile{
         this.height = 5;
       }
     }
+    this.health = 1;
     this.alive = true;
     this.id = player.projectileCount;
   }

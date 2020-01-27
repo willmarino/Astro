@@ -38,20 +38,28 @@ export const collide = (obj1, obj2) => {
 
 }
 
-export const objectCollision = (obj, projectiles, computers) => {
+export const objectCollision = (obj, projectiles) => {
   let count = 0;
   for(let i = 0; i < projectiles.length; i++){
     let p = projectiles[i];
     if(collide(obj, p)){
-      if((obj.type === 'computer' || obj.type === 'land-computer') && p.owner === 'human'){
+      if(isComputer(obj) && p.owner === 'human'){
         if(obj.alive) count += 2;
       }
       p.didHit = true;
-      obj.alive = false;
+      if(!obj.shielded) obj.health -= 1;
+      if(obj.health === 0) obj.alive = false;
     }
   }
 
   return count;
+}
+
+const isComputer = (obj) => {
+  if(obj.type === 'computer' || obj.type === 'land-computer'){
+    return true;
+  }
+  return false;
 }
 
 export const powerupCollision = (obj, powerups) => {

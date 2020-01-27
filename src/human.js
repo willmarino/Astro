@@ -41,19 +41,21 @@ export default class Human{
 
 		this.powerups = {};
 		this.shielded = false;
+		this.health = 3;
 
-		this.bindLeft();
-		this.bindRight();
-		this.bindUndoRight();
-		this.bindUndoLeft();
-		this.bindDown();
-		this.bindUndoDown();
-		this.bindDash();
-		this.bindUseShield();
-
-    this.bindJump();
     this.setClick = this.setClick.bind(this);
-    this.setClick(this);
+		this.allBinds();
+		// this.bindLeft();
+		// this.bindRight();
+		// this.bindUndoRight();
+		// this.bindUndoLeft();
+		// this.bindDown();
+		// this.bindUndoDown();
+		// this.bindDash();
+		// this.bindUseShield();
+
+    // this.bindJump();
+    // this.setClick(this);
 	}
 	// ----------------------------------------------------------------------------------------------------
 	// ----------------------------------MAIN---------------------------------------------------
@@ -71,7 +73,7 @@ export default class Human{
 
 	draw(context) {
 		if(this.shielded){
-			context.fillStyle = 'black';
+			context.fillStyle = 'yellow';
 		}else{
 			context.fillStyle = 'gray';
 		}
@@ -227,6 +229,20 @@ export default class Human{
 	// -------------------------MOVEMENT BINDS-------------------------------------------------------------
 	// -------------------------MOVEMENT BINDS---------------------------------------------------------------------------
 	// -------------------------MOVEMENT BINDS---------------------------------------------------------------------------
+	allBinds(){
+		this.bindLeft();
+		this.bindRight();
+		this.bindUndoRight();
+		this.bindUndoLeft();
+		this.bindDown();
+		this.bindUndoDown();
+		this.bindDash();
+		this.bindUseShield();
+
+    this.bindJump();
+    // this.setClick = this.setClick.bind(this);
+    this.setClick(this);
+	}
 
 	bindLeft() {
 		window.addEventListener('keypress', (e) => {

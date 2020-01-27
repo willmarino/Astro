@@ -25,6 +25,8 @@ export default class Computer{
 		this.xVel = -5;
 		this.width = 30;
     this.height = 30;
+
+    this.health = 2;
     
     this.human = human;
 

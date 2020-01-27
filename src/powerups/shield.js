@@ -3,7 +3,7 @@ export default class Shield{
     this.didHit = false;
     this.type = 'shield';
     this.xPos = xPos;
-    this.yPos = yPos;
+    this.yPos = yPos - 15;
     this.health = 3;
     this.id = id;
     this.platform = platform;
