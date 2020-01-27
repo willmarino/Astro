@@ -49,6 +49,7 @@ export default class Human{
 		this.bindDown();
 		this.bindUndoDown();
 		this.bindDash();
+		this.bindUseShield();
 
     this.bindJump();
     this.setClick = this.setClick.bind(this);
@@ -69,7 +70,11 @@ export default class Human{
 	}
 
 	draw(context) {
-		context.fillStyle = 'gray';
+		if(this.shielded){
+			context.fillStyle = 'black';
+		}else{
+			context.fillStyle = 'gray';
+		}
 		context.fillRect(
 			this.xPos, this.yPos, this.width, this.height
 		);
@@ -399,7 +404,24 @@ export default class Human{
 	}
 
 	useShield(){
+		let shield = this.hasShield();
+		if(shield){
+			this.shielded = true;
+			delete this.powerups[shield.id];
+			window.setTimeout(() => {
+				this.shielded = false;
+			}, 5000)
+		}
+	}
 
+	hasShield(){
+		let powerups = Object.values(this.powerups);
+		for(let i = 0; i < powerups.length; i++){
+			if(powerups[i].type === 'shield'){
+				return powerups[i];
+			}
+		}
+		return false;
 	}
 
 }

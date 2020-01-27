@@ -212,9 +212,11 @@ export default class LandComputer{
       if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width) && (this.yPos <= platform.yStart + this.height)){
         this.curPlat = platform;
         if(this.goingLeft){
-          this.nextPlat = Object.values(this.environment.platforms)[i - 1];
+          // this.nextPlat = Object.values(this.environment.platforms)[i - 1];
+          this.nextPlat = this.curPlat.prev;
         }else if(this.goingRight){
-          this.nextPlat = Object.values(this.environment.platforms)[i + 1];
+          // this.nextPlat = Object.values(this.environment.platforms)[i + 1];
+          this.nextPlat = this.curPlat.next;
         }
         return;
       }

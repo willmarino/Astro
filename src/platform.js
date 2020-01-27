@@ -9,6 +9,9 @@ export default class Platform{
     this.powerups = {};
     this.shrinking = false;
     this.id = id;
+
+    this.prev = null;
+    this.next = null;
     
   }
 
