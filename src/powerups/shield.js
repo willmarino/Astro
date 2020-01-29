@@ -3,7 +3,7 @@ export default class Shield{
     this.didHit = false;
     this.type = 'shield';
     this.xPos = xPos;
-    this.yPos = yPos - 15;
+    this.yPos = yPos - 10;
     this.health = 3;
     this.id = id;
     this.platform = platform;
@@ -23,14 +23,13 @@ export default class Shield{
   }
 
   draw(context){
-    // context.beginPath();
-    // context.arc(this.xPos, this.yPos, 20, 0, 2 * Math.PI);
-    // context.fillStyle = 'green'
-    // context.stroke();
-    context.fillStyle = 'green';
-    context.fillRect(
-      this.xPos, this.yPos, this.width, this.height
-    );
+    context.beginPath();
+    context.arc(this.xPos, this.yPos, 8, 0, 2 * Math.PI);
+    context.fillStyle = 'green'
+    context.fill();
+    context.stroke();
+    context.closePath();
+    // context.fillStyle = 'green';
 
   }
 }

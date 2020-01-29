@@ -1,4 +1,6 @@
 import Projectile from "./projectile";
+import Shield from "./powerups/shield";
+import ShieldAttachment from "./powerups/shield_attachement";
 
 export default class Human{
 	constructor(environment, context, computerProjectiles){
@@ -41,6 +43,7 @@ export default class Human{
 
 		this.powerups = {};
 		this.shielded = false;
+		this.shield = null;
 		this.health = 3;
 
     this.setClick = this.setClick.bind(this);
@@ -69,14 +72,17 @@ export default class Human{
 	animate(context) {
 		this.move();
 		this.draw(context);
+		if(this.shielded){
+			this.shield.animate(context);
+		}
 	}
 
 	draw(context) {
-		if(this.shielded){
-			context.fillStyle = 'yellow';
-		}else{
-			context.fillStyle = 'gray';
-		}
+		// if(this.shielded){
+		// 	this.shield.draw(context);
+		// }else{
+		// }
+		context.fillStyle = 'gray';
 		context.fillRect(
 			this.xPos, this.yPos, this.width, this.height
 		);
@@ -246,7 +252,7 @@ export default class Human{
 
 	bindLeft() {
 		window.addEventListener('keypress', (e) => {
-			if (e.key === 'a') {
+			if (e.key === 'a' || e.key === 'A') {
 				this.moveLeft();
 				this.movingLeft = true;
 				this.movingRight = false;
@@ -256,7 +262,7 @@ export default class Human{
 
 	bindUndoLeft(){
 		window.addEventListener('keyup', (e) => {
-			if (e.key === 'a') {
+			if (e.key === 'a' || e.key === 'A') {
 				// this.moveLeft();
 				this.movingLeft = false;
 			}
@@ -265,7 +271,7 @@ export default class Human{
 
 	bindRight(){
 		window.addEventListener('keypress', (e) => {
-			if (e.key === 'd') {
+			if (e.key === 'd' || e.key === 'D') {
 				this.moveRight();
 				this.movingRight = true;
 				this.movingLeft = false;
@@ -275,7 +281,7 @@ export default class Human{
 
 	bindUndoRight(){
 		window.addEventListener('keyup', (e) => {
-			if (e.key === 'd') {
+			if (e.key === 'd' || e.key === 'D') {
 				// this.moveRight();
 				this.movingRight = false;
 			}
@@ -284,7 +290,7 @@ export default class Human{
 
 	bindJump() {
 		window.addEventListener('keypress', (e) => {
-			if (e.key === 'w') {
+			if (e.key === 'w' || e.key === 'W') {
 				this.jump();
 			}
 		});
@@ -292,7 +298,7 @@ export default class Human{
 
 	bindDown(){
 		window.addEventListener('keypress', (e) => {
-			if(e.key === 's'){
+			if(e.key === 's' || e.key === 'S'){
 				this.goingDown = true;
 				this.down();
 			}
@@ -301,7 +307,7 @@ export default class Human{
 
 	bindUndoDown(){
 		window.addEventListener('keyup', (e) => {
-			if (e.key === 's') {
+			if (e.key === 's' || e.key === 'S') {
 				// this.down();
 				this.goingDown = false;
 			}
@@ -338,7 +344,7 @@ export default class Human{
 
 	bindUseShield(){
 		window.addEventListener('keypress', (e) => {
-			if(e.key === 'r'){
+			if(e.key === 'r' || e.key === 'R'){
 				this.useShield();
 			}
 		})
@@ -423,9 +429,11 @@ export default class Human{
 		let shield = this.hasShield();
 		if(shield){
 			this.shielded = true;
+			this.shield = new ShieldAttachment(this);
 			delete this.powerups[shield.id];
 			window.setTimeout(() => {
 				this.shielded = false;
+				this.shield = null;
 			}, 5000)
 		}
 	}

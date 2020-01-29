@@ -72,3 +72,29 @@ export const powerupCollision = (obj, powerups) => {
   }
   return null;
 }
+
+export const shieldCollision = (obj, projectiles) => {
+  for(let i = 0; i < projectiles.length; i++){
+    let p = projectiles[i];
+    if(collide(obj, p)){
+      this.reconfigure(obj, p);
+    }
+  }
+}
+
+const reconfigure = (obj, p) => {
+  // 1
+  let pCoords = {x : p.xPos, y : p.yPos};
+  let objCoords = {x : obj.xPos, y: obj.yPos};
+  let v1 = {start : objCoords, end : pCoords};
+  // 2
+  let v1xDiff = v1.start.x - v1.end.x;
+  let v1yDiff = v1.start.y - v1.end.y;
+  // 3
+  let perpxDiff = v1yDiff;
+  let perpyDiff = v1xDiff;
+  // 4
+  let perpSlope = perpyDiff / perpxDiff;
+
+
+}
