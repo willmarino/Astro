@@ -17,8 +17,11 @@ export default class Environment{
     this.powerups = {};
     this.platforms = {};
     this.generatePlatforms();
-
+    this.gapOffset = 0;
     this.human = human;
+
+    this.shrinkTick = 30;
+    this.shrinking = false;
 
     this.head;
     this.tail;
@@ -97,6 +100,7 @@ export default class Environment{
   }
 
   addPlatform(){
+    if(!this.gapOffset) this.gapOffset = 0;
     // let firstPlat = Search.furthestLeftPlatform(this.platforms);
     // let prevPlat = Search.furthestRightPlatform(this.platforms);
     if(this.head.xStart < -1450){
@@ -199,15 +203,40 @@ export default class Environment{
   generatePlatformWidth(){
     let randomOffset = Math.round(Math.random() * 200);
     let randNum = Math.random();
+    let width;
     if(randNum < .5){
-      return 400 + randomOffset;
+      width = (400 + randomOffset);
     }else{
-      return 400 - randomOffset;
+      width = (400 - randomOffset);
     }
+    if(this.gapOffset) width -= this.gapOffset;
+    return width;
   }
 
   generatePlatformGap(){
-    return Math.round(Math.random() * 100) + 100;
+    let gap = Math.round(Math.random() * 100) + 100;
+    if(this.gapOffset){
+      return gap + this.gapOffset;
+    }else{
+      return gap;
+    }
+
+  }
+
+  shrink(){
+    let plats = Object.values(this.platforms);
+    this.shrinkTick = 0;
+    let theShrink = window.setInterval(() => {
+      for(let i = 0; i < plats.length; i++){
+        let p = plats[i];
+        p.shrink(2);
+        this.shrinkTick += 1;
+        if(this.shrinkTick >= 20){
+          this.shrinkTick = 0;
+          window.clearInterval(theShrink);
+        }
+      }
+    }, 50)
   }
 
 }

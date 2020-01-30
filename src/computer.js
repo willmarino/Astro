@@ -117,7 +117,7 @@ export default class Computer{
     if(projectile === null){
       proportion = 5 / totalDelta;
     }else{
-      proportion = 3 / totalDelta;
+      proportion = 10 / totalDelta;
     }
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;

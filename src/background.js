@@ -8,8 +8,6 @@ export default class Background{
     this.colors = [
       'white',
       '#5eaec4',
-      // 'green',
-      'blue',
       'orange'
     ];
   }

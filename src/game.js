@@ -6,6 +6,8 @@ import Score from "./score";
 import LandComputer from "./land_computer";
 import DynamicComputer from './dynamic_computer';
 import * as CollisionUtil from './util/collision_logic';
+// import PIXI from '../pixi';
+import * as PIXI from '../pixi';
 
 
 export default class Game{
@@ -35,6 +37,8 @@ export default class Game{
     this.canSpawnComp = true;
     this.canSpawnDynComp = true;
     this.canSpawnLandComp = true;
+
+    this.spawnRates = {0 : {c : 3, lc : 1, dc : 1}, 1 : {c : 3, lc : 2, dc : 2}, 2 : {c : 5, lc : 2, dc : 4}};
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
@@ -245,16 +249,21 @@ export default class Game{
 
   switchRounds(){
     let score = this.score.score;
-    if (score >= 15){
-      this.round = 3;
-    } else if (score >= 10){
+    if (score >= 30){
       this.round = 2;
-    }else if (score >= 5){
+      this.environment.gapOffset = 130;
+    }else if (score >= 15){
       this.round = 1;
+      this.environment.gapOffset = 65;
     }else{
       this.round = 0;
+      this.environment.gapOffset = 0;
+    }
+    if(this.round !== this.background.round){
+      this.environment.shrink();
     }
     this.background.round = this.round;
+
   }
 
   
@@ -288,8 +297,8 @@ export default class Game{
       this.landComputerCount += 1;
       this.landComputersBeingAdded -= 1;
       this.canSpawnLandComp = true;
-      console.log('spawned!');
-      console.log(newLandComp.xPos);
+      // console.log('spawned!');
+      // console.log(newLandComp.xPos);
     }, 5000);
   }
 
@@ -377,7 +386,7 @@ export default class Game{
   createInitialComputers(offset=1){
     let i = 1;
     let compStartX;
-    while(i < 3){
+    while(i < 4){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -396,7 +405,7 @@ export default class Game{
       j += 1;
     }
     let k = 0;
-    while(k < 2){
+    while(k < 0){
       if(k % 2 === 0){
         compStartX = 1150 + (100 * k);
       }else{
@@ -422,6 +431,7 @@ export default class Game{
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
     this.environment.human = this.human;
     this.score = new Score(this.context);
+
     this.createInitialComputers();
     this.gameAndTitle.removeChild(this.startMenu);
     this.step();
@@ -436,13 +446,14 @@ export default class Game{
     this.setNumDynamicComputers();
     this.setNumLandComputers();
 
-    if(this.numComputers < 2){
+    debugger;
+    if(this.numComputers < this.spawnRates[this.round]['c']){
       if(this.canSpawnComp) this.spawnComputer();
     }
-    if(this.numdynamicComputers < 2){
+    if(this.numdynamicComputers < this.spawnRates[this.round]['dc']){
       if(this.canSpawnDynComp) this.spawnDynamicComputer();
     }
-    if(this.numLandComputers < 2){
+    if(this.numLandComputers < this.spawnRates[this.round]['lc']){
       if(this.canSpawnLandComp) this.spawnLandComputer();
     }
     if(!this.gameOver()){
@@ -462,23 +473,15 @@ export default class Game{
     Object.values(this.computers).forEach((c) => {
       c.animate(this.context, this.human);
     });
-    // Object.values(this.landComputers).forEach((comp) => {
-    //   if(!comp.type){
-    //     console.log()
-    //     debugger;
-    //   }
-    //   comp.animate(this.context);
-    // })
 
     for(let i = 0; i < Object.values(this.landComputers).length; i++){
       let comp = Object.values(this.landComputers)[i];
       if(!comp.type){
-        debugger;
+        // debugger;
       }
       comp.animate(this.context);
 
     }
-
 
     Object.values(this.dynamicComputers).forEach((dc) => {
       dc.animate(this.context, this.human);
