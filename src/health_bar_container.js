@@ -12,7 +12,9 @@ export default class HealthBarContainer{
   }
 
   animate(context, xPos, yPos){
-    
+    if(this.health < 0){
+      this.health = 0;
+    }
     this.healthBar.health = this.health;
     this.healthBar.direction = this.direction;
 

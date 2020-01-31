@@ -46,7 +46,10 @@ export default class Human{
 		this.shielded = false;
 		this.shield = null;
 		this.health = 3;
-		this.healthBarContainer = new HealthBarContainer(3, 10 , 10, 40, 10, this.goingRight);
+		this.healthBarContainer = new HealthBarContainer(3, 10 , 10, 80, 10, this.goingRight);
+		this.invincible = false;
+
+		this.shootingMode = 'normal';
 
     this.setClick = this.setClick.bind(this);
 		this.allBinds();
@@ -233,6 +236,7 @@ export default class Human{
 		this.bindUndoDown();
 		this.bindDash();
 		this.bindUseShield();
+		this.bindInvincibility();
 
     this.bindJump();
     // this.setClick = this.setClick.bind(this);
@@ -335,6 +339,14 @@ export default class Human{
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'r' || e.key === 'R'){
 				this.useShield();
+			}
+		})
+	}
+
+	bindInvincibility(){
+		window.addEventListener('keypress', (e) => {
+			if(e.key === 'p' || e.key === 'P'){
+				this.invincible = true;
 			}
 		})
 	}

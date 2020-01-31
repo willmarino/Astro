@@ -14,6 +14,7 @@ export default class Score{
   }
 
   draw(){
+    this.context.fillStyle = 'black';
     this.context.font = "20px Arial";
     this.context.fillText(this.score, this.xPos, this.yPos);
   }

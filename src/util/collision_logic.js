@@ -47,7 +47,7 @@ export const objectCollision = (obj, projectiles) => {
         if(obj.alive) count += 2;
       }
       p.didHit = true;
-      if(!obj.shielded) obj.health -= 1;
+      if(!obj.shielded && !obj.invincible) obj.health -= 1;
       if(obj.health === 0) obj.alive = false;
     }
   }
