@@ -82,6 +82,7 @@ export const shieldCollision = (obj, projectiles) => {
   }
 }
 
+// unfinished
 const reconfigure = (obj, p) => {
   // 1
   let pCoords = {x : p.xPos, y : p.yPos};

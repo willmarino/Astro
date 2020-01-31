@@ -1,5 +1,5 @@
 import Projectile from "./projectile";
-
+import HealthBarContainer from './health_bar_container';
 
 export default class LandComputer{
   constructor(environment, context, human, id){
@@ -32,7 +32,7 @@ export default class LandComputer{
 
     this.id = id;
     this.health = 2;
-
+    
     this.projectileCount = 500 * id;
     this.height = 25;
     this.width = 25;
@@ -41,6 +41,7 @@ export default class LandComputer{
     this.additionalScore = 0;
     this.nextPlat = null;
     this.jumping = false;
+    this.healthBarContainer = new HealthBarContainer(2, this.xPos , this.yPos - 30, this.width, 10, this.goingRight);
 
     this.initiateShot();
   }
@@ -61,6 +62,8 @@ export default class LandComputer{
   animate(context){
     this.action();
     this.draw(context);
+    this.healthBarContainer.health = this.health;
+    this.healthBarContainer.animate(context, this.xPos, this.yPos - 30);
   }
 
   action(){

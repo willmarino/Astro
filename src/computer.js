@@ -1,4 +1,6 @@
 import Projectile from "./projectile";
+import HealthBar from "./healthbar";
+import HealthBarContainer from "./health_bar_container";
 
 export default class Computer{
   constructor(environment, context, human, id, xPos=850){
@@ -19,6 +21,9 @@ export default class Computer{
     this.projectileCount = 10000 + (id * 100);
     this.id = id;
 
+    this.goingRight = false;
+    this.goingLeft = true;
+
 		this.xPos = xPos;
     this.yPos = 100;
 		this.yVel = 0;
@@ -27,6 +32,7 @@ export default class Computer{
     this.height = 30;
 
     this.health = 2;
+    this.healthBarContainer = new HealthBarContainer(2, this.xPos , this.yPos - 30, this.width, 10, this.goingRight);
     
     this.human = human;
 
@@ -46,8 +52,12 @@ export default class Computer{
   switchDirection(){
     if(this.xPos <= 20){
       this.xVel = 5;
+      this.goingRight = true;
+      this.goingLeft = false;
     }else if(this.xPos >= 1080){
       this.xVel = -5;
+      this.goingRight = false;
+      this.goingLeft = true;
     }
   }
 
@@ -159,6 +169,7 @@ export default class Computer{
     if(this.alive){
       this.switchDirection();
     }
+    this.healthBarContainer.direction = this.goingRight;
   }
 
   move(){
@@ -174,10 +185,11 @@ export default class Computer{
     }
   }
   // ------------------------------------------------------------
-  // animate(context, human){
   animate(context){
     this.action();
     this.draw(context);
+    this.healthBarContainer.health = this.health;
+    this.healthBarContainer.animate(context, this.xPos, this.yPos - 30);
   }
 
 }

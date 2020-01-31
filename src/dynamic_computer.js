@@ -1,4 +1,5 @@
 import Projectile from "./projectile";
+import HealthBarContainer from './health_bar_container';
 
 export default class DynamicComputer{
   constructor(environment, context, human, id, xPos=850){
@@ -28,6 +29,7 @@ export default class DynamicComputer{
 		this.xVel = 5;
 		this.width = 30;
     this.height = 30;
+    this.healthBarContainer = new HealthBarContainer(2, this.xPos , this.yPos - 30, this.width, 10, this.goingRight);
     
     this.stepNum = 0;
     
@@ -118,23 +120,23 @@ export default class DynamicComputer{
 
   // ------------------------------------------------------------
 
-  jump(){
-    this.yVel -= 5;
-  }
+  // jump(){
+  //   this.yVel -= 5;
+  // }
 
-  moveRight(){
-    this.xVel += 2;
-    if(this.xVel > 5){
-      this.xVel = 5;
-    }
-  }
+  // moveRight(){
+  //   this.xVel += 2;
+  //   if(this.xVel > 5){
+  //     this.xVel = 5;
+  //   }
+  // }
 
-  moveLeft() {
-    this.xVel -= 2;
-    if (this.xVel < -5) {
-      this.xVel = -5;
-    }
-  }
+  // moveLeft() {
+  //   this.xVel -= 2;
+  //   if (this.xVel < -5) {
+  //     this.xVel = -5;
+  //   }
+  // }
 
 
   configureMove(){
@@ -168,6 +170,8 @@ export default class DynamicComputer{
   animate(context){
     this.action();
     this.draw(context);
+    this.healthBarContainer.health = this.health;
+    this.healthBarContainer.animate(context, this.xPos, this.yPos - 30);
   }
 
 	draw(context){
@@ -182,6 +186,7 @@ export default class DynamicComputer{
     if(this.alive){
       this.switchDirection();
     }
+    this.goingRight = (this.xVel >= 0) ? true : false;
   }
 
   move2(){

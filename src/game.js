@@ -38,7 +38,7 @@ export default class Game{
     this.canSpawnDynComp = true;
     this.canSpawnLandComp = true;
 
-    this.spawnRates = {0 : {c : 3, lc : 1, dc : 1}, 1 : {c : 3, lc : 2, dc : 2}, 2 : {c : 5, lc : 2, dc : 4}};
+    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 5, lc : 2, dc : 4}};
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
@@ -386,7 +386,7 @@ export default class Game{
   createInitialComputers(offset=1){
     let i = 1;
     let compStartX;
-    while(i < 4){
+    while(i < 1){
       if(i % 2 === 0){
         compStartX = 1150 + (100 * i);
       }else{
@@ -398,14 +398,14 @@ export default class Game{
       i += 1;
     }
     let j = 0;
-    while(j < 2){
+    while(j < 1){
       let newLandComp = new LandComputer(this.environment, this.context, this.human, this.landComputerCount);
       this.landComputers[newLandComp.id] = newLandComp;
       this.landComputerCount += 1;
       j += 1;
     }
     let k = 0;
-    while(k < 0){
+    while(k < 1){
       if(k % 2 === 0){
         compStartX = 1150 + (100 * k);
       }else{
@@ -446,7 +446,6 @@ export default class Game{
     this.setNumDynamicComputers();
     this.setNumLandComputers();
 
-    debugger;
     if(this.numComputers < this.spawnRates[this.round]['c']){
       if(this.canSpawnComp) this.spawnComputer();
     }
@@ -477,7 +476,6 @@ export default class Game{
     for(let i = 0; i < Object.values(this.landComputers).length; i++){
       let comp = Object.values(this.landComputers)[i];
       if(!comp.type){
-        // debugger;
       }
       comp.animate(this.context);
 
