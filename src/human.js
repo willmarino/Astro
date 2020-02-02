@@ -2,6 +2,7 @@ import Projectile from "./projectile";
 import Shield from "./powerups/shield";
 import ShieldAttachment from "./powerups/shield_attachement";
 import HealthBarContainer from './health_bar_container';
+import ShieldBarContainer from "./powerups/shield_bar_container";
 
 export default class Human{
 	constructor(environment, context, computerProjectiles){
@@ -47,6 +48,7 @@ export default class Human{
 		this.shield = null;
 		this.health = 3;
 		this.healthBarContainer = new HealthBarContainer(3, 10 , 10, 80, 10, this.goingRight);
+		this.shieldBarContainer = null;
 		this.invincible = false;
 
 		this.shootingMode = 'normal';
@@ -71,6 +73,7 @@ export default class Human{
 		}
 		this.healthBarContainer.health = this.health;
 		this.healthBarContainer.animate(context, 10, 10);
+		if(this.shielded) this.shieldBarContainer.animate(context);
 	}
 
 	draw(context) {
@@ -339,6 +342,7 @@ export default class Human{
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'r' || e.key === 'R'){
 				this.useShield();
+				this.shieldBarContainer = new ShieldBarContainer();
 			}
 		})
 	}
