@@ -1,8 +1,8 @@
 import Projectile from "./projectile";
-import Shield from "./powerups/shield";
-import ShieldAttachment from "./powerups/shield_attachement";
+import Shield from "./powerups/shield/shield";
+import ShieldAttachment from "./powerups/shield/shield_attachement";
 import HealthBarContainer from './health_bar_container';
-import ShieldBarContainer from "./powerups/shield_bar_container";
+import ShieldBarContainer from "./powerups/shield/shield_bar_container";
 
 export default class Human{
 	constructor(environment, context, computerProjectiles){
@@ -46,12 +46,16 @@ export default class Human{
 		this.powerups = {};
 		this.shielded = false;
 		this.shield = null;
+		this.shieldInterval = null;
+
 		this.health = 3;
 		this.healthBarContainer = new HealthBarContainer(3, 10 , 10, 80, 10, this.goingRight);
 		this.shieldBarContainer = null;
 		this.invincible = false;
 
 		this.shootingMode = 'normal';
+		// this.shootingMode = 'triple';
+		this.tripleShotCount = 0;
 
     this.setClick = this.setClick.bind(this);
 		this.allBinds();
@@ -240,7 +244,7 @@ export default class Human{
 		this.bindDash();
 		this.bindUseShield();
 		this.bindInvincibility();
-
+		this.bindTripleShot();
     this.bindJump();
     // this.setClick = this.setClick.bind(this);
     this.setClick(this);
@@ -341,6 +345,8 @@ export default class Human{
 	bindUseShield(){
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'r' || e.key === 'R'){
+				this.shielded = false;
+				this.shield = null;
 				this.useShield();
 				this.shieldBarContainer = new ShieldBarContainer();
 			}
@@ -351,6 +357,14 @@ export default class Human{
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'p' || e.key === 'P'){
 				this.invincible = true;
+			}
+		})
+	}
+
+	bindTripleShot(){
+		window.addEventListener('keypress', (e) => {
+			if(e.key === 'c' || e.key === 'C'){
+				this.useTripleShot();
 			}
 		})
 	}
@@ -369,18 +383,46 @@ export default class Human{
 	// of passing that object into configureProjectile
 	setClick(that) {
 		this.context.canvas.addEventListener('click', (e) => {
-			let rect = this.context.canvas.getBoundingClientRect();
-			let pos = {};
-			pos.x = e.clientX - rect.left;
-			pos.y = e.clientY - rect.top;
+			// let rect = this.context.canvas.getBoundingClientRect();
+			// let pos = {};
+			// pos.x = e.clientX - rect.left;
+			// pos.y = e.clientY - rect.top;
 
-			let newProj = new Projectile(that, ...that.configureProjectile(pos));
-			let newId = newProj.id;
-			that.projectiles = Object.assign({[newId]: newProj}, that.projectiles);
+			// let newProj = new Projectile(that, ...that.configureProjectile(pos));
+			// let newId = newProj.id;
+			// that.projectiles = Object.assign({[newId]: newProj}, that.projectiles);
 
-			this.projectileCount += 1;
+			// this.projectileCount += 1;
+			if(that.shootingMode === 'normal'){
+				this.shoot(e);
+			}else if(that.shootingMode === 'triple'){
+				let tripleShooting = window.setInterval(() => {
+					this.shoot(e);
+					this.tripleShotCount += 1;
+					if(this.tripleShotCount === 3){
+						this.tripleShotCount = 0;
+						window.clearInterval(tripleShooting);
+					}
+				}, 50);
+			}
+
 		});
 	}
+
+	shoot(e){
+		let rect = this.context.canvas.getBoundingClientRect();
+		let pos = {};
+		pos.x = e.clientX - rect.left;
+		pos.y = e.clientY - rect.top;
+
+		let newProj = new Projectile(this, ...this.configureProjectile(pos));
+		let newId = newProj.id;
+		this.projectiles = Object.assign({[newId]: newProj}, this.projectiles);
+
+		this.projectileCount += 1;
+	}
+
+
 
 	// calculates the necessary x and y velocities for the projectile(starting at player position)
 	// to get to the coordinates of the click
@@ -431,22 +473,36 @@ export default class Human{
 	}
 
 	useShield(){
-		let shield = this.hasShield();
+		let shield = this.hasPowerup('shield');
 		if(shield){
+			window.clearInterval(this.shieldInterval);
 			this.shielded = true;
 			this.shield = new ShieldAttachment(this);
 			delete this.powerups[shield.id];
-			window.setTimeout(() => {
+			this.shieldInterval = window.setTimeout(() => {
 				this.shielded = false;
 				this.shield = null;
+				window.clearInterval(this.shieldInterval);
 			}, 5000)
 		}
 	}
 
-	hasShield(){
+	useTripleShot(){
+		let powerup = this.hasPowerup('tripleshot');
+		if(powerup){
+			delete this.powerups[powerup.id];
+			this.shootingMode = 'triple';
+			let that = this;
+			window.setTimeout(() => {
+				that.shootingMode = 'normal';
+			}, 10000)
+		}
+	}
+
+	hasPowerup(type){
 		let powerups = Object.values(this.powerups);
 		for(let i = 0; i < powerups.length; i++){
-			if(powerups[i].type === 'shield'){
+			if(powerups[i].type === type){
 				return powerups[i];
 			}
 		}

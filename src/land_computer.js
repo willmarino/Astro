@@ -87,6 +87,8 @@ export default class LandComputer{
 
     if((this.human.xPos >= 800 && this.human.xVel > 0) || (this.human.xPos <= 300 && this.human.xVel < 0)){
       this.xPos -= this.human.xVel;
+      // if(this.yPos === this.curPlat.yStart - this.height){
+      // }
     }
     // if(this.curPlat && !this)
     // this.switchDirections();

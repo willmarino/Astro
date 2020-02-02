@@ -1,6 +1,7 @@
 import Platform from "./platform";
-import Shield from "./powerups/shield";
+import Shield from "./powerups/shield/shield";
 import * as Search from './util/search';
+import TripleShot from "./powerups/tripleshot/tripleshot";
 
 export default class Environment{
   constructor(dimensions, context, human=null){
@@ -163,7 +164,7 @@ export default class Environment{
 
   generatePowerup(newPlat){
     let randNum = Math.random();
-    if(randNum <= 1){
+    if(randNum <= 0.25){
       let newShield = new Shield(
         newPlat.xStart + (Math.random() * newPlat.width),
         newPlat.yStart - 10,
@@ -172,6 +173,15 @@ export default class Environment{
       )
       this.powerupsCount += 1;
       newPlat.powerups[newShield.id] = newShield;
+    }else if(randNum > 0.25 && randNum <= .5){
+      let newTripleShot = new TripleShot(
+        newPlat.xStart + (Math.random() * newPlat.width),
+        newPlat.yStart - 10,
+        this.powerupsCount,
+        newPlat
+      )
+      this.powerupsCount += 1;
+      newPlat.powerups[newTripleShot.id] = newTripleShot;
     }
   }
 
