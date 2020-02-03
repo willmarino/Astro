@@ -87,38 +87,33 @@ export default class LandComputer{
 
     if((this.human.xPos >= 800 && this.human.xVel > 0) || (this.human.xPos <= 300 && this.human.xVel < 0)){
       this.xPos -= this.human.xVel;
-      // if(this.yPos === this.curPlat.yStart - this.height){
-      // }
     }
-    // if(this.curPlat && !this)
-    // this.switchDirections();
     if(this.curPlat && !this.jumping){
       this.switchDirections();
+      this.getCurrentPlatform();
       this.yPos = this.curPlat.yStart - this.height;
       this.xPos += this.xVel;
     }
     if(this.isOnEdge()){
-
       this.beginJump();
-
       this.jumping = true;
       this.xPos += this.xVel;
       this.yPos += this.yVel;
       this.yVel += this.CONSTANTS.GRAVITY;
+      return;
     }
     // if you have jumped already
     if(this.jumping){
 
       // if you have jumped, your yVel is downward, and your ypos is on floor, then land
       if (this.curPlat && this.yPos >= this.curPlat.yStart - this.height && this.yVel > 0){
-  
         this.jumping = false;
         this.yPos = this.curPlat.yStart - this.height;
         this.yVel = 0;
         this.xPos += this.xVel;
+
       // if you are still midjump
       }else{
-  
         this.xPos += this.xVel;
         this.yPos += this.yVel;
         this.yVel += this.CONSTANTS.GRAVITY;
@@ -135,6 +130,20 @@ export default class LandComputer{
       this.goingRight = true;
       this.goingLeft = false;
       this.xVel = this.xVel * (-1);
+    }
+  }
+
+  // check for when the computer player is nearing the edge of the platform it was supposed to land on
+  // if it is, reduce x velocity each step
+  approachingEdge(){
+    if(this.jumping && this.yVel > 0 && this.curPlat){
+      if(this.goingRight){
+        if(this.xPos > this.curPlat + this.curPlat.width - 30 && this.xPos < this.curPlat + this.curPlat.width){
+          this.xVel -= 1;
+        }
+      }else if(this.goingLeft){
+
+      }
     }
   }
 
@@ -157,14 +166,19 @@ export default class LandComputer{
 
   beginJump(){
     let startX = this.xPos;
-    let startY = this.curPlat.yStart;
-    let endY = this.nextPlat.yStart;
+    // let startY = this.curPlat.yStart;
+    // let endY = this.nextPlat.yStart;
 
     let endX;
+    if(!this.nextPlat){
+      debugger;
+    }
     if(this.goingRight){
-      endX = this.nextPlat.xStart + 10;
+      // endX = this.nextPlat.xStart + 30;
+      endX = this.nextPlat.xStart;
     }else if(this.goingLeft){
-      endX = this.nextPlat.xStart + this.nextPlat.width - this.width - 10;
+      // endX = this.nextPlat.xStart + this.nextPlat.width - this.width - 30;
+      endX = this.nextPlat.xStart + this.nextPlat.width - this.width;
     }
     let xDiff = Math.abs(endX - startX);
     
@@ -199,7 +213,7 @@ export default class LandComputer{
   }
 
   calculateFall(xDiff){
-    let steps = Math.abs(Math.round(xDiff / this.xVel));
+    let steps = Math.abs(Math.ceil(xDiff / this.xVel));
     let yVel = 0;
     let dist = 0;
     for(let i = 0; i < steps; i++){
@@ -215,7 +229,7 @@ export default class LandComputer{
   getCurrentPlatform(){
     for(let i = 0; i < Object.values(this.environment.platforms).length; i++){
       let platform = Object.values(this.environment.platforms)[i];
-      if(this.xPos > platform.xStart && (this.xPos < platform.xStart + platform.width) && (this.yPos <= platform.yStart + this.height)){
+      if(this.xPos > platform.xStart - this.width && (this.xPos < platform.xStart + platform.width) && (this.yPos <= platform.yStart + this.height)){
         this.curPlat = platform;
         if(this.goingLeft){
           // this.nextPlat = Object.values(this.environment.platforms)[i - 1];

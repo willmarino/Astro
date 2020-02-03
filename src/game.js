@@ -38,7 +38,7 @@ export default class Game{
     this.canSpawnDynComp = true;
     this.canSpawnLandComp = true;
 
-    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 5, lc : 2, dc : 4}};
+    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 0, lc : 5, dc : 0}};
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};

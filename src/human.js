@@ -4,6 +4,9 @@ import ShieldAttachment from "./powerups/shield/shield_attachement";
 import HealthBarContainer from './health_bar_container';
 import ShieldBarContainer from "./powerups/shield/shield_bar_container";
 
+import BarContainer from './powerups/bar/bar_container';
+import Bar from './powerups/bar/bar';
+
 export default class Human{
 	constructor(environment, context, computerProjectiles){
 		this.type = 'human';
@@ -53,6 +56,9 @@ export default class Human{
 		this.shieldBarContainer = null;
 		this.invincible = false;
 
+		// this.barContainer = new BarContainer(10, 100, 10000);
+		this.barContainer = null;
+
 		this.shootingMode = 'normal';
 		// this.shootingMode = 'triple';
 		this.tripleShotCount = 0;
@@ -78,6 +84,7 @@ export default class Human{
 		this.healthBarContainer.health = this.health;
 		this.healthBarContainer.animate(context, 10, 10);
 		if(this.shielded) this.shieldBarContainer.animate(context);
+		if(this.shootingMode === 'triple') this.barContainer.animate(context);
 	}
 
 	draw(context) {
@@ -143,6 +150,9 @@ export default class Human{
 				this.xVel -= .3;
 			}else if(this.xVel < 0){
 				this.xVel += .3;
+			}
+			if(Math.abs(this.xVel) < 0.5){
+				this.xVel = 0;
 			}
 		}
 		// add change in xPos to total distance covered, will be used to change rounds
@@ -348,7 +358,8 @@ export default class Human{
 				this.shielded = false;
 				this.shield = null;
 				this.useShield();
-				this.shieldBarContainer = new ShieldBarContainer();
+				// this.shieldBarContainer = new ShieldBarContainer();
+				this.shieldBarContainer = new BarContainer(10, 50, 5000);
 			}
 		})
 	}
@@ -365,6 +376,7 @@ export default class Human{
 		window.addEventListener('keypress', (e) => {
 			if(e.key === 'c' || e.key === 'C'){
 				this.useTripleShot();
+				this.barContainer = new BarContainer(10, 80, 10000);
 			}
 		})
 	}

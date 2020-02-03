@@ -30,7 +30,7 @@ export default class Environment{
   // change from checking last platform in array to know if we need to generate more,
   // switch to checking the one with the highest id, which is the max of the keys of platform
   generatePlatforms(){
-    let firstPlat = new Platform(-1360, 550, 600, 15, this.platformCount);
+    let firstPlat = new Platform(-2360, 550, 600, 15, this.platformCount);
 
     this.head = firstPlat;
     this.tail = firstPlat;
@@ -40,7 +40,7 @@ export default class Environment{
 
     let lastPlat = firstPlat;
 
-      while(lastPlat.xStart + lastPlat.width < 2000){
+      while(lastPlat.xStart + lastPlat.width < 3000){
         let newYStart = this.generatePlatformYStart();
         if(newYStart - lastPlat.yStart > 50){
           newYStart = lastPlat.yStart + 50;
@@ -104,7 +104,7 @@ export default class Environment{
     if(!this.gapOffset) this.gapOffset = 0;
     // let firstPlat = Search.furthestLeftPlatform(this.platforms);
     // let prevPlat = Search.furthestRightPlatform(this.platforms);
-    if(this.head.xStart < -1450){
+    if(this.head.xStart < -2450){
 
       let newHead = this.head.next;
       this.head.next.prev = null;
@@ -127,7 +127,7 @@ export default class Environment{
       this.platforms[newPlat.id] = newPlat;
       this.generatePowerup(newPlat);
 
-    }else if(this.tail.xStart > 1300){
+    }else if(this.tail.xStart > 2500){
 
       let newTail = this.tail.prev;
       this.tail.prev.next = null;
