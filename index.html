@@ -15,23 +15,33 @@
 
 <body>
   
-  <div id='game-and-title'>
-    <p id='title'>Astro</p>
-    <canvas id="main-canvas" height='700' width='1100'></canvas>
-    <div id='start-menu'>
-      <div id='play-button'>Play!</div>
-      <div id='instructions'>
-        <p>w : jump</p>
-        <p>a : left</p>
-        <p>d : right</p>
-        <p>s : down</p>
-        <p>space : dash(while moving)</p>
-        <p>click : shoot</p>
-        <p>r : shield</p>
-        <p>c : triple shot</p>
-        <p>p : invincibility(test mode)</p>
+  <img src="./images/moon-background.jpg" alt="">
+  <div class="splash-container" 
+    onmouseover="this.style.background = 'rgb(16,16,16)'"
+    onmouseout="this.style.background = 'none'" id='main-start'>
+    <p class='splash-logo'>Astro</p>
+  </div>
+  <div class='main no-display' id='main'>
+    <div id='game-and-title'>
+      <divi id='instructions-backdrop'></divi>
+      <p id='game-title'>Astro</p>
+      <canvas id="main-canvas" height='700' width='1100'></canvas>
+      <p id='pause-button'>Pause</p>
+      <div id='start-menu'>
+        <div id='play-button'>Play!</div>
+        <div id='instructions'>
+          <p>w : jump</p>
+          <p>a : left</p>
+          <p>d : right</p>
+          <p>s : down</p>
+          <p>space : dash(while moving)</p>
+          <p>click : shoot</p>
+          <p>r : shield</p>
+          <p>c : triple shot</p>
+          <p>p : invincibility(test mode)</p>
+        </div>
       </div>
-    </div>
+    </div> 
   </div>
   
 

@@ -6,7 +6,6 @@ import Score from "./score";
 import LandComputer from "./land_computer";
 import DynamicComputer from './dynamic_computer';
 import * as CollisionUtil from './util/collision_logic';
-// import PIXI from '../pixi';
 import * as PIXI from '../pixi';
 
 
@@ -17,6 +16,9 @@ export default class Game{
       height: canvas.height,
       width: canvas.width
     };
+
+    this.paused = false;
+
     this.round = 0;
     this.roundVals = [0, 5, 10, 15, 20];
 
@@ -38,7 +40,7 @@ export default class Game{
     this.canSpawnDynComp = true;
     this.canSpawnLandComp = true;
 
-    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 0, lc : 5, dc : 0}};
+    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 3, lc : 3, dc : 3}};
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
@@ -51,6 +53,12 @@ export default class Game{
     this.startMenu = document.getElementById('start-menu');
     this.playButton = document.getElementById('play-button');
     this.gameAndTitle = document.getElementById('game-and-title');
+    this.pauseButton = document.getElementById('pause-button');
+    this.instructions = document.getElementById('instructions');
+    this.instructionsBackdrop = document.getElementById('instructions-backdrop')
+
+    this.addPauseListener();
+
   }
 
 // --------------------------------------------------------------------------
@@ -59,6 +67,35 @@ export default class Game{
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
 // --------------------------------------------------------------------------
+
+  switchPause(){
+    this.paused = !this.paused;
+    let comps = Object.values(this.computers).concat(Object.values(this.landComputers));
+    for(let i = 0; i < comps.length; i++){
+      let c = comps[i];
+      c.gamePaused = this.paused;
+      if(this.paused) window.clearInterval(c.shootingInterval);
+      if(!this.paused) c.initiateShot();
+    }
+  }
+
+  addPauseListener(){
+    debugger;
+    let that = this;
+    // let comps = Object.values(this.computers).concat(Object.values(this.landComputers));
+    this.pauseListener = this.pauseButton.addEventListener('click', () => {
+      that.switchPause();
+      if(!that.paused){
+        that.step();
+        debugger;
+        if(that.instructions.parentNode === that.gameAndTitle){
+          that.gameAndTitle.removeChild(that.instructions);
+        }
+      }else{
+        that.gameAndTitle.appendChild(that.instructions);
+      }
+    })
+  }
 
   filterProjectiles(){
     this.grabAll();
@@ -299,7 +336,7 @@ export default class Game{
       this.canSpawnLandComp = true;
       // console.log('spawned!');
       // console.log(newLandComp.xPos);
-    }, 5000);
+    }, 2500);
   }
 
   spawnComputer(){
@@ -318,7 +355,7 @@ export default class Game{
       this.computerCount += 1;
       this.computersBeingAdded -= 1;
       this.canSpawnComp = true;
-    }, 5000);
+    }, 2500);
   }
 
   spawnDynamicComputer(){
@@ -337,7 +374,7 @@ export default class Game{
       this.computerCount += 1;
       this.dynamicComputersBeingAdded -= 1;
       this.canSpawnDynComp = true;
-    }, 5000);
+    }, 2500);
   }
   
 
@@ -375,7 +412,7 @@ export default class Game{
     if(projectile === null){
       proportion = 5 / totalDelta;
     }else{
-      proportion = 3 / totalDelta;
+      proportion = 5 / totalDelta;
     }
     let xVel = xDelta * proportion;
     let yVel = yDelta * proportion;
@@ -399,7 +436,7 @@ export default class Game{
     }
     let j = 0;
     while(j < 1){
-      let newLandComp = new LandComputer(this.environment, this.context, this.human, this.landComputerCount);
+      let newLandComp = new LandComputer(this.environment, this.context, this.human, this.landComputerCount, this.paused);
       this.landComputers[newLandComp.id] = newLandComp;
       this.landComputerCount += 1;
       j += 1;
@@ -428,7 +465,9 @@ export default class Game{
   restart(){
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
+
     this.human = new Human(this.environment, this.context, this.computerProjectiles);
+
     this.environment.human = this.human;
     this.score = new Score(this.context);
 
@@ -438,6 +477,7 @@ export default class Game{
   }
 
   step(){
+    // debugger;
     this.animate();
     this.filterProjectiles();
     this.filterComputers();
@@ -455,10 +495,14 @@ export default class Game{
     if(this.numLandComputers < this.spawnRates[this.round]['lc']){
       if(this.canSpawnLandComp) this.spawnLandComputer();
     }
-    if(!this.gameOver()){
+    if(!this.gameOver() && !document.hidden && !this.paused){
       window.requestAnimationFrame(this.step.bind(this));
-    }else{
+    }else if(this.gameOver()){
+      debugger;
+      this.context = null;
+      window.clearInterval(this.pauseListener);
       this.gameAndTitle.appendChild(this.startMenu);
+      this.startMenu.appendChild(this.instructions);
     }
   }
 
@@ -519,7 +563,6 @@ export default class Game{
       return false;
     }
   }
-
 
 }
 

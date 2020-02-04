@@ -3,7 +3,8 @@ import HealthBar from "./healthbar";
 import HealthBarContainer from "./health_bar_container";
 
 export default class Computer{
-  constructor(environment, context, human, id, xPos=850){
+  constructor(environment, context, human, id, gamePaused, xPos=850){
+    this.gamePaused = gamePaused;
     this.type = 'computer';
 
 		this.CONSTANTS = {
@@ -44,7 +45,7 @@ export default class Computer{
   // ------------------------------------------------------------
 
   initiateShot(){
-    window.setInterval(() => {
+    this.shootingInterval = window.setInterval(() => {
       if(this.alive) this.shoot();
     }, 2000);
   }

@@ -2,7 +2,8 @@ import Projectile from "./projectile";
 import HealthBarContainer from './health_bar_container';
 
 export default class LandComputer{
-  constructor(environment, context, human, id){
+  constructor(environment, context, human, id, gamePaused){
+    this.gamePaused = gamePaused;
     this.environment = environment;
     this.context = context;
     this.human = human;
@@ -47,8 +48,8 @@ export default class LandComputer{
   }
 
   initiateShot(){
-    window.setInterval(() => {
-      if(this.alive) this.shoot();
+    this.shootingInterval = window.setInterval(() => {
+      if(this.alive && !this.gamePaused) this.shoot();
     }, 2000)
   }
 
