@@ -40,7 +40,7 @@ export default class Game{
     this.canSpawnDynComp = true;
     this.canSpawnLandComp = true;
 
-    this.spawnRates = {0 : {c : 1, lc : 1, dc : 1}, 1 : {c : 2, lc : 2, dc : 2}, 2 : {c : 3, lc : 3, dc : 3}};
+    this.spawnRates = {0 : {c : 2, lc : 1, dc : 0}, 1 : {c : 2, lc : 2, dc : 1}, 2 : {c : 5, lc : 2, dc : 3}};
 
     this.humanProjectiles = {};
     this.computerProjectiles = {};
@@ -80,14 +80,12 @@ export default class Game{
   }
 
   addPauseListener(){
-    debugger;
     let that = this;
     // let comps = Object.values(this.computers).concat(Object.values(this.landComputers));
     this.pauseListener = this.pauseButton.addEventListener('click', () => {
       that.switchPause();
       if(!that.paused){
         that.step();
-        debugger;
         if(that.instructions.parentNode === that.gameAndTitle){
           that.gameAndTitle.removeChild(that.instructions);
         }
@@ -466,7 +464,7 @@ export default class Game{
     this.background = new Background(this.dimensions);
     this.environment = new Environment(this.dimensions, this.context);
 
-    this.human = new Human(this.environment, this.context, this.computerProjectiles);
+    this.human = new Human(this.environment, this.context, this.computerProjectiles, this.environment.humanStartPlatform);
 
     this.environment.human = this.human;
     this.score = new Score(this.context);
@@ -477,7 +475,6 @@ export default class Game{
   }
 
   step(){
-    // debugger;
     this.animate();
     this.filterProjectiles();
     this.filterComputers();
@@ -498,7 +495,6 @@ export default class Game{
     if(!this.gameOver() && !document.hidden && !this.paused){
       window.requestAnimationFrame(this.step.bind(this));
     }else if(this.gameOver()){
-      debugger;
       this.context = null;
       window.clearInterval(this.pauseListener);
       this.gameAndTitle.appendChild(this.startMenu);

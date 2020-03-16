@@ -52,6 +52,11 @@ export default class Environment{
           15,
           this.platformCount
         );
+        if(!this.humanStartPlatform){
+          if(newPlat.xStart > 0){
+            this.humanStartPlatform = newPlat;
+          }
+        }
 
         newPlat.prev = this.tail;
         this.tail.next = newPlat;

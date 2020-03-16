@@ -172,7 +172,6 @@ export default class LandComputer{
 
     let endX;
     if(!this.nextPlat){
-      debugger;
     }
     if(this.goingRight){
       // endX = this.nextPlat.xStart + 30;

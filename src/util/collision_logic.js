@@ -14,7 +14,14 @@ export const collide = (obj1, obj2) => {
 
   let obj2Diag = Math.sqrt(Math.pow(obj2.width / 2, 2) + Math.pow(obj2.height / 2, 2)) / 2;
 
-  let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
+  
+  let obj1XCenter = obj1.xPos + Math.round(obj1.width / 2);
+  let obj1YCenter = obj1.yPos + Math.round(obj1.height / 2);
+  let obj2XCenter = obj2.xPos + Math.round(obj2.width / 2);
+  let obj2YCenter = obj2.yPos + Math.round(obj2.height / 2);
+
+  // let totalDelta = Math.sqrt(Math.pow(obj1.xPos - obj2.xPos, 2) + Math.pow(obj1.yPos - obj2.yPos, 2));
+  let totalDelta = Math.sqrt(Math.pow((obj1XCenter - obj2XCenter), 2) + Math.pow((obj1YCenter - obj2YCenter), 2));
   
   // if((obj1TopLeft.x < obj2BotRight.x && obj1TopLeft.y < obj2BotRight.y) &&
   //   (obj1Diag + obj2Diag > totalDelta)){

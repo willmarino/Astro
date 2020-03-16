@@ -71,6 +71,7 @@
 #play-button:hover{
   background: black;
   color: white;
+  cursor: pointer;
 }
 
 #instructions{
@@ -93,9 +94,6 @@
   margin-top: 50px;
 
   font-family: 'Fjalla One', sans-serif;
-  // position: absolute;
-  // top: 30;
-  // left: 0;
   z-index: 10;
 }
 

@@ -8,14 +8,15 @@ import BarContainer from './powerups/bar/bar_container';
 import Bar from './powerups/bar/bar';
 
 export default class Human{
-	constructor(environment, context, computerProjectiles){
+	constructor(environment, context, computerProjectiles, humanStartPlatform){
 		this.type = 'human';
 
 		this.CONSTANTS = {
 			GRAVITY: 0.5,
 			NORMALFORCE: -0.5
 		};
-
+		
+		this.hsp = humanStartPlatform;
 		this.alive = true;
 		this.projectiles = {};
 		this.environment = environment;
@@ -29,8 +30,11 @@ export default class Human{
 		this.curJumps = 0;
 		this.dashes = 0;
 
-    this.xPos = 350;
-    this.yPos = 100;
+    // this.xPos = 350;
+		// this.yPos = 100;
+		this.xPos = this.hsp.xStart + (Math.round(Math.random() * this.hsp.width));
+		debugger;
+		this.yPos = this.hsp.yStart;
     this.yVel = 0;
     this.xVel = 0;
     this.width = 15;
