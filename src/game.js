@@ -225,9 +225,15 @@ export default class Game{
 // --------------------------------------------------------------------------
 
   checkCollisions(){
-    CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
-    CollisionUtil.objectCollision(this.human, Object.values(this.landComputerProjectiles));
-    CollisionUtil.objectCollision(this.human, Object.values(this.dynamicComputerProjectiles));
+    if(!this.human.shielded){
+      CollisionUtil.objectCollision(this.human, Object.values(this.computerProjectiles));
+      CollisionUtil.objectCollision(this.human, Object.values(this.landComputerProjectiles));
+      CollisionUtil.objectCollision(this.human, Object.values(this.dynamicComputerProjectiles));
+    }else{
+      CollisionUtil.shieldCollision(this.human.shield, Object.values(this.computerProjectiles));
+      CollisionUtil.shieldCollision(this.human.shield, Object.values(this.landComputerProjectiles));
+      CollisionUtil.shieldCollision(this.human.shield, Object.values(this.dynamicComputerProjectiles));
+    }
 
     // this.human.powerups = Object.assign(CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups)), this.human.powerups);
     let newPowerup = CollisionUtil.powerupCollision(this.human, Object.values(this.allPowerups));

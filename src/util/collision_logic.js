@@ -45,6 +45,20 @@ export const collide = (obj1, obj2) => {
 
 }
 
+const circleCollide = (obj, projectile) => {
+  // test if dist btw obj and projectile is less than the raidus of the obj
+  let pCenterX = projectile.yPos - Math.round( projectile.height / 2);
+  let pCenterY = projectile.xPos + Math.round( projectile.width / 2 );
+  let xDiff = Math.abs(obj.xPos - pCenterX);
+  let yDiff = Math.abs(obj.yPos - pCenterY);
+  let totalDiff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+  if(totalDiff > obj.radius){
+    return false;
+  }else{
+    return true;
+  }
+}
+
 export const objectCollision = (obj, projectiles) => {
   let count = 0;
   for(let i = 0; i < projectiles.length; i++){
@@ -83,8 +97,8 @@ export const powerupCollision = (obj, powerups) => {
 export const shieldCollision = (obj, projectiles) => {
   for(let i = 0; i < projectiles.length; i++){
     let p = projectiles[i];
-    if(collide(obj, p)){
-      this.reconfigure(obj, p);
+    if(circleCollide(obj, p)){
+      reconfigure(obj, p);
     }
   }
 }
@@ -92,17 +106,19 @@ export const shieldCollision = (obj, projectiles) => {
 // unfinished
 const reconfigure = (obj, p) => {
   // 1
-  let pCoords = {x : p.xPos, y : p.yPos};
-  let objCoords = {x : obj.xPos, y: obj.yPos};
-  let v1 = {start : objCoords, end : pCoords};
-  // 2
-  let v1xDiff = v1.start.x - v1.end.x;
-  let v1yDiff = v1.start.y - v1.end.y;
-  // 3
-  let perpxDiff = v1yDiff;
-  let perpyDiff = v1xDiff;
-  // 4
-  let perpSlope = perpyDiff / perpxDiff;
+  // let pCoords = {x : p.xPos, y : p.yPos};
+  // let objCoords = {x : obj.xPos, y: obj.yPos};
+  // let v1 = {start : objCoords, end : pCoords};
+  // // 2
+  // let v1xDiff = v1.start.x - v1.end.x;
+  // let v1yDiff = v1.start.y - v1.end.y;
+  // // 3
+  // let perpxDiff = v1yDiff;
+  // let perpyDiff = v1xDiff;
+  // // 4
+  // let perpSlope = perpyDiff / perpxDiff;
+  p.xVel = 0;
+  p.yVel = -10;
 
 
 }
