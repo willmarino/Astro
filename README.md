@@ -1,43 +1,32 @@
 # Astro
 
-Astro is a game, inspired by contra, in which a player moves a character across a 2-dimensional landscape defeating enemies. The game takes
-place in a series of rounds. When a player progresses past one round, they move on to the next round, in which the enemies 
-become more difficult to defeat, and the terrain becomes more difficult to navigate.
+Astro is a 2d sidescrolling action game created with javaScript and HTML Canvas. All transitions were done with vanilla DOM manipulation.
 
-The game will have a 'start' screen as well as a pause/options modal.
+With Astro I focused on four main elements: human/player mechanics, computer/enemy player mechanics, the environment with which the players interact, and the progression of the game.
 
-![Basic Wireframe](https://flea-seeds-four.s3.amazonaws.com/thumbnails_v2/js_proj/Screen+Shot+2020-01-06+at+9.57.15+AM.png)
+### Human/Player mechanics
+* Movement
+  Player movement is fairly simple. They can move from side to side, jump and double jump, move downwards while in the air,   and dash from side to side.
+* Actions
+  A Player can shoot projectiles with a mouse click, and the direction of the projectiles will be set by where on the canvas the user clicked. Right now, the rate at which the player can shoot is not capped, but that may change. The player can also consume powerups, of which there are currently two. The first is a shield, which when activated, makes the player immune to enemy projectiles for 8 seconds. The second is a shooting powerup, which makes the player send out three projectiles per click instead of one. They will all go in the same direction, but are very slightly staggered in time.
+  
+### Computer/Enemy Mechancs
+* Basic air enemy
+This enemy will move back and forth across the screen, only switching directions once they reach the end of the user's view. They can shoot two types of projectiles. The first is a regular projectile resembling what the user will shoot on click, with the one difference being the speed at which it travels. The second is a homing projectile which changes its velocity each tick/animation frame to re-target where the user has moved to in that last tick/animation frame. Has 2 health points.
 
-### Tech
-To make Astro I should not need anything other than javascript, canvas, and perhaps a library to help me build sprites, like pixijs.
+* Basic land enemy
+This enemy will spawn out of the user's view, and travel towards the user while shooting projectiles every few seconds. Since the environment is made up of platforms with gaps between them, the land enemy has a jump method programmed into its move method, which will be called whenever they reach the edge of a platform. (For the specifics of this jump method, look down near the bottom, its pretty cool!). This enemy will turn around whenever they are a certain distance away from the player. So, for example, if they are moving to the left and are already X pixels to the left of the user, they will turn around and begin moving to the right. Of course, this does not occur if the enemy is mid-jump. Like the previous, this enemy has two health.
 
-### Day 1
-My main goal for day one is to become comfortable with rendering simple objects with canvas. Additionally I will try to set 
-up the necessary logic to get auto-generated platforms extending to the right and left of my character. Whichever direction 
-the player chooses to go, there should be infinite platforms for them to move across. Lastly, I would like to find a library 
-to use to generate player/enemy models by the end of the day. -platform.js, -environment.js
+* Chaotic air enemy
+This enemy follows the same general principle as the land enemy in that the direction that it is moving is determined by  its position relative to the player. However, it travels through the air, and does not move at a constant speed. Instead, at a constant interval, it will stop moving entirely, and then move very quickly to a semi-random position around the player. Instead of shooting one projectile in the direction of the player, it instead shoots eight projectiles in each cardinal and primary intercardinal direction. It shoots each time it stops moving. This enemy only has one health.
 
-### Day 2
-Day 2 should be spent trying to set up the player's character, and get my player moving semi-realistically 
-(jump, double-jump, duck, right, left). At the end of day 2 I should have an environment to move around in, and a character 
-with which to move around in it. Another goal for day 2 would be to get projectile logic functioning.
--player.js, human.js(player subclass), -projectile.js
+### Environment
+  The environment in which the players and enemies operate is fundamentally a series of platforms with semi-randomly generated attributes (width, horizontal gap between two platforms, vertical gap between two platforms). They are stored as key value pairs in an object in order to achieve quick lookup time, and had some of the attributes of a linked list (next, prev, root, head) to make some of my other functions easier, such as the land enemy jump function.
+ I faced several challenges related to the environment while making this game. The first and most basic is that of object collision. In order to build a working surface for the user/enemies to stand on, I had to create a function, which runs each animation frame, which checks to see if the user, or any land enemy, is colliding with on the platforms. If they are, I set their vertical velocity to zero.
+ The trickier challenge was that of creating the illusion of stage/environment movement. First, since I wanted the environment to be larger than the player's current view at all times, I of course generated an environment which was wider than the set pixel width of the screen/ user view. Second, In order to actually have this environment move, I wrote a function which alters the movemnt of all entities on the screen if the user is far enough to the left or the right. When the user hits this point, their horizontal velocity will be set to 0, and the inverse of whatever that velocity would be, were it not set to zero, is applied to all enemies, platforms, and even projectiles. This creates the illusion that the player is moving around a large environment.
+ 
+ 
+### Progression
+  As of now there are no 'level changes' or similar mechanics. Instead, users get points for hitting enemies with projectiles, and at certain point thresholds, the 'round' will change. All this really means is that the amounts of enemies that spawn will increase, and platforms will have the gaps between them grow, and their widths shrink. As the round changes, the background of the canvas changes with it. So round 1 corresponds to a white background, round 2 to a blue background, and round 3 to an orange background.
 
-### Day 3
-On day 3, if I did not do so on day 2, I will set up projectile logic and select a model to use for projectiles. The 
-main focus of this day will be on generating enemies. Enemy players should be able to traverse the environment on their own,
-and should be able to throw projectiles towards the player.
--enemy.js(player subclass)
 
-### Day 4
-Set up the progression of the game, i.e. rounds, and level changes after winning each round. A round win should trigger a 
-change in environment and a change in the color of the background. There should be an indication of what round is beginning 
-at the start of each round, to help the player keep track. Additionally, round number should be displayed on the settings modal.
--round.js(actual game loop)
-
-### Day 5
-By now the central game logic and progression should be functional, work at this point will focus on adding additional 
-player movement and better graphics, and cleaning up the environment.
-
-### Bonus
-Bonus features that I will be looking to implement will be based around implementing power-ups that change a player's ability to move or shoot, or different game modes.
