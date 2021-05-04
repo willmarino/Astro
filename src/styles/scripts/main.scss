@@ -181,12 +181,17 @@ body{
   width: 200px;
   margin-right: 30px;
 
-  // background:	rgb(16,16,16);
-  background: none;
+  // background: none;
+  background: #A9A9A9;
   z-index: 8;
   border-radius: 10px;
 
   transition: background .5s;
+
+  &:hover{
+    cursor: pointer;
+    background:	rgb(16,16,16);
+  }
 }
 
 .splash-logo{
